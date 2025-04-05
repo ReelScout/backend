@@ -1,13 +1,12 @@
 package click.reelscout.backend.service.definition;
 
-import click.reelscout.backend.model.User;
-
-import java.util.Optional;
+import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.UserResponseDTO;
 
 public interface UserService {
-    User create(User user);
+    UserResponseDTO create(UserRequestDTO userRequestDTO);
 
-    Optional<User> getByEmail(String email);
+    UserResponseDTO getByEmail(String email);
 
-    Optional<User> getByUsername(String username);
+    UserResponseDTO getByUsername(String username);
 }

@@ -2,7 +2,9 @@ package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
 import click.reelscout.backend.model.User;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserBuilderImplementation implements UserBuilder {
     private Long id;
     private String username;

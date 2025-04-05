@@ -1,0 +1,38 @@
+package click.reelscout.backend.mapper.implemetation;
+
+import click.reelscout.backend.builder.definition.UserBuilder;
+import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.UserResponseDTO;
+import click.reelscout.backend.mapper.definition.UserMapper;
+import click.reelscout.backend.model.User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@RequiredArgsConstructor
+@Component
+public class UserMapperImplementation implements UserMapper {
+    private final UserBuilder userBuilder;
+
+    @Override
+    public UserResponseDTO toDto(User user) {
+        return new UserResponseDTO(user.getId(), user.getUsername(), user.getEmail());
+    }
+
+    @Override
+    public UserBuilder toBuilder(User user) {
+        return userBuilder
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .password(user.getPassword());
+    }
+
+    @Override
+    public User toEntity(UserRequestDTO userRequestDTO) {
+        return userBuilder
+                .username(userRequestDTO.username())
+                .email(userRequestDTO.email())
+                .password(userRequestDTO.password())
+                .build();
+    }
+}
