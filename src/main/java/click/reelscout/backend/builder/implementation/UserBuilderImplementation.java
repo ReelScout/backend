@@ -4,9 +4,14 @@ import click.reelscout.backend.builder.definition.UserBuilder;
 import click.reelscout.backend.model.User;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+
 @Component
 public class UserBuilderImplementation implements UserBuilder {
     private Long id;
+    private String firstName;
+    private String lastName;
+    private LocalDate birthDate;
     private String username;
     private String email;
     private String password;
@@ -14,6 +19,24 @@ public class UserBuilderImplementation implements UserBuilder {
     @Override
     public UserBuilder id(Long id) {
         this.id = id;
+        return this;
+    }
+
+    @Override
+    public UserBuilder firstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    @Override
+    public UserBuilder lastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    @Override
+    public UserBuilder birthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
         return this;
     }
 
@@ -37,6 +60,6 @@ public class UserBuilderImplementation implements UserBuilder {
 
     @Override
     public User build() {
-        return new User(id, username, email, password);
+        return new User(id, firstName, lastName, birthDate, username, email, password);
     }
 }

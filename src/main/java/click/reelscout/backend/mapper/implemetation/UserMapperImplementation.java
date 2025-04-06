@@ -15,13 +15,16 @@ public class UserMapperImplementation implements UserMapper {
 
     @Override
     public UserResponseDTO toDto(User user) {
-        return new UserResponseDTO(user.getId(), user.getUsername(), user.getEmail());
+        return new UserResponseDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getBirthDate(), user.getUsername(), user.getEmail());
     }
 
     @Override
     public UserBuilder toBuilder(User user) {
         return userBuilder
                 .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .birthDate(user.getBirthDate())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword());
@@ -30,9 +33,12 @@ public class UserMapperImplementation implements UserMapper {
     @Override
     public User toEntity(UserRequestDTO userRequestDTO) {
         return userBuilder
-                .username(userRequestDTO.username())
-                .email(userRequestDTO.email())
-                .password(userRequestDTO.password())
+                .firstName(userRequestDTO.getFirstName())
+                .lastName(userRequestDTO.getLastName())
+                .birthDate(userRequestDTO.getBirthDate())
+                .username(userRequestDTO.getUsername())
+                .email(userRequestDTO.getEmail())
+                .password(userRequestDTO.getPassword())
                 .build();
     }
 }
