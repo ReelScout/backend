@@ -1,6 +1,5 @@
 package click.reelscout.backend.dto.request;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +10,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 
 @Data
-@Valid
 public class UserRequestDTO {
         @NotBlank(message = "Firstname is mandatory")
         private String firstName;
