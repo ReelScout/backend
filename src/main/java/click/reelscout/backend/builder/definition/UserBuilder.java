@@ -1,5 +1,6 @@
 package click.reelscout.backend.builder.definition;
 
+import click.reelscout.backend.model.Role;
 import click.reelscout.backend.model.User;
 
 import java.time.LocalDate;
@@ -12,5 +13,6 @@ public interface UserBuilder {
     UserBuilder username(String username);
     UserBuilder email(String email);
     UserBuilder password(String password);
+    UserBuilder role(Role role);
     User build();
 }

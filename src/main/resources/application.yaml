@@ -11,11 +11,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
-
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
+# JWT configuration
+jwt:
+  token:
+    secret: "${secrets.jwt-secret-key}"
+    expiration: 30 # in minutes
 
 # Api paths
 api:

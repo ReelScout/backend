@@ -15,7 +15,7 @@ public class UserMapperImplementation implements UserMapper {
 
     @Override
     public UserResponseDTO toDto(User user) {
-        return new UserResponseDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getBirthDate(), user.getUsername(), user.getEmail());
+        return new UserResponseDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getBirthDate(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
     @Override
@@ -27,7 +27,8 @@ public class UserMapperImplementation implements UserMapper {
                 .birthDate(user.getBirthDate())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .password(user.getPassword());
+                .password(user.getPassword())
+                .role(user.getRole());
     }
 
     @Override
@@ -39,6 +40,7 @@ public class UserMapperImplementation implements UserMapper {
                 .username(userRequestDTO.getUsername())
                 .email(userRequestDTO.getEmail())
                 .password(userRequestDTO.getPassword())
+                //TODO: implement roles if needed
                 .build();
     }
 }

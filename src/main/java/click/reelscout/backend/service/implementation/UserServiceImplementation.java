@@ -1,6 +1,7 @@
 package click.reelscout.backend.service.implementation;
 
 import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
@@ -50,5 +51,17 @@ public class UserServiceImplementation implements UserService {
         }
 
         return userMapper.toDto(user.get());
+    }
+
+    @Override
+    public UserLoginResponseDTO authenticate(UserRequestDTO userRequestDTO) {
+        Optional<User> user = userRepository.findByUsername(userRequestDTO.getUsername())
+                .or(() -> userRepository.findByEmail(userRequestDTO.getUsername()));
+
+        if (user.isEmpty()) {
+            throw new EntityNotFoundException(User.class);
+        }
+
+        return null;
     }
 }

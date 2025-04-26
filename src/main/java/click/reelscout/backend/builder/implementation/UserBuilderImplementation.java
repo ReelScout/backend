@@ -1,6 +1,7 @@
 package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
+import click.reelscout.backend.model.Role;
 import click.reelscout.backend.model.User;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ public class UserBuilderImplementation implements UserBuilder {
     private String username;
     private String email;
     private String password;
+    private Role role;
 
     @Override
     public UserBuilder id(Long id) {
@@ -59,7 +61,13 @@ public class UserBuilderImplementation implements UserBuilder {
     }
 
     @Override
+    public UserBuilder role(Role role) {
+        this.role = role;
+        return this;
+    }
+
+    @Override
     public User build() {
-        return new User(id, firstName, lastName, birthDate, username, email, password);
+        return new User(id, firstName, lastName, birthDate, username, email, password, role);
     }
 }
