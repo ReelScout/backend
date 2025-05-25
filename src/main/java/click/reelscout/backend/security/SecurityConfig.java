@@ -26,9 +26,9 @@ public class SecurityConfig {
         return RoleHierarchyImpl.fromHierarchy(
                 """
                     ROLE_ADMIN > ROLE_MODERATOR
-                    ROLE_ADMIN > ROLE_PRODUCTION
-                    ROLE_MODERATOR > ROLE_VERIFIED_USER
-                    ROLE_VERIFIED_USER > ROLE_USER
+                    ROLE_ADMIN > ROLE_PRODUCTION_COMPANY
+                    ROLE_MODERATOR > ROLE_VERIFIED_MEMBER
+                    ROLE_VERIFIED_MEMBER > ROLE_MEMBER
                 """
         );
     }
@@ -50,4 +50,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

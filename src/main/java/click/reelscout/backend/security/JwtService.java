@@ -35,11 +35,9 @@ public class JwtService {
     public String generateToken(UserResponseDTO userResponseDTO) {
         Map<String, Object> claims = Map.of(
                 "id", userResponseDTO.getId(),
-                "firstName", userResponseDTO.getFirstName(),
-                "lastName", userResponseDTO.getLastName(),
-                "birthDate", userResponseDTO.getBirthDate(),
                 "email", userResponseDTO.getEmail(),
-                "role", userResponseDTO.getRole()
+                "role", userResponseDTO.getRole(),
+                "tokenVersion", 1
         );
 
         return buildToken(claims, userResponseDTO.getUsername());
@@ -61,6 +59,7 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

@@ -102,4 +102,20 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    /**
+     * Handles {@link InvalidCredentialsException} exceptions that occur when invalid credentials are provided.
+     * <p>
+     * This method returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing the exception's message.
+     * </p>
+     *
+     * @param e the {@link InvalidCredentialsException} that triggered this handler
+     * @return a {@link ResponseEntity} with a 401 status code and a {@link CustomResponseDTO} with the error message
+     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<CustomResponseDTO> handleInvalidCredentialsException(InvalidCredentialsException e) {
+        CustomResponseDTO response = new CustomResponseDTO(e.getMessage());
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 }

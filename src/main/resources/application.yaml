@@ -10,7 +10,7 @@ spring:
     password: "${secrets.datasource.password}"
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
@@ -25,5 +25,5 @@ api:
   basic-path: "/api/v1"
   paths:
     auth: "${api.basic-path}/auth"
-    user: "${api.basic-path}/user"
+    member: "${api.basic-path}/member"
     production: "${api.basic-path}/production"

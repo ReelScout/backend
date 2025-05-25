@@ -1,21 +1,27 @@
 package click.reelscout.backend.dto.response;
 
 import click.reelscout.backend.model.Role;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
-@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
-public class UserResponseDTO {
-        private Long id;
-        private String firstName;
-        private String lastName;
-        private LocalDate birthDate;
-        private String username;
-        private String email;
-        private Role role;
+@Data
+public class UserResponseDTO extends EntityResponseDTO {
+    private String username;
+    private String email;
+    private Role role;
+
+    public UserResponseDTO(
+            Long id,
+            String username,
+            String email,
+            Role role
+    ) {
+        super(id);
+        this.username = username;
+        this.email = email;
+        this.role = role;
+    }
 }

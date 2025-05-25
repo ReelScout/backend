@@ -1,67 +1,41 @@
 package click.reelscout.backend.service.implementation;
 
-import click.reelscout.backend.dto.request.UserRequestDTO;
-import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
-import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
-import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.repository.UserRepository;
 import click.reelscout.backend.service.definition.UserService;
+import click.reelscout.backend.strategy.UserMapperContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class UserServiceImplementation implements UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
-
-    @Override
-    public UserResponseDTO create(UserRequestDTO userRequestDTO) {
-        if (userRepository.existsByUsernameOrEmail(userRequestDTO.getUsername(), userRequestDTO.getEmail())) {
-            throw new EntityCreateException("User already exists");
-        }
-
-        User savedUser = userRepository.save(userMapper.toEntity(userRequestDTO));
-
-        return userMapper.toDto(savedUser);
-    }
+    private final UserMapperContext userMapperContext;
 
     @Override
     public UserResponseDTO getByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException(User.class);
-        }
-
-        return userMapper.toDto(user.get());
+        return userMapperContext.toDto(user);
     }
 
     @Override
     public UserResponseDTO getByUsername(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException(User.class);
-        }
-
-        return userMapper.toDto(user.get());
+        return userMapperContext.toDto(user);
     }
 
     @Override
-    public UserLoginResponseDTO authenticate(UserRequestDTO userRequestDTO) {
-        Optional<User> user = userRepository.findByUsername(userRequestDTO.getUsername())
-                .or(() -> userRepository.findByEmail(userRequestDTO.getUsername()));
+    public UserResponseDTO getByUsernameOrEmail(String usernameOrEmail) {
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
 
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException(User.class);
-        }
-
-        return null;
+        return userMapperContext.toDto(user);
     }
 }

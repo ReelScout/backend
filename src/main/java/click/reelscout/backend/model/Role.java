@@ -1,9 +1,9 @@
 package click.reelscout.backend.model;
 
 public enum Role {
-    USER,
-    VERIFIED_USER,
+    MEMBER,
+    VERIFIED_MEMBER,
     MODERATOR,
-    PRODUCTION,
+    PRODUCTION_COMPANY,
     ADMIN
 }

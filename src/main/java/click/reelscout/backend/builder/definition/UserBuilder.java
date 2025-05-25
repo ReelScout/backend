@@ -3,16 +3,9 @@ package click.reelscout.backend.builder.definition;
 import click.reelscout.backend.model.Role;
 import click.reelscout.backend.model.User;
 
-import java.time.LocalDate;
-
-public interface UserBuilder {
-    UserBuilder id(Long id);
-    UserBuilder firstName(String firstName);
-    UserBuilder lastName(String lastName);
-    UserBuilder birthDate(LocalDate birthDate);
-    UserBuilder username(String username);
-    UserBuilder email(String email);
-    UserBuilder password(String password);
-    UserBuilder role(Role role);
-    User build();
+public interface UserBuilder<U extends User, T extends UserBuilder<U, T>> extends EntityBuilder<U, T> {
+    T username(String username);
+    T email(String email);
+    T password(String password);
+    T role(Role role);
 }

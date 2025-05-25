@@ -2,9 +2,11 @@ package click.reelscout.backend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
-public class UserLoginResponseDTO {
-    private String accessToken;
+@NoArgsConstructor
+@Data
+public abstract class EntityResponseDTO {
+    private Long id;
 }
