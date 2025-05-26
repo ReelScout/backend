@@ -1,17 +1,12 @@
 package click.reelscout.backend.service.implementation;
 
-import click.reelscout.backend.builder.implementation.MemberBuilderImplementation;
-import click.reelscout.backend.builder.implementation.ProductionCompanyBuilderImplementation;
-import click.reelscout.backend.dto.request.MemberRequestDTO;
-import click.reelscout.backend.dto.request.ProductionCompanyRequestDTO;
 import click.reelscout.backend.dto.request.UserLoginRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.exception.custom.InvalidCredentialsException;
-import click.reelscout.backend.mapper.implemetation.MemberMapperImplementation;
-import click.reelscout.backend.mapper.implemetation.ProductionCompanyMapperImplementation;
+import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.repository.UserRepository;
 import click.reelscout.backend.security.JwtService;
@@ -28,6 +23,7 @@ public class AuthServiceImplementation implements AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final UserMapperContext userMapperContext;
+    private final UserMapperFactoryRegistry userMapperFactoryRegistry;
 
     @Override
     public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
@@ -54,11 +50,7 @@ public class AuthServiceImplementation implements AuthService {
             throw new EntityCreateException("User already exists");
         }
 
-        switch (userRequestDTO) {
-            case MemberRequestDTO memberRequestDTO -> userMapperContext.setUserMapper(new MemberMapperImplementation(new MemberBuilderImplementation(passwordEncoder)));
-            case ProductionCompanyRequestDTO productionCompanyRequestDTO -> userMapperContext.setUserMapper(new ProductionCompanyMapperImplementation(new ProductionCompanyBuilderImplementation(passwordEncoder)));
-            default -> throw new EntityCreateException("Invalid user type");
-        }
+        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(userRequestDTO));
 
         try {
             userRepository.save(userMapperContext.toEntity(userRequestDTO));
