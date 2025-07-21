@@ -6,6 +6,8 @@ import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.mapper.implemetation.ProductionCompanyMapperImplementation;
+import click.reelscout.backend.model.ProductionCompany;
+import click.reelscout.backend.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,11 @@ public class ProductionCompanyMapperFactory implements UserMapperFactory {
     @Override
     public boolean supports(UserRequestDTO userRequestDTO) {
         return userRequestDTO instanceof ProductionCompanyRequestDTO;
+    }
+
+    @Override
+    public boolean supports(User user) {
+        return user instanceof ProductionCompany;
     }
 
     @Override

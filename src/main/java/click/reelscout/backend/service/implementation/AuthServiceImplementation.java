@@ -38,6 +38,8 @@ public class AuthServiceImplementation implements AuthService {
             throw new InvalidCredentialsException();
         }
 
+        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+
         UserResponseDTO userResponseDTO = userMapperContext.toDto(user);
         String jwtToken = jwtService.generateToken(userResponseDTO);
 
