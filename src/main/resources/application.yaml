@@ -10,7 +10,7 @@ spring:
     password: "${secrets.datasource.password}"
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
@@ -18,7 +18,14 @@ spring:
 jwt:
   token:
     secret: "${secrets.jwt-secret-key}"
-    expiration: 30 # in minutes
+    expiration: 8640000  # 24 hours in milliseconds
+
+# S3 configuration
+s3:
+  access-key: "${secrets.s3.access-key}"
+  secret-key: "${secrets.s3.secret-key}"
+  endpoint: "${secrets.s3.endpoint}"
+  bucket: "${secrets.s3.bucket}"
 
 # Api paths
 api:
@@ -27,3 +34,4 @@ api:
     auth: "${api.basic-path}/auth"
     member: "${api.basic-path}/member"
     production: "${api.basic-path}/production"
+    s3: "${api.basic-path}/s3"
