@@ -8,7 +8,7 @@ import click.reelscout.backend.model.User;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 @Component
 @Setter
 public class UserMapperContext {

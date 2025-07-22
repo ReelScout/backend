@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.function.Predicate;
 
+@SuppressWarnings("rawtypes")
 @Component
 @RequiredArgsConstructor
 public class UserMapperFactoryRegistry {

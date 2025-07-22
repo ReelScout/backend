@@ -1,6 +1,6 @@
 package click.reelscout.backend.mapper.definition;
 
-public interface EntityMapper<E, R, S, B, T extends EntityMapper<E, R, S, B, T>> {
+public interface EntityMapper<E, R, S, B> {
     S toDto(E entity);
 
     B toBuilder(E entity);

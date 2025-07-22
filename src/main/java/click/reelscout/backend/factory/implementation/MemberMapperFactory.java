@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("rawtypes")
 @Component
 @RequiredArgsConstructor
 public class MemberMapperFactory implements UserMapperFactory {
