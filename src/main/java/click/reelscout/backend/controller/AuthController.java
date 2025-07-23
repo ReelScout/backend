@@ -1,8 +1,7 @@
 package click.reelscout.backend.controller;
 
-import click.reelscout.backend.dto.request.ProductionCompanyRequestDTO;
 import click.reelscout.backend.dto.request.UserLoginRequestDTO;
-import click.reelscout.backend.dto.request.MemberRequestDTO;
+import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.service.definition.AuthService;
 import jakarta.validation.Valid;
@@ -24,13 +23,8 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(userLoginRequestDTO));
     }
 
-    @PostMapping("/member/register")
-    public ResponseEntity<UserLoginResponseDTO> register(@Valid @RequestBody MemberRequestDTO memberRequestDTO) {
+    @PostMapping("/register")
+    public ResponseEntity<UserLoginResponseDTO> register(@Valid @RequestBody UserRequestDTO memberRequestDTO) {
         return ResponseEntity.ok(authService.register(memberRequestDTO));
-    }
-
-    @PostMapping("/production/register")
-    public ResponseEntity<UserLoginResponseDTO> registerProductionCompany(@Valid @RequestBody ProductionCompanyRequestDTO productionCompanyRequestDTO) {
-        return ResponseEntity.ok(authService.register(productionCompanyRequestDTO));
     }
 }

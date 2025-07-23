@@ -1,10 +1,17 @@
 package click.reelscout.backend.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = MemberRequestDTO.class),
+        @JsonSubTypes.Type(value = ProductionCompanyRequestDTO.class)
+})
 @Data
 public abstract class UserRequestDTO {
     @NotBlank(message = "Username is mandatory")
