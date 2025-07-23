@@ -1,6 +1,7 @@
 package click.reelscout.backend.factory;
 
 import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.User;
@@ -18,6 +19,10 @@ public class UserMapperFactoryRegistry {
 
     public UserMapper getMapperFor(UserRequestDTO userRequestDTO) {
         return findMapper(factory -> factory.supports(userRequestDTO));
+    }
+
+    public UserMapper getMapperFor(UserResponseDTO userResponseDTO) {
+        return findMapper(factory -> factory.supports(userResponseDTO));
     }
 
     public UserMapper getMapperFor(User user) {
