@@ -35,5 +35,6 @@ api:
   basic-path: "/api/v1"
   paths:
     auth: "${api.basic-path}/auth"
-    member: "${api.basic-path}/member"
-    production: "${api.basic-path}/production"
+    user: "${api.basic-path}/user"
+    member: "${api.paths.user}/member"
+    production: "${api.paths.user}/production"
