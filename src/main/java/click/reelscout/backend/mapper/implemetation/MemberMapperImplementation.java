@@ -39,7 +39,7 @@ public class MemberMapperImplementation implements MemberMapper {
 
     @Override
     public Member toEntity(MemberRequestDTO memberRequestDTO) {
-        String key = s3Service.uploadFile("members/" + UUID.randomUUID(), memberRequestDTO.getBase64Image());
+        String s3ImageKey = s3Service.uploadFile("members/" + UUID.randomUUID(), memberRequestDTO.getBase64Image());
 
         return memberBuilder
                 .firstName(memberRequestDTO.getFirstName())
@@ -49,7 +49,7 @@ public class MemberMapperImplementation implements MemberMapper {
                 .email(memberRequestDTO.getEmail())
                 .password(memberRequestDTO.getPassword())
                 .role(Role.MEMBER)
-                .s3ImageKey(key)
+                .s3ImageKey(s3ImageKey)
                 .build();
     }
 }
