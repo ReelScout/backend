@@ -3,7 +3,6 @@ package click.reelscout.backend.builder.implementation;
 import click.reelscout.backend.builder.definition.MemberBuilder;
 import click.reelscout.backend.model.Member;
 import lombok.Getter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -14,10 +13,6 @@ public class MemberBuilderImplementation extends AbstractUserBuilderImplementati
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
-
-    public MemberBuilderImplementation(PasswordEncoder passwordEncoder) {
-        super(passwordEncoder);
-    }
 
     @Override
     public MemberBuilder firstName(String firstName) {

@@ -22,7 +22,7 @@ public class UserMapperContext {
         return (UserBuilder) userMapper.toBuilder(user);
     }
 
-    public User toEntity(UserRequestDTO userResponseDTO) {
-        return (User) userMapper.toEntity(userResponseDTO);
+    public User toEntity(UserRequestDTO userRequestDTO) {
+        return (User) userMapper.toEntity(userRequestDTO);
     }
 }

@@ -3,7 +3,6 @@ package click.reelscout.backend.builder.implementation;
 import click.reelscout.backend.builder.definition.ProductionCompanyBuilder;
 import click.reelscout.backend.model.*;
 import lombok.Getter;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,10 +14,6 @@ public class ProductionCompanyBuilderImplementation extends AbstractUserBuilderI
     private Location location;
     private String website;
     private List<Owner> owners;
-
-    public ProductionCompanyBuilderImplementation(PasswordEncoder passwordEncoder) {
-        super(passwordEncoder);
-    }
 
     @Override
     public ProductionCompanyBuilder id(Long id) {

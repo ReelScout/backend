@@ -8,12 +8,14 @@ import click.reelscout.backend.model.ProductionCompany;
 import click.reelscout.backend.model.Role;
 import click.reelscout.backend.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
 public class ProductionCompanyMapperImplementation implements ProductionCompanyMapper {
     private final ProductionCompanyBuilder productionCompanyBuilder;
+    private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
 
     @Override
@@ -50,7 +52,7 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .owners(productionCompanyRequestDTO.getOwners())
                 .username(productionCompanyRequestDTO.getUsername())
                 .email(productionCompanyRequestDTO.getEmail())
-                .password(productionCompanyRequestDTO.getPassword())
+                .password(passwordEncoder.encode(productionCompanyRequestDTO.getPassword()))
                 .role(Role.PRODUCTION_COMPANY)
                 .s3ImageKey(key)
                 .build();

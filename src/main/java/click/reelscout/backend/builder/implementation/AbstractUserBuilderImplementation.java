@@ -5,14 +5,11 @@ import click.reelscout.backend.model.Role;
 import click.reelscout.backend.model.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
 @Getter
 public abstract class AbstractUserBuilderImplementation<U extends User, B extends UserBuilder<U, B>> implements UserBuilder<U, B> {
-    protected final PasswordEncoder passwordEncoder;
-    
     protected Long id;
     protected String username;
     protected String email;
@@ -40,7 +37,7 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
 
     @Override
     public B password(String password) {
-        this.password = passwordEncoder.encode(password);
+        this.password = password;
         return (B) this;
     }
 

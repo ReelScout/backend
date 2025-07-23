@@ -8,12 +8,14 @@ import click.reelscout.backend.model.Member;
 import click.reelscout.backend.model.Role;
 import click.reelscout.backend.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.UUID;
 
 @RequiredArgsConstructor
 public class MemberMapperImplementation implements MemberMapper {
     private final MemberBuilder memberBuilder;
+    private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
 
     @Override
@@ -47,7 +49,7 @@ public class MemberMapperImplementation implements MemberMapper {
                 .birthDate(memberRequestDTO.getBirthDate())
                 .username(memberRequestDTO.getUsername())
                 .email(memberRequestDTO.getEmail())
-                .password(memberRequestDTO.getPassword())
+                .password(passwordEncoder.encode(memberRequestDTO.getPassword()))
                 .role(Role.MEMBER)
                 .s3ImageKey(s3ImageKey)
                 .build();
