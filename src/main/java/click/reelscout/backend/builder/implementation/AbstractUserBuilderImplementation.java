@@ -39,7 +39,7 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
 
     @Override
     public B password(String password) {
-        this.password = password;
+        this.password = passwordEncoder.encode(password);
         return (B) this;
     }
 
