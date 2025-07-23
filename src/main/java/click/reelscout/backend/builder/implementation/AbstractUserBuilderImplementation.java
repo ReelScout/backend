@@ -18,6 +18,7 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
     protected String email;
     protected String password;
     protected Role role;
+    protected String s3ImageKey;
 
     @Override
     public B id(Long id) {
@@ -46,6 +47,12 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
     @Override
     public B role(Role role) {
         this.role = role;
+        return (B) this;
+    }
+
+    @Override
+    public B s3ImageKey(String s3ImageKey) {
+        this.s3ImageKey = s3ImageKey;
         return (B) this;
     }
 }

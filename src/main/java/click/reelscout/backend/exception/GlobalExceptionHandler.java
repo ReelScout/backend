@@ -2,6 +2,7 @@ package click.reelscout.backend.exception;
 
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.exception.custom.*;
+import io.awspring.cloud.s3.S3Exception;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -117,5 +118,20 @@ public class GlobalExceptionHandler {
         CustomResponseDTO response = new CustomResponseDTO(e.getMessage());
 
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * Handles {@link S3Exception} exceptions that occur during S3 operations.
+     * <p>
+     * This method returns an HTTP 500 (Internal Server Error) response with a {@link CustomResponseDTO} containing the exception's message.
+     * </p>
+     *
+     * @param e the {@link S3Exception} that triggered this handler
+     * @return a {@link ResponseEntity} with a 500 status code and a {@link CustomResponseDTO} with the error message
+     */
+    @ExceptionHandler(S3Exception.class)
+    public ResponseEntity<CustomResponseDTO> handleS3Exception(S3Exception e) {
+        CustomResponseDTO response = new CustomResponseDTO("S3 error: " + e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

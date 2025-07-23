@@ -26,9 +26,10 @@ public class ProductionCompanyResponseDTO extends UserResponseDTO {
             List<Owner> owners,
             String username,
             String email,
-            Role role
+            Role role,
+            String base64Image
     ) {
-        super(id, username, email, role);
+        super(id, username, email, role, base64Image);
         this.name = name;
         this.location = location;
         this.website = website;

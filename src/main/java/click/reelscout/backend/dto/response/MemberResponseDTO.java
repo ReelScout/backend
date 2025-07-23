@@ -22,9 +22,10 @@ public class MemberResponseDTO extends UserResponseDTO {
                 LocalDate birthDate,
                 String username,
                 String email,
-                Role role
+                Role role,
+                String base64Image
         ) {
-            super(id, username, email, role);
+            super(id, username, email, role, base64Image);
             this.firstName = firstName;
             this.lastName = lastName;
             this.birthDate = birthDate;

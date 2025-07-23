@@ -23,7 +23,7 @@ public class Member extends User {
     private LocalDate birthDate;
 
     public Member(MemberBuilderImplementation builder) {
-        super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole());
+        super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole(), builder.getS3ImageKey());
         this.firstName = builder.getFirstName();
         this.lastName = builder.getLastName();
         this.birthDate = builder.getBirthDate();

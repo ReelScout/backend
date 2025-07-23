@@ -8,4 +8,5 @@ public interface UserBuilder<U extends User, B extends UserBuilder<U, B>> extend
     B email(String email);
     B password(String password);
     B role(Role role);
+    B s3ImageKey(String s3ImageKey);
 }

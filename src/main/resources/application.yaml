@@ -11,6 +11,16 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  cloud:
+    aws:
+      s3:
+        endpoint: "${secrets.s3.endpoint}"
+        path-style-access-enabled: true
+      credentials:
+        access-key: "${secrets.s3.access-key}"
+        secret-key: "${secrets.s3.secret-key}"
+      region:
+        static: "${secrets.s3.region}"
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
@@ -20,13 +30,6 @@ jwt:
     secret: "${secrets.jwt-secret-key}"
     expiration: 8640000  # 24 hours in milliseconds
 
-# S3 configuration
-s3:
-  access-key: "${secrets.s3.access-key}"
-  secret-key: "${secrets.s3.secret-key}"
-  endpoint: "${secrets.s3.endpoint}"
-  bucket: "${secrets.s3.bucket}"
-
 # Api paths
 api:
   basic-path: "/api/v1"
@@ -34,4 +37,3 @@ api:
     auth: "${api.basic-path}/auth"
     member: "${api.basic-path}/member"
     production: "${api.basic-path}/production"
-    s3: "${api.basic-path}/s3"

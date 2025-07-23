@@ -20,4 +20,6 @@ public abstract class UserRequestDTO {
             message = "Password must be at least 8 characters long, contain one uppercase letter, one special character, and one number"
     )
     private String password;
+
+    private String base64Image;
 }

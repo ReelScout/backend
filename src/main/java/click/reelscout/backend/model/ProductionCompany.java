@@ -26,7 +26,7 @@ public class ProductionCompany extends User {
     private List<Owner> owners;
 
     public ProductionCompany(ProductionCompanyBuilderImplementation builder) {
-        super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole());
+        super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole(), builder.getS3ImageKey());
         this.name = builder.getName();
         this.location = builder.getLocation();
         this.website = builder.getWebsite();

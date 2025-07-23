@@ -6,15 +6,21 @@ import click.reelscout.backend.dto.response.MemberResponseDTO;
 import click.reelscout.backend.mapper.definition.MemberMapper;
 import click.reelscout.backend.model.Member;
 import click.reelscout.backend.model.Role;
+import click.reelscout.backend.s3.S3Service;
 import lombok.RequiredArgsConstructor;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class MemberMapperImplementation implements MemberMapper {
     private final MemberBuilder memberBuilder;
+    private final S3Service s3Service;
 
     @Override
     public MemberResponseDTO toDto(Member member) {
-        return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getUsername(), member.getEmail(), member.getRole());
+        String base64Image = s3Service.getFile(member.getS3ImageKey());
+
+        return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getUsername(), member.getEmail(), member.getRole(), base64Image);
     }
 
     @Override
@@ -27,11 +33,14 @@ public class MemberMapperImplementation implements MemberMapper {
                 .username(member.getUsername())
                 .email(member.getEmail())
                 .password(member.getPassword())
+                .s3ImageKey(member.getS3ImageKey())
                 .role(member.getRole());
     }
 
     @Override
     public Member toEntity(MemberRequestDTO memberRequestDTO) {
+        String key = s3Service.uploadFile("members/" + UUID.randomUUID(), memberRequestDTO.getBase64Image());
+
         return memberBuilder
                 .firstName(memberRequestDTO.getFirstName())
                 .lastName(memberRequestDTO.getLastName())
@@ -40,6 +49,7 @@ public class MemberMapperImplementation implements MemberMapper {
                 .email(memberRequestDTO.getEmail())
                 .password(memberRequestDTO.getPassword())
                 .role(Role.MEMBER)
+                .s3ImageKey(key)
                 .build();
     }
 }
