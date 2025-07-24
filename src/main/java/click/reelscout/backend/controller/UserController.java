@@ -19,7 +19,7 @@ public class UserController {
         return ResponseEntity.ok(userResponseDTO);
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<UserResponseDTO> update(@RequestBody UserRequestDTO userRequestDTO) {
         UserResponseDTO userResponseDTO = userService.update(userRequestDTO);
         return ResponseEntity.ok(userResponseDTO);
