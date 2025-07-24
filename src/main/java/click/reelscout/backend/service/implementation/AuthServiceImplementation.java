@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImplementation implements AuthService {
@@ -55,7 +57,7 @@ public class AuthServiceImplementation implements AuthService {
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(userRequestDTO));
 
         try {
-            userRepository.save(userMapperContext.toEntity(userRequestDTO));
+            userRepository.save(userMapperContext.toEntity(userRequestDTO, userRequestDTO.getBase64Image()!= null ? "user/"+UUID.randomUUID() : null));
         } catch (Exception e) {
             throw new EntityCreateException(User.class);
         }

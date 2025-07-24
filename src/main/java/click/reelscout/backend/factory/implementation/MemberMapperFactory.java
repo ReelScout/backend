@@ -10,7 +10,6 @@ import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.mapper.implemetation.MemberMapperImplementation;
 import click.reelscout.backend.model.Member;
 import click.reelscout.backend.model.User;
-import click.reelscout.backend.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Component;
 public class MemberMapperFactory implements UserMapperFactory {
     private final MemberBuilder memberBuilder;
     private final PasswordEncoder passwordEncoder;
-    private final S3Service s3Service;
 
     @Override
     public boolean supports(UserRequestDTO userRequestDTO) {
@@ -40,6 +38,6 @@ public class MemberMapperFactory implements UserMapperFactory {
 
     @Override
     public UserMapper createMapper() {
-        return new MemberMapperImplementation(memberBuilder, passwordEncoder, s3Service);
+        return new MemberMapperImplementation(memberBuilder, passwordEncoder);
     }
 }

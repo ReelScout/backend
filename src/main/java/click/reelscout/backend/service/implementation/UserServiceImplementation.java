@@ -8,12 +8,15 @@ import click.reelscout.backend.exception.custom.InvalidCredentialsException;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.repository.UserRepository;
+import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.UserService;
 import click.reelscout.backend.strategy.UserMapperContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +25,7 @@ public class UserServiceImplementation implements UserService {
     private final UserMapperContext userMapperContext;
     private final UserMapperFactoryRegistry userMapperFactoryRegistry;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     @Override
     public UserResponseDTO getByEmail(String email) {
@@ -30,7 +34,9 @@ public class UserServiceImplementation implements UserService {
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
 
-        return userMapperContext.toDto(user);
+        String base64Image = s3Service.getFile(user.getS3ImageKey());
+
+        return userMapperContext.toDto(user, base64Image);
     }
 
     @Override
@@ -40,7 +46,9 @@ public class UserServiceImplementation implements UserService {
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
 
-        return userMapperContext.toDto(user);
+        String base64Image = s3Service.getFile(user.getS3ImageKey());
+
+        return userMapperContext.toDto(user, base64Image);
     }
 
     @Override
@@ -50,7 +58,9 @@ public class UserServiceImplementation implements UserService {
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
 
-        return userMapperContext.toDto(user);
+        String base64Image = s3Service.getFile(user.getS3ImageKey());
+
+        return userMapperContext.toDto(user, base64Image);
     }
 
     @Override
@@ -70,7 +80,9 @@ public class UserServiceImplementation implements UserService {
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(currentUser));
 
-        return userMapperContext.toDto(currentUser);
+        String base64Image = s3Service.getFile(currentUser.getS3ImageKey());
+
+        return userMapperContext.toDto(currentUser, base64Image);
     }
 
     @Override
@@ -91,16 +103,28 @@ public class UserServiceImplementation implements UserService {
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(currentUser));
 
-        User user = userMapperContext.toEntity(userRequestDTO);
+        String s3ImageKey = null;
+
+        if (userRequestDTO.getBase64Image() != null && !userRequestDTO.getBase64Image().isEmpty()) {
+            if (currentUser.getS3ImageKey() == null || currentUser.getS3ImageKey().isEmpty()) {
+                s3ImageKey = "user/" + UUID.randomUUID();
+            } else {
+                s3ImageKey = currentUser.getS3ImageKey();
+            }
+        }
+
+        User user = userMapperContext.toEntity(userRequestDTO, s3ImageKey);
 
         User updatedUser = (User) userMapperContext.toBuilder(user).id(currentUser.getId()).build();
 
         try {
             userRepository.save(updatedUser);
+
+            s3Service.uploadFile(s3ImageKey, userRequestDTO.getBase64Image());
         } catch (Exception e) {
             throw new EntityUpdateException(User.class);
         }
 
-        return userMapperContext.toDto(updatedUser);
+        return userMapperContext.toDto(updatedUser, userRequestDTO.getBase64Image());
     }
 }

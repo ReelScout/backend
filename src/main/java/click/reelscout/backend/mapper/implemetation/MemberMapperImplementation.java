@@ -6,22 +6,21 @@ import click.reelscout.backend.dto.response.MemberResponseDTO;
 import click.reelscout.backend.mapper.definition.MemberMapper;
 import click.reelscout.backend.model.Member;
 import click.reelscout.backend.model.Role;
-import click.reelscout.backend.s3.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class MemberMapperImplementation implements MemberMapper {
     private final MemberBuilder memberBuilder;
     private final PasswordEncoder passwordEncoder;
-    private final S3Service s3Service;
 
     @Override
     public MemberResponseDTO toDto(Member member) {
-        String base64Image = s3Service.getFile(member.getS3ImageKey());
+        return toDto(member, null);
+    }
 
+    @Override
+    public MemberResponseDTO toDto(Member member, String base64Image) {
         return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getUsername(), member.getEmail(), member.getRole(), base64Image);
     }
 
@@ -41,8 +40,11 @@ public class MemberMapperImplementation implements MemberMapper {
 
     @Override
     public Member toEntity(MemberRequestDTO memberRequestDTO) {
-        String s3ImageKey = s3Service.uploadFile("members/" + UUID.randomUUID(), memberRequestDTO.getBase64Image());
+        return toEntity(memberRequestDTO, null);
+    }
 
+    @Override
+    public Member toEntity(MemberRequestDTO memberRequestDTO, String s3ImageKey) {
         return memberBuilder
                 .firstName(memberRequestDTO.getFirstName())
                 .lastName(memberRequestDTO.getLastName())

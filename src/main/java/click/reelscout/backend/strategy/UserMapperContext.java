@@ -18,11 +18,19 @@ public class UserMapperContext {
         return (UserResponseDTO) userMapper.toDto(user);
     }
 
+    public UserResponseDTO toDto(User user, String s3ImageKey) {
+        return (UserResponseDTO) userMapper.toDto(user, s3ImageKey);
+    }
+
     public UserBuilder toBuilder(User user) {
         return (UserBuilder) userMapper.toBuilder(user);
     }
 
     public User toEntity(UserRequestDTO userRequestDTO) {
         return (User) userMapper.toEntity(userRequestDTO);
+    }
+
+    public User toEntity(UserRequestDTO userRequestDTO, String s3ImageKey) {
+        return (User) userMapper.toEntity(userRequestDTO, s3ImageKey);
     }
 }
