@@ -1,11 +1,14 @@
 package click.reelscout.backend.service.implementation;
 
+import click.reelscout.backend.builder.definition.UserBuilder;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.exception.custom.EntityUpdateException;
 import click.reelscout.backend.exception.custom.InvalidCredentialsException;
+import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
+import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.repository.UserRepository;
 import click.reelscout.backend.s3.S3Service;
@@ -20,16 +23,16 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class UserServiceImplementation implements UserService {
-    private final UserRepository userRepository;
-    private final UserMapperContext userMapperContext;
-    private final UserMapperFactoryRegistry userMapperFactoryRegistry;
+public class UserServiceImplementation <U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements UserService<U,R,S> {
+    private final UserRepository<U> userRepository;
+    private final UserMapperContext<U, B, R, S, UserMapper<U, R, S, B>> userMapperContext;
+    private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
 
     @Override
-    public UserResponseDTO getByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+    public S getByEmail(String email) {
+        U user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException(User.class));
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
@@ -40,8 +43,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDTO getByUsername(String username) {
-        User user = userRepository.findByUsername(username)
+    public S getByUsername(String username) {
+        U user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException(User.class));
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
@@ -52,8 +55,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDTO getByUsernameOrEmail(String usernameOrEmail) {
-        User user = userRepository.findByUsernameOrEmail(usernameOrEmail)
+    public S getByUsernameOrEmail(String usernameOrEmail) {
+        U user = userRepository.findByUsernameOrEmail(usernameOrEmail)
                 .orElseThrow(() -> new EntityNotFoundException(User.class));
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
@@ -63,9 +66,10 @@ public class UserServiceImplementation implements UserService {
         return userMapperContext.toDto(user, base64Image);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public User getCurrentUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public U getCurrentUser() {
+        U user = (U) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (user == null) {
             throw new EntityNotFoundException(User.class);
@@ -75,8 +79,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDTO getCurrentUserDto() {
-        User currentUser = getCurrentUser();
+    public S getCurrentUserDto() {
+        U currentUser = getCurrentUser();
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(currentUser));
 
@@ -86,8 +90,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public UserResponseDTO update(UserRequestDTO userRequestDTO) {
-        User currentUser = getCurrentUser();
+    public S update(R userRequestDTO) {
+        U currentUser = getCurrentUser();
 
         if(!passwordEncoder.matches(userRequestDTO.getPassword(), currentUser.getPassword())) {
             throw new InvalidCredentialsException();
@@ -113,9 +117,13 @@ public class UserServiceImplementation implements UserService {
             }
         }
 
-        User user = userMapperContext.toEntity(userRequestDTO, s3ImageKey);
+        U user = userMapperContext.toEntity(userRequestDTO, s3ImageKey);
 
-        User updatedUser = (User) userMapperContext.toBuilder(user).id(currentUser.getId()).build();
+        U updatedUser = userMapperContext
+                .toBuilder(user)
+                .id(currentUser.getId())
+                .role(currentUser.getRole())
+                .build();
 
         try {
             userRepository.save(updatedUser);

@@ -15,11 +15,6 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ProductionCompanyResponseDTO toDto(ProductionCompany productionCompany) {
-        return toDto(productionCompany, null);
-    }
-
-    @Override
     public ProductionCompanyResponseDTO toDto(ProductionCompany productionCompany, String base64Image) {
         return new ProductionCompanyResponseDTO(productionCompany.getId(), productionCompany.getName(), productionCompany.getLocation(), productionCompany.getWebsite(), productionCompany.getOwners(), productionCompany.getUsername(), productionCompany.getEmail(), productionCompany.getRole(), base64Image);
     }
@@ -37,11 +32,6 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .password(productionCompany.getPassword())
                 .role(productionCompany.getRole())
                 .s3ImageKey(productionCompany.getS3ImageKey());
-    }
-
-    @Override
-    public ProductionCompany toEntity(ProductionCompanyRequestDTO productionCompanyRequestDTO) {
-        return toEntity(productionCompanyRequestDTO, null);
     }
 
     @Override

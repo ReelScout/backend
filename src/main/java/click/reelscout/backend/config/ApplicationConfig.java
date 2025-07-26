@@ -1,5 +1,6 @@
 package click.reelscout.backend.config;
 
+import click.reelscout.backend.model.User;
 import click.reelscout.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig {
-    private final UserRepository userRepository;
+public class ApplicationConfig <U extends User> {
+    private final UserRepository<U> userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
