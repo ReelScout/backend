@@ -4,16 +4,16 @@ import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.model.User;
 
-public interface UserService {
-    UserResponseDTO getByEmail(String email);
+public interface UserService <U extends User, R extends UserRequestDTO, S extends UserResponseDTO> {
+    S getByEmail(String email);
 
-    UserResponseDTO getByUsername(String username);
+    S getByUsername(String username);
 
-    UserResponseDTO getByUsernameOrEmail(String usernameOrEmail);
+    S getByUsernameOrEmail(String usernameOrEmail);
 
-    User getCurrentUser();
+    U getCurrentUser();
 
-    UserResponseDTO getCurrentUserDto();
+    S getCurrentUserDto();
 
-    UserResponseDTO update(UserRequestDTO userRequestDTO);
+    S update(R userRequestDTO);
 }

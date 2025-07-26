@@ -4,8 +4,8 @@ import click.reelscout.backend.dto.request.UserLoginRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 
-public interface AuthService {
+public interface AuthService <R extends UserRequestDTO> {
     UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO);
 
-    UserLoginResponseDTO register(UserRequestDTO userRequestDTO);
+    UserLoginResponseDTO register(R userRequestDTO);
 }

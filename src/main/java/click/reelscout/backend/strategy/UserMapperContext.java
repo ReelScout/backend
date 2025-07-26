@@ -8,29 +8,20 @@ import click.reelscout.backend.model.User;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
 @Component
 @Setter
-public class UserMapperContext {
-    private UserMapper userMapper;
+public class UserMapperContext <U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U, R, S, B>> {
+    private M userMapper;
 
-    public UserResponseDTO toDto(User user) {
-        return (UserResponseDTO) userMapper.toDto(user);
+    public S toDto(U user, String s3ImageKey) {
+        return userMapper.toDto(user, s3ImageKey);
     }
 
-    public UserResponseDTO toDto(User user, String s3ImageKey) {
-        return (UserResponseDTO) userMapper.toDto(user, s3ImageKey);
+    public B toBuilder(U user) {
+        return userMapper.toBuilder(user);
     }
 
-    public UserBuilder toBuilder(User user) {
-        return (UserBuilder) userMapper.toBuilder(user);
-    }
-
-    public User toEntity(UserRequestDTO userRequestDTO) {
-        return (User) userMapper.toEntity(userRequestDTO);
-    }
-
-    public User toEntity(UserRequestDTO userRequestDTO, String s3ImageKey) {
-        return (User) userMapper.toEntity(userRequestDTO, s3ImageKey);
+    public U toEntity(R userRequestDTO, String s3ImageKey) {
+        return userMapper.toEntity(userRequestDTO, s3ImageKey);
     }
 }

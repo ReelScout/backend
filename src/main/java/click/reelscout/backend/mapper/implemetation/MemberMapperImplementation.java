@@ -15,11 +15,6 @@ public class MemberMapperImplementation implements MemberMapper {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberResponseDTO toDto(Member member) {
-        return toDto(member, null);
-    }
-
-    @Override
     public MemberResponseDTO toDto(Member member, String base64Image) {
         return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getUsername(), member.getEmail(), member.getRole(), base64Image);
     }
@@ -36,11 +31,6 @@ public class MemberMapperImplementation implements MemberMapper {
                 .password(member.getPassword())
                 .s3ImageKey(member.getS3ImageKey())
                 .role(member.getRole());
-    }
-
-    @Override
-    public Member toEntity(MemberRequestDTO memberRequestDTO) {
-        return toEntity(memberRequestDTO, null);
     }
 
     @Override
