@@ -14,6 +14,7 @@ import click.reelscout.backend.repository.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.UserService;
 import click.reelscout.backend.strategy.UserMapperContext;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @RequiredArgsConstructor
+@Transactional(rollbackOn = Exception.class)
 @Service
 public class UserServiceImplementation <U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements UserService<U,R,S> {
     private final UserRepository<U> userRepository;

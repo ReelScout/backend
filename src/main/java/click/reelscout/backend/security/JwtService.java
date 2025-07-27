@@ -1,6 +1,6 @@
 package click.reelscout.backend.security;
 
-import click.reelscout.backend.dto.response.UserResponseDTO;
+import click.reelscout.backend.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -32,15 +32,15 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateToken(UserResponseDTO userResponseDTO) {
+    public String generateToken(User user) {
         Map<String, Object> claims = Map.of(
-                "id", userResponseDTO.getId(),
-                "email", userResponseDTO.getEmail(),
-                "role", userResponseDTO.getRole(),
+                "id", user.getId(),
+                "email", user.getEmail(),
+                "role", user.getRole(),
                 "tokenVersion", 1
         );
 
-        return buildToken(claims, userResponseDTO.getUsername());
+        return buildToken(claims, user.getUsername());
     }
 
     public Key getSigningKey() {
