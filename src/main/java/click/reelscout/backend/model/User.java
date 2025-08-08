@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
 @Getter
