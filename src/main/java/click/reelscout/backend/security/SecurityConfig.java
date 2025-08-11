@@ -12,7 +12,12 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +27,7 @@ public class SecurityConfig {
     private final HandlerExceptionResolver handlerExceptionResolver;
 
     @Bean
-    static RoleHierarchy roleHierarchy() {
+    protected static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.fromHierarchy(
                 """
                     ROLE_ADMIN > ROLE_MODERATOR
@@ -34,9 +39,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, Environment environment) throws Exception {
+    protected CorsConfigurationSource corsConfigurationSource(Environment environment) {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration(environment.getProperty("api.basic-path") + "/**", configuration);
+
+        return source;
+    }
+
+    @Bean
+    protected SecurityFilterChain securityFilterChain(HttpSecurity http, Environment environment) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource(environment)))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(environment.getProperty("api.paths.auth")+"/**").permitAll()
                 .requestMatchers(environment.getProperty("api.paths.user")+"/**").authenticated()
