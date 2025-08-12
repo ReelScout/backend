@@ -3,6 +3,10 @@ package click.reelscout.backend.exception;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.exception.custom.*;
 import io.awspring.cloud.s3.S3Exception;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -133,5 +137,54 @@ public class GlobalExceptionHandler {
     public ResponseEntity<CustomResponseDTO> handleS3Exception(S3Exception e) {
         CustomResponseDTO response = new CustomResponseDTO("S3 error: " + e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Handles {@link ExpiredJwtException} exceptions that occur when JWT tokens have expired.
+     * <p>
+     * This method returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing a specific message for expired tokens.
+     * </p>
+     *
+     * @param e the {@link ExpiredJwtException} that triggered this handler
+     * @return a {@link ResponseEntity} with a 401 status code and a {@link CustomResponseDTO} with the error message
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    @SuppressWarnings("unused")
+    public ResponseEntity<CustomResponseDTO> handleExpiredJwtException(ExpiredJwtException e) {
+        CustomResponseDTO response = new CustomResponseDTO("Access token has expired");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * Handles malformed and invalid signature JWT exceptions.
+     * <p>
+     * This method returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing a generic invalid token message.
+     * </p>
+     *
+     * @param e the JWT exception that triggered this handler
+     * @return a {@link ResponseEntity} with a 401 status code and a {@link CustomResponseDTO} with the error message
+     */
+    @ExceptionHandler({MalformedJwtException.class, SignatureException.class})
+    @SuppressWarnings("unused")
+    public ResponseEntity<CustomResponseDTO> handleInvalidJwtException(JwtException e) {
+        CustomResponseDTO response = new CustomResponseDTO("Invalid access token");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    /**
+     * Handles generic {@link JwtException} exceptions that occur during JWT token processing.
+     * <p>
+     * This method acts as a fallback for JWT exceptions not handled by more specific handlers.
+     * Returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing a generic error message.
+     * </p>
+     *
+     * @param e the {@link JwtException} that triggered this handler
+     * @return a {@link ResponseEntity} with a 401 status code and a {@link CustomResponseDTO} with the error message
+     */
+    @ExceptionHandler(JwtException.class)
+    @SuppressWarnings("unused")
+    public ResponseEntity<CustomResponseDTO> handleJwtException(JwtException e) {
+        CustomResponseDTO response = new CustomResponseDTO("Authentication failed");
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 }
