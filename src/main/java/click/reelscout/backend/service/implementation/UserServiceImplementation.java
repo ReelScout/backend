@@ -1,7 +1,9 @@
 package click.reelscout.backend.service.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
+import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.exception.custom.EntityUpdateException;
@@ -136,5 +138,31 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         }
 
         return userMapperContext.toDto(updatedUser, userRequestDTO.getBase64Image());
+    }
+
+    @Override
+    public CustomResponseDTO changePassword(UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
+        U currentUser = getCurrentUser();
+
+        if (!passwordEncoder.matches(userPasswordChangeRequestDTO.getCurrentPassword(), currentUser.getPassword())) {
+            throw new InvalidCredentialsException();
+        }
+
+        if (!userPasswordChangeRequestDTO.getNewPassword().equals(userPasswordChangeRequestDTO.getConfirmPassword())) {
+            throw new EntityUpdateException("New password and confirm password do not match");
+        }
+
+        U updatedUser = userMapperContext
+                .toBuilder(currentUser)
+                .password(passwordEncoder.encode(userPasswordChangeRequestDTO.getNewPassword()))
+                .build();
+
+        try {
+            userRepository.save(updatedUser);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Failed to change the password");
+        }
+
+        return new CustomResponseDTO("Password changed successfully");
     }
 }

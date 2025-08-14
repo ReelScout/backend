@@ -1,9 +1,12 @@
 package click.reelscout.backend.controller;
 
+import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.service.definition.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +24,14 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserResponseDTO> update(@RequestBody R userRequestDTO) {
+    public ResponseEntity<UserResponseDTO> update(@Valid @RequestBody R userRequestDTO) {
         UserResponseDTO userResponseDTO = userService.update(userRequestDTO);
         return ResponseEntity.ok(userResponseDTO);
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<CustomResponseDTO> changePassword(@Valid @RequestBody UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
+        CustomResponseDTO response = userService.changePassword(userPasswordChangeRequestDTO);
+        return ResponseEntity.ok(response);
     }
 }
