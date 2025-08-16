@@ -7,17 +7,17 @@ import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.model.User;
 
 public interface UserService <U extends User, R extends UserRequestDTO, S extends UserResponseDTO> {
+    S getById(Long id);
+
     S getByEmail(String email);
 
     S getByUsername(String username);
 
     S getByUsernameOrEmail(String usernameOrEmail);
 
-    U getCurrentUser();
+    S getCurrentUserDto(U authenticatedUser);
 
-    S getCurrentUserDto();
+    S update(U user, R userRequestDTO);
 
-    S update(R userRequestDTO);
-
-    CustomResponseDTO changePassword(UserPasswordChangeRequestDTO userPasswordChangeRequestDTO);
+    CustomResponseDTO changePassword(U authenticatedUser, UserPasswordChangeRequestDTO userPasswordChangeRequestDTO);
 }

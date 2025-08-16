@@ -18,7 +18,6 @@ import click.reelscout.backend.service.definition.UserService;
 import click.reelscout.backend.strategy.UserMapperContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +32,18 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
+
+    @Override
+    public S getById(Long id) {
+        U user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
+
+        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+
+        String base64Image = s3Service.getFile(user.getS3ImageKey());
+
+        return userMapperContext.toDto(user, base64Image);
+    }
 
     @Override
     public S getByEmail(String email) {
@@ -70,54 +81,38 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return userMapperContext.toDto(user, base64Image);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public U getCurrentUser() {
-        U user = (U) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public S getCurrentUserDto(U authenticatedUser) {
+        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(authenticatedUser));
 
-        if (user == null) {
-            throw new EntityNotFoundException(User.class);
-        }
+        String base64Image = s3Service.getFile(authenticatedUser.getS3ImageKey());
 
-        return user;
+        return userMapperContext.toDto(authenticatedUser, base64Image);
     }
 
     @Override
-    public S getCurrentUserDto() {
-        U currentUser = getCurrentUser();
-
-        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(currentUser));
-
-        String base64Image = s3Service.getFile(currentUser.getS3ImageKey());
-
-        return userMapperContext.toDto(currentUser, base64Image);
-    }
-
-    @Override
-    public S update(R userRequestDTO) {
-        U currentUser = getCurrentUser();
-
-        if(!passwordEncoder.matches(userRequestDTO.getPassword(), currentUser.getPassword())) {
+    public S update(U authenticatedUser, R userRequestDTO) {
+        if(!passwordEncoder.matches(userRequestDTO.getPassword(), authenticatedUser.getPassword())) {
             throw new InvalidCredentialsException();
         }
 
-        if(userRepository.existsByEmailAndIdIsNot(userRequestDTO.getEmail(), currentUser.getId())) {
+        if(userRepository.existsByEmailAndIdIsNot(userRequestDTO.getEmail(), authenticatedUser.getId())) {
             throw new EntityUpdateException("Email already in use");
         }
 
-        if(userRepository.existsByUsernameAndIdIsNot(userRequestDTO.getUsername(), currentUser.getId())) {
+        if(userRepository.existsByUsernameAndIdIsNot(userRequestDTO.getUsername(), authenticatedUser.getId())) {
             throw new EntityUpdateException("Username already in use");
         }
 
-        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(currentUser));
+        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(authenticatedUser));
 
         String s3ImageKey = null;
 
         if (userRequestDTO.getBase64Image() != null && !userRequestDTO.getBase64Image().isEmpty()) {
-            if (currentUser.getS3ImageKey() == null || currentUser.getS3ImageKey().isEmpty()) {
+            if (authenticatedUser.getS3ImageKey() == null || authenticatedUser.getS3ImageKey().isEmpty()) {
                 s3ImageKey = "user/" + UUID.randomUUID();
             } else {
-                s3ImageKey = currentUser.getS3ImageKey();
+                s3ImageKey = authenticatedUser.getS3ImageKey();
             }
         }
 
@@ -125,8 +120,8 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
 
         U updatedUser = userMapperContext
                 .toBuilder(user)
-                .id(currentUser.getId())
-                .role(currentUser.getRole())
+                .id(authenticatedUser.getId())
+                .role(authenticatedUser.getRole())
                 .build();
 
         try {
@@ -141,10 +136,8 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     }
 
     @Override
-    public CustomResponseDTO changePassword(UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
-        U currentUser = getCurrentUser();
-
-        if (!passwordEncoder.matches(userPasswordChangeRequestDTO.getCurrentPassword(), currentUser.getPassword())) {
+    public CustomResponseDTO changePassword(U authenticatedUser, UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
+        if (!passwordEncoder.matches(userPasswordChangeRequestDTO.getCurrentPassword(), authenticatedUser.getPassword())) {
             throw new InvalidCredentialsException();
         }
 
@@ -153,7 +146,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         }
 
         U updatedUser = userMapperContext
-                .toBuilder(currentUser)
+                .toBuilder(authenticatedUser)
                 .password(passwordEncoder.encode(userPasswordChangeRequestDTO.getNewPassword()))
                 .build();
 
