@@ -7,7 +7,6 @@ import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.exception.custom.EntityUpdateException;
-import click.reelscout.backend.exception.custom.InvalidCredentialsException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
@@ -93,7 +92,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     @Override
     public S update(U authenticatedUser, R userRequestDTO) {
         if(!passwordEncoder.matches(userRequestDTO.getPassword(), authenticatedUser.getPassword())) {
-            throw new InvalidCredentialsException();
+            throw new EntityUpdateException("Password is incorrect");
         }
 
         if(userRepository.existsByEmailAndIdIsNot(userRequestDTO.getEmail(), authenticatedUser.getId())) {
@@ -138,7 +137,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     @Override
     public CustomResponseDTO changePassword(U authenticatedUser, UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
         if (!passwordEncoder.matches(userPasswordChangeRequestDTO.getCurrentPassword(), authenticatedUser.getPassword())) {
-            throw new InvalidCredentialsException();
+            throw new EntityUpdateException("Current password is incorrect");
         }
 
         if (!userPasswordChangeRequestDTO.getNewPassword().equals(userPasswordChangeRequestDTO.getConfirmPassword())) {
