@@ -22,7 +22,7 @@ public class ProductionCompany extends User {
 
     // TODO: List<Film> films;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Owner> owners;
 
     public ProductionCompany(ProductionCompanyBuilderImplementation builder) {
