@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import validation.Create;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes({
@@ -24,7 +25,8 @@ public abstract class UserRequestDTO {
     @NotBlank(message = "Password is mandatory")
     @Pattern(
             regexp = "^(?=.*[A-Z])(?=.*[@$!%*?&])(?=.*\\d)[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "Password must be at least 8 characters long, contain one uppercase letter, one special character, and one number"
+            message = "Password must be at least 8 characters long, contain one uppercase letter, one special character, and one number",
+            groups = Create.class
     )
     private String password;
 

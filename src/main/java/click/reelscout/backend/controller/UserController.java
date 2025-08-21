@@ -11,7 +11,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import validation.Update;
 
 @RequiredArgsConstructor
 @RequestMapping("${api.paths.user}")
@@ -38,7 +40,7 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserLoginResponseDTO> update(@AuthenticationPrincipal U authenticatedUser, @Valid @RequestBody R userRequestDTO) {
+    public ResponseEntity<UserLoginResponseDTO> update(@AuthenticationPrincipal U authenticatedUser, @Validated(Update.class) @RequestBody R userRequestDTO) {
         UserLoginResponseDTO userResponseDTO = userService.update(authenticatedUser, userRequestDTO);
         return ResponseEntity.ok(userResponseDTO);
     }
