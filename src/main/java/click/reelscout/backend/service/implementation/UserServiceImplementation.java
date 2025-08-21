@@ -4,6 +4,7 @@ import click.reelscout.backend.builder.definition.UserBuilder;
 import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
+import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.exception.custom.EntityUpdateException;
@@ -13,6 +14,7 @@ import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.repository.UserRepository;
 import click.reelscout.backend.s3.S3Service;
+import click.reelscout.backend.service.definition.AuthService;
 import click.reelscout.backend.service.definition.UserService;
 import click.reelscout.backend.strategy.UserMapperContext;
 import jakarta.transaction.Transactional;
@@ -31,6 +33,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
+    private final AuthService<R> authService;
 
     @Override
     public S getById(Long id) {
@@ -90,7 +93,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     }
 
     @Override
-    public S update(U authenticatedUser, R userRequestDTO) {
+    public UserLoginResponseDTO update(U authenticatedUser, R userRequestDTO) {
         if(!passwordEncoder.matches(userRequestDTO.getPassword(), authenticatedUser.getPassword())) {
             throw new EntityUpdateException("Password is incorrect");
         }
@@ -115,10 +118,8 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
             }
         }
 
-        U user = userMapperContext.toEntity(userRequestDTO, s3ImageKey);
-
         U updatedUser = userMapperContext
-                .toBuilder(user)
+                .toBuilder(userMapperContext.toEntity(userRequestDTO, s3ImageKey))
                 .id(authenticatedUser.getId())
                 .role(authenticatedUser.getRole())
                 .build();
@@ -131,7 +132,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
             throw new EntityUpdateException(User.class);
         }
 
-        return userMapperContext.toDto(updatedUser, userRequestDTO.getBase64Image());
+        return authenticatedUser.superEquals(updatedUser) ? null : authService.login(updatedUser.getUsername(), userRequestDTO.getPassword());
     }
 
     @Override

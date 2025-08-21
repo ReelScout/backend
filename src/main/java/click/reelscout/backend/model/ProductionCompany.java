@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -31,5 +32,10 @@ public class ProductionCompany extends User {
         this.location = builder.getLocation();
         this.website = builder.getWebsite();
         this.owners = builder.getOwners();
+    }
+
+    @Override
+    public boolean superEquals(User other) {
+        return super.equals(other);
     }
 }

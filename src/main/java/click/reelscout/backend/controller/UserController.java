@@ -3,6 +3,7 @@ package click.reelscout.backend.controller;
 import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
+import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.model.User;
 import click.reelscout.backend.service.definition.UserService;
@@ -37,8 +38,8 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserResponseDTO> update(@AuthenticationPrincipal U authenticatedUser, @Valid @RequestBody R userRequestDTO) {
-        UserResponseDTO userResponseDTO = userService.update(authenticatedUser, userRequestDTO);
+    public ResponseEntity<UserLoginResponseDTO> update(@AuthenticationPrincipal U authenticatedUser, @Valid @RequestBody R userRequestDTO) {
+        UserLoginResponseDTO userResponseDTO = userService.update(authenticatedUser, userRequestDTO);
         return ResponseEntity.ok(userResponseDTO);
     }
 

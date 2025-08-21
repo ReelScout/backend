@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -27,5 +26,10 @@ public class Member extends User {
         this.firstName = builder.getFirstName();
         this.lastName = builder.getLastName();
         this.birthDate = builder.getBirthDate();
+    }
+
+    @Override
+    public boolean superEquals(User other) {
+        return super.equals(other);
     }
 }

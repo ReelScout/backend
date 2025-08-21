@@ -3,6 +3,7 @@ package click.reelscout.backend.service.definition;
 import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
+import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.model.User;
 
@@ -17,7 +18,7 @@ public interface UserService <U extends User, R extends UserRequestDTO, S extend
 
     S getCurrentUserDto(U authenticatedUser);
 
-    S update(U user, R userRequestDTO);
+    UserLoginResponseDTO update(U user, R userRequestDTO);
 
     CustomResponseDTO changePassword(U authenticatedUser, UserPasswordChangeRequestDTO userPasswordChangeRequestDTO);
 }

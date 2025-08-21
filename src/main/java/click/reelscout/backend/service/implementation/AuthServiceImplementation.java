@@ -40,7 +40,7 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
         return login(userLoginRequestDTO.getUsername(), userLoginRequestDTO.getPassword());
     }
 
-    private UserLoginResponseDTO login(String username, String password) {
+    public UserLoginResponseDTO login(String username, String password) {
         U user = userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new EntityNotFoundException(User.class));
 

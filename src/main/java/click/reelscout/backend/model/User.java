@@ -12,6 +12,8 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.JOINED)
+@EqualsAndHashCode(exclude = {"password", "s3ImageKey"})
+@ToString
 @Entity
 @Getter
 public abstract class User implements UserDetails {
@@ -38,4 +40,6 @@ public abstract class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
+
+    public abstract boolean superEquals(User other);
 }
