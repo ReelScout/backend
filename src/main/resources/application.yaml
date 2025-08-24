@@ -1,7 +1,40 @@
+# Spring Boot application configuration file
 spring:
+  config:
+    import: classpath:application-secrets.yaml
   application:
     name: "backend"
   datasource:
-    url: "jdbc:mysql://localhost:3306/reelscout"
-    username: "root"
-    password: "root"
+    url: "${secrets.datasource.url}"
+    username: "${secrets.datasource.username}"
+    password: "${secrets.datasource.password}"
+  jpa:
+    hibernate:
+      ddl-auto: update
+  cloud:
+    aws:
+      s3:
+        endpoint: "${secrets.s3.endpoint}"
+        path-style-access-enabled: true
+      credentials:
+        access-key: "${secrets.s3.access-key}"
+        secret-key: "${secrets.s3.secret-key}"
+      region:
+        static: "${secrets.s3.region}"
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+# JWT configuration
+jwt:
+  token:
+    secret: "${secrets.jwt-secret-key}"
+    expiration: 8640000  # 24 hours in milliseconds
+
+# Api paths
+api:
+  basic-path: "/api/v1"
+  paths:
+    auth: "${api.basic-path}/auth"
+    user: "${api.basic-path}/user"
+    member: "${api.paths.user}/member"
+    production: "${api.paths.user}/production"
