@@ -21,7 +21,8 @@ public class ProductionCompany extends User {
 
     private String website;
 
-    // TODO: List<Film> films;
+    @OneToMany(mappedBy = "productionCompany", fetch = FetchType.EAGER)
+    private List<Content> contents;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Owner> owners;
@@ -31,6 +32,7 @@ public class ProductionCompany extends User {
         this.name = builder.getName();
         this.location = builder.getLocation();
         this.website = builder.getWebsite();
+        this.contents = builder.getContents();
         this.owners = builder.getOwners();
     }
 

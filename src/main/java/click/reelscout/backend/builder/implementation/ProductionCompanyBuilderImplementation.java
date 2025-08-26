@@ -13,6 +13,7 @@ public class ProductionCompanyBuilderImplementation extends AbstractUserBuilderI
     private String name;
     private Location location;
     private String website;
+    private List<Content> contents;
     private List<Owner> owners;
 
     @Override
@@ -42,6 +43,12 @@ public class ProductionCompanyBuilderImplementation extends AbstractUserBuilderI
     @Override
     public ProductionCompanyBuilder owners(List<Owner> owners) {
         this.owners = owners;
+        return this;
+    }
+
+    @Override
+    public ProductionCompanyBuilder contents(List<Content> contents) {
+        this.contents = contents;
         return this;
     }
 

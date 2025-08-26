@@ -8,7 +8,9 @@ import click.reelscout.backend.model.ProductionCompany;
 import click.reelscout.backend.model.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 public class ProductionCompanyMapperImplementation implements ProductionCompanyMapper {
     private final ProductionCompanyBuilder productionCompanyBuilder;
@@ -31,7 +33,8 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .email(productionCompany.getEmail())
                 .password(productionCompany.getPassword())
                 .role(productionCompany.getRole())
-                .s3ImageKey(productionCompany.getS3ImageKey());
+                .s3ImageKey(productionCompany.getS3ImageKey())
+                .contents(productionCompany.getContents());
     }
 
     @Override
