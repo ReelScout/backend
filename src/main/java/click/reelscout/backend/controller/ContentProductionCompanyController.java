@@ -2,6 +2,7 @@ package click.reelscout.backend.controller;
 
 import click.reelscout.backend.dto.request.ContentRequestDTO;
 import click.reelscout.backend.dto.response.ContentResponseDTO;
+import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.model.ProductionCompany;
 import click.reelscout.backend.service.definition.ContentService;
 import jakarta.validation.Valid;
@@ -26,5 +27,15 @@ public class ContentProductionCompanyController {
     @PutMapping("/update/{id}")
     public ResponseEntity<ContentResponseDTO> updateContent(@AuthenticationPrincipal ProductionCompany authenticatedProduction, @PathVariable Long id, @Valid @RequestBody ContentRequestDTO contentRequestDTO) {
         return ResponseEntity.ok(contentService.update(authenticatedProduction, id, contentRequestDTO));
+    }
+
+    @GetMapping("/my-contents")
+    public ResponseEntity<java.util.List<ContentResponseDTO>> getMyContents(@AuthenticationPrincipal ProductionCompany authenticatedProduction) {
+        return ResponseEntity.ok(contentService.getByProductionCompany(authenticatedProduction));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<CustomResponseDTO> deleteContent(@AuthenticationPrincipal ProductionCompany authenticatedProduction, @PathVariable Long id) {
+        return ResponseEntity.ok(contentService.delete(authenticatedProduction, id));
     }
 }

@@ -20,4 +20,9 @@ public class ContentController {
     public ResponseEntity<List<ContentResponseDTO>> all() {
         return ResponseEntity.ok(contentService.getAll());
     }
+
+    @GetMapping("/content-types")
+    public ResponseEntity<List<String>> contentTypes() {
+        return ResponseEntity.ok(contentService.getContentTypes());
+    }
 }
