@@ -21,6 +21,7 @@ public class ContentMapperImplementation implements ContentMapper {
                 content.getTitle(),
                 content.getDescription(),
                 content.getContentType(),
+                content.getGenres(),
                 content.getActors(),
                 content.getDirectors(),
                 base64Image,
@@ -37,6 +38,7 @@ public class ContentMapperImplementation implements ContentMapper {
                 .title(content.getTitle())
                 .description(content.getDescription())
                 .contentType(content.getContentType())
+                .genres(content.getGenres())
                 .actors(content.getActors())
                 .directors(content.getDirectors())
                 .s3ImageKey(content.getS3ImageKey())
@@ -50,6 +52,7 @@ public class ContentMapperImplementation implements ContentMapper {
                 .title(contentRequestDTO.getTitle())
                 .description(contentRequestDTO.getDescription())
                 .contentType(contentRequestDTO.getContentType())
+                .genres(contentRequestDTO.getGenres())
                 .actors(contentRequestDTO.getActors())
                 .directors(contentRequestDTO.getDirectors())
                 .s3ImageKey(s3ImageKey)

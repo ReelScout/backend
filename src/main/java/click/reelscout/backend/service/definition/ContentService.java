@@ -14,9 +14,11 @@ public interface ContentService {
 
     List<ContentResponseDTO> getAll();
 
-    List<String> getContentTypes();
-
     List<ContentResponseDTO> getByProductionCompany(ProductionCompany authenticatedProduction);
 
     CustomResponseDTO delete(ProductionCompany authenticatedProduction, Long id);
+
+    List<String> getContentTypes();
+
+    List<String> getGenres();
 }

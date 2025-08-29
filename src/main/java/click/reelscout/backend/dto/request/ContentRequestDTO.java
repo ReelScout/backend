@@ -3,6 +3,7 @@ package click.reelscout.backend.dto.request;
 import click.reelscout.backend.model.Actor;
 import click.reelscout.backend.model.ContentType;
 import click.reelscout.backend.model.Director;
+import click.reelscout.backend.model.Genre;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,9 @@ public class ContentRequestDTO {
 
     @NotNull(message = "Content type is mandatory")
     private ContentType contentType;
+
+    @NotEmpty(message = "There has to be at least one genre")
+    private List<Genre> genres;
 
     @NotEmpty(message = "There has to be at least one actor")
     private List<Actor> actors;

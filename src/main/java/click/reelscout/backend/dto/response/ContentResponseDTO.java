@@ -3,6 +3,7 @@ package click.reelscout.backend.dto.response;
 import click.reelscout.backend.model.Actor;
 import click.reelscout.backend.model.ContentType;
 import click.reelscout.backend.model.Director;
+import click.reelscout.backend.model.Genre;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class ContentResponseDTO extends EntityResponseDTO {
     private String title;
     private String description;
     private ContentType contentType;
+    private List<Genre> genres;
     private List<Actor> actors;
     private List<Director> directors;
     private String base64Image;
@@ -28,6 +30,7 @@ public class ContentResponseDTO extends EntityResponseDTO {
             String title,
             String description,
             ContentType contentType,
+            List<Genre> genres,
             List<Actor> actors,
             List<Director> directors,
             String base64Image,
@@ -38,6 +41,7 @@ public class ContentResponseDTO extends EntityResponseDTO {
         super(id);
         this.actors = actors;
         this.contentType = contentType;
+        this.genres = genres;
         this.description = description;
         this.directors = directors;
         this.title = title;

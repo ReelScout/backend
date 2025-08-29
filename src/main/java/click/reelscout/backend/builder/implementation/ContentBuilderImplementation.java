@@ -14,6 +14,7 @@ public class ContentBuilderImplementation implements ContentBuilder {
     private String title;
     private String description;
     private ContentType contentType;
+    private List<Genre> genres;
     private List<Actor> actors;
     private List<Director> directors;
     private String s3ImageKey;
@@ -41,6 +42,12 @@ public class ContentBuilderImplementation implements ContentBuilder {
     @Override
     public ContentBuilder contentType(ContentType contentType) {
         this.contentType = contentType;
+        return this;
+    }
+
+    @Override
+    public ContentBuilder genres(List<Genre> genres) {
+        this.genres = genres;
         return this;
     }
 

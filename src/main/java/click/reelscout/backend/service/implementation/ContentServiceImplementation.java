@@ -10,9 +10,11 @@ import click.reelscout.backend.exception.custom.EntityUpdateException;
 import click.reelscout.backend.mapper.definition.ContentMapper;
 import click.reelscout.backend.model.Content;
 import click.reelscout.backend.model.ContentType;
+import click.reelscout.backend.model.Genre;
 import click.reelscout.backend.model.ProductionCompany;
 import click.reelscout.backend.repository.ContentRepository;
 import click.reelscout.backend.repository.ContentTypeRepository;
+import click.reelscout.backend.repository.GenreRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.ContentService;
 import jakarta.transaction.Transactional;
@@ -28,19 +30,21 @@ import java.util.UUID;
 public class ContentServiceImplementation implements ContentService {
     private final ContentRepository contentRepository;
     private final ContentTypeRepository contentTypeRepository;
+    private final GenreRepository genreRepository;
     private final S3Service s3Service;
     private final ContentMapper contentMapper;
 
     @Override
     public ContentResponseDTO create(ProductionCompany authenticatedProduction, ContentRequestDTO contentRequestDTO) {
-        if (!contentTypeRepository.existsById(contentRequestDTO.getContentType().getName()))
-            contentTypeRepository.save(contentRequestDTO.getContentType());
+        saveContentTypeIfNotExists(contentRequestDTO.getContentType());
+
+        List<Genre> savedGenres = saveGenresIfNotExist(contentRequestDTO.getGenres());
 
         try {
             String s3ImageKey = contentRequestDTO.getBase64Image() != null ? "content/" + UUID.randomUUID() : null;
 
             Content content = contentMapper.toBuilder(contentMapper.toEntity(contentRequestDTO, authenticatedProduction, s3ImageKey))
-                    .productionCompany(authenticatedProduction)
+                    .genres(savedGenres)
                     .build();
 
             contentRepository.save(content);
@@ -58,8 +62,9 @@ public class ContentServiceImplementation implements ContentService {
         Content existingContent = contentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Content.class));
 
-        if (!contentTypeRepository.existsById(contentRequestDTO.getContentType().getName()))
-            contentTypeRepository.save(contentRequestDTO.getContentType());
+        saveContentTypeIfNotExists(contentRequestDTO.getContentType());
+
+        List<Genre> savedGenres = saveGenresIfNotExist(contentRequestDTO.getGenres());
 
         String s3ImageKey = existingContent.getS3ImageKey();
 
@@ -71,6 +76,7 @@ public class ContentServiceImplementation implements ContentService {
                 .title(contentRequestDTO.getTitle())
                 .description(contentRequestDTO.getDescription())
                 .contentType(contentRequestDTO.getContentType())
+                .genres(savedGenres)
                 .actors(contentRequestDTO.getActors())
                 .directors(contentRequestDTO.getDirectors())
                 .s3ImageKey(s3ImageKey)
@@ -107,6 +113,14 @@ public class ContentServiceImplementation implements ContentService {
     }
 
     @Override
+    public List<String> getGenres() {
+        return genreRepository.findAll()
+                .stream()
+                .map(Genre::getName)
+                .toList();
+    }
+
+    @Override
     public List<ContentResponseDTO> getByProductionCompany(ProductionCompany authenticatedProduction) {
         List<Content> contents = contentRepository.findAllByProductionCompany((authenticatedProduction));
 
@@ -134,5 +148,22 @@ public class ContentServiceImplementation implements ContentService {
         }
 
         return new CustomResponseDTO("Content deleted successfully");
+    }
+
+    private void saveContentTypeIfNotExists(ContentType contentType) {
+        if (!contentTypeRepository.existsByNameIgnoreCase(contentType.getName()))
+            contentTypeRepository.save(contentType);
+    }
+
+    private List<Genre> saveGenresIfNotExist(List<Genre> genres) {
+        List<Genre> existingGenres = genreRepository.findAllByNameIgnoreCaseIn(genres.stream().map(Genre::getName).toList());
+
+        List<Genre> toSave = genres.stream()
+                .filter(genre -> !existingGenres.contains(genre))
+                .toList();
+
+        genreRepository.saveAll(toSave);
+
+        return genreRepository.findAllByNameIgnoreCaseIn(genres.stream().map(Genre::getName).toList());
     }
 }

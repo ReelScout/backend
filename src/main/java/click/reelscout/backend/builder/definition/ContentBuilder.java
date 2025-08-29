@@ -8,6 +8,7 @@ public interface ContentBuilder extends EntityBuilder<Content, ContentBuilder> {
     ContentBuilder title(String title);
     ContentBuilder description(String description);
     ContentBuilder contentType(ContentType contentType);
+    ContentBuilder genres(List<Genre> genres);
     ContentBuilder actors(List<Actor> actors);
     ContentBuilder directors(List<Director> directors);
     ContentBuilder s3ImageKey(String s3ImageKey);

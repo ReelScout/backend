@@ -29,6 +29,9 @@ public class Content implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private ContentType contentType;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Genre> genres;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Actor> actors;
 
@@ -47,6 +50,7 @@ public class Content implements Serializable {
         this.title = contentBuilder.getTitle();
         this.description = contentBuilder.getDescription();
         this.contentType = contentBuilder.getContentType();
+        this.genres = contentBuilder.getGenres();
         this.actors = contentBuilder.getActors();
         this.directors = contentBuilder.getDirectors();
         this.s3ImageKey = contentBuilder.getS3ImageKey();

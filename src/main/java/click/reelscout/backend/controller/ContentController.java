@@ -25,4 +25,9 @@ public class ContentController {
     public ResponseEntity<List<String>> contentTypes() {
         return ResponseEntity.ok(contentService.getContentTypes());
     }
+
+    @GetMapping("/genres")
+    public ResponseEntity<List<String>> genres() {
+        return ResponseEntity.ok(contentService.getGenres());
+    }
 }
