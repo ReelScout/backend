@@ -4,6 +4,7 @@ import click.reelscout.backend.builder.definition.UserBuilder;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.SearchResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
+import click.reelscout.backend.exception.custom.SearchException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.ContentMapper;
@@ -27,6 +28,8 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 @RequiredArgsConstructor
@@ -47,49 +50,56 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
 
     @Override
     public SearchResponseDTO<S> search(String query) {
-        try {
-            // Append wildcard to enable partial word matching (e.g., "Matt" -> "Matteo Pio")
-            // This works with the Search_As_You_Type fields already configured in the model
-            String wildcardQuery = query + "*";
-            
-            QueryStringQuery queryStringQuery = QueryBuilders.queryString()
-                    .query(wildcardQuery)
-                    .fields("*")
-                    .build();
+        // Append wildcard to enable partial word matching (e.g., "Matt" -> "Matteo Pio")
+        // This works with the Search_As_You_Type fields already configured in the model
+        String wildcardQuery = query + "*";
 
-            NativeQuery searchQuery = NativeQuery.builder()
-                    .withQuery(queryStringQuery._toQuery())
-                    .build();
+        QueryStringQuery queryStringQuery = QueryBuilders.queryString()
+                .query(wildcardQuery)
+                .fields("*")
+                .build();
 
+        NativeQuery searchQuery = NativeQuery.builder()
+                .withQuery(queryStringQuery._toQuery())
+                .build();
+
+        // Create concurrent tasks for searching users and content
+        Future<List<S>> usersFuture = executor.submit(() -> {
             SearchHits<UserDoc> searchHits = elasticsearchOperations.search(searchQuery, UserDoc.class);
 
-            List<U> found = userRepository.findAllById(
+            List<U> foundUsers = userRepository.findAllById(
                     searchHits.stream().map(SearchHit::getContent).map(UserDoc::getId).toList()
             );
 
+            return foundUsers.stream().map(user -> {
+                userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+                return userMapperContext.toDto(user, s3Service.getFile(user.getS3ImageKey()));
+            }).toList();
+        });
+
+        Future<List<click.reelscout.backend.dto.response.ContentResponseDTO>> contentFuture = executor.submit(() -> {
             SearchHits<ContentDoc> contentHits = elasticsearchOperations.search(searchQuery, ContentDoc.class);
 
             List<Content> foundContent = contentRepository.findAllById(
                     contentHits.stream().map(SearchHit::getContent).map(ContentDoc::getId).toList()
             );
 
-            return new SearchResponseDTO<>(
-                    found.stream().map(user -> {
-                        userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+            return foundContent.stream().map(content -> contentMapper.toDto(
+                    content,
+                    content.getProductionCompany(),
+                    s3Service.getFile(content.getS3ImageKey())
+            )).toList();
+        });
 
+        try {
+            // Wait for both tasks to complete and combine results
+            List<S> users = usersFuture.get();
+            List<click.reelscout.backend.dto.response.ContentResponseDTO> content = contentFuture.get();
 
-
-                        return userMapperContext.toDto(user, s3Service.getFile(user.getS3ImageKey()));
-                    }).toList(),
-                    foundContent.stream().map(content -> contentMapper.toDto(
-                            content,
-                            content.getProductionCompany(),
-                            s3Service.getFile(content.getS3ImageKey())
-                    )).toList()
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            return new SearchResponseDTO<>(users, content);
+        } catch (InterruptedException | ExecutionException e) {
+            Thread.currentThread().interrupt();
+            throw new SearchException();
         }
     }
 }
