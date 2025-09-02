@@ -1,4 +1,4 @@
-package click.reelscout.backend.model;
+package click.reelscout.backend.model.jpa;
 
 import click.reelscout.backend.builder.implementation.ContentBuilderImplementation;
 import jakarta.persistence.*;

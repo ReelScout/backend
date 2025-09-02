@@ -3,7 +3,7 @@ package click.reelscout.backend.service.definition;
 import click.reelscout.backend.dto.request.ContentRequestDTO;
 import click.reelscout.backend.dto.response.ContentResponseDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
-import click.reelscout.backend.model.ProductionCompany;
+import click.reelscout.backend.model.jpa.ProductionCompany;
 
 import java.util.List;
 

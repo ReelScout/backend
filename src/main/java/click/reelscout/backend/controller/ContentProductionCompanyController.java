@@ -3,7 +3,7 @@ package click.reelscout.backend.controller;
 import click.reelscout.backend.dto.request.ContentRequestDTO;
 import click.reelscout.backend.dto.response.ContentResponseDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
-import click.reelscout.backend.model.ProductionCompany;
+import click.reelscout.backend.model.jpa.ProductionCompany;
 import click.reelscout.backend.service.definition.ContentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("${api.paths.content}")
 @RestController
-@PreAuthorize("hasRole(T(click.reelscout.backend.model.Role).PRODUCTION_COMPANY)")
+@PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).PRODUCTION_COMPANY)")
 public class ContentProductionCompanyController {
     private final ContentService contentService;
 

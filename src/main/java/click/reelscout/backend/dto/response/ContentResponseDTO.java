@@ -1,9 +1,9 @@
 package click.reelscout.backend.dto.response;
 
-import click.reelscout.backend.model.Actor;
-import click.reelscout.backend.model.ContentType;
-import click.reelscout.backend.model.Director;
-import click.reelscout.backend.model.Genre;
+import click.reelscout.backend.model.jpa.Actor;
+import click.reelscout.backend.model.jpa.ContentType;
+import click.reelscout.backend.model.jpa.Director;
+import click.reelscout.backend.model.jpa.Genre;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;

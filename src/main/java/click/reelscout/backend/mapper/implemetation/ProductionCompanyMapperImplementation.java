@@ -4,8 +4,9 @@ import click.reelscout.backend.builder.definition.ProductionCompanyBuilder;
 import click.reelscout.backend.dto.request.ProductionCompanyRequestDTO;
 import click.reelscout.backend.dto.response.ProductionCompanyResponseDTO;
 import click.reelscout.backend.mapper.definition.ProductionCompanyMapper;
-import click.reelscout.backend.model.ProductionCompany;
-import click.reelscout.backend.model.Role;
+import click.reelscout.backend.model.elasticsearch.ProductionCompanyDoc;
+import click.reelscout.backend.model.jpa.ProductionCompany;
+import click.reelscout.backend.model.jpa.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -50,5 +51,10 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .role(Role.PRODUCTION_COMPANY)
                 .s3ImageKey(s3ImageKey)
                 .build();
+    }
+
+    @Override
+    public ProductionCompanyDoc toDoc(ProductionCompany productionCompany) {
+        return new ProductionCompanyDoc(productionCompany);
     }
 }

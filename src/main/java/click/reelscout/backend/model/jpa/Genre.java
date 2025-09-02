@@ -1,4 +1,4 @@
-package click.reelscout.backend.model;
+package click.reelscout.backend.model.jpa;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

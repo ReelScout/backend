@@ -5,7 +5,7 @@ import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
-import click.reelscout.backend.model.User;
+import click.reelscout.backend.model.jpa.User;
 import click.reelscout.backend.service.definition.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +15,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import validation.Update;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("${api.paths.user}")
 @RestController
 public class UserController <U extends User, R extends UserRequestDTO, S extends UserResponseDTO> {
     private final UserService<U,R,S> userService;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<S>> getAll() {
+        List<S> users = userService.getAll();
+        return ResponseEntity.ok(users);
+    }
 
     @GetMapping("/me")
     public ResponseEntity<S> getCurrentUser(@AuthenticationPrincipal U authenticatedUser) {

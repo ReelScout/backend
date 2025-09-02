@@ -2,8 +2,8 @@ package click.reelscout.backend.dto.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import click.reelscout.backend.model.Location;
-import click.reelscout.backend.model.Owner;
+import click.reelscout.backend.model.jpa.Location;
+import click.reelscout.backend.model.jpa.Owner;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package click.reelscout.backend.builder.definition;
 
-import click.reelscout.backend.model.*;
+import click.reelscout.backend.model.jpa.*;
 
 import java.util.List;
 

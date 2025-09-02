@@ -1,7 +1,7 @@
 package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.ContentBuilder;
-import click.reelscout.backend.model.*;
+import click.reelscout.backend.model.jpa.*;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 

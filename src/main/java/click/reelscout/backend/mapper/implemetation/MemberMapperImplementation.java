@@ -4,12 +4,15 @@ import click.reelscout.backend.builder.definition.MemberBuilder;
 import click.reelscout.backend.dto.request.MemberRequestDTO;
 import click.reelscout.backend.dto.response.MemberResponseDTO;
 import click.reelscout.backend.mapper.definition.MemberMapper;
-import click.reelscout.backend.model.Member;
-import click.reelscout.backend.model.Role;
+import click.reelscout.backend.model.elasticsearch.MemberDoc;
+import click.reelscout.backend.model.jpa.Member;
+import click.reelscout.backend.model.jpa.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
+@Component
 public class MemberMapperImplementation implements MemberMapper {
     private final MemberBuilder memberBuilder;
     private final PasswordEncoder passwordEncoder;
@@ -45,5 +48,10 @@ public class MemberMapperImplementation implements MemberMapper {
                 .role(Role.MEMBER)
                 .s3ImageKey(s3ImageKey)
                 .build();
+    }
+
+    @Override
+    public MemberDoc toDoc(Member member) {
+        return new MemberDoc(member);
     }
 }

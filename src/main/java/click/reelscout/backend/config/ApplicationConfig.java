@@ -1,7 +1,7 @@
 package click.reelscout.backend.config;
 
-import click.reelscout.backend.model.User;
-import click.reelscout.backend.repository.UserRepository;
+import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.repository.jpa.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

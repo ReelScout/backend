@@ -1,6 +1,6 @@
-package click.reelscout.backend.repository;
+package click.reelscout.backend.repository.jpa;
 
-import click.reelscout.backend.model.User;
+import click.reelscout.backend.model.jpa.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

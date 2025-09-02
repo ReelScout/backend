@@ -1,9 +1,9 @@
 package click.reelscout.backend.builder.definition;
 
-import click.reelscout.backend.model.Content;
-import click.reelscout.backend.model.Location;
-import click.reelscout.backend.model.Owner;
-import click.reelscout.backend.model.ProductionCompany;
+import click.reelscout.backend.model.jpa.Content;
+import click.reelscout.backend.model.jpa.Location;
+import click.reelscout.backend.model.jpa.Owner;
+import click.reelscout.backend.model.jpa.ProductionCompany;
 
 import java.util.List;
 

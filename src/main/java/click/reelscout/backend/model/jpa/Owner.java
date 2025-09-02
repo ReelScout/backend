@@ -1,17 +1,16 @@
-package click.reelscout.backend.model;
+package click.reelscout.backend.model.jpa;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-@NoArgsConstructor
 @Embeddable
 @Getter
-public class Actor implements Serializable {
+@NoArgsConstructor
+public class Owner implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 

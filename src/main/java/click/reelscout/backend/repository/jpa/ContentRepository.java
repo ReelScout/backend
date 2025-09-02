@@ -1,7 +1,7 @@
-package click.reelscout.backend.repository;
+package click.reelscout.backend.repository.jpa;
 
-import click.reelscout.backend.model.Content;
-import click.reelscout.backend.model.ProductionCompany;
+import click.reelscout.backend.model.jpa.Content;
+import click.reelscout.backend.model.jpa.ProductionCompany;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

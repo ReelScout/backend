@@ -1,7 +1,10 @@
 package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.ProductionCompanyBuilder;
-import click.reelscout.backend.model.*;
+import click.reelscout.backend.model.jpa.Content;
+import click.reelscout.backend.model.jpa.Location;
+import click.reelscout.backend.model.jpa.Owner;
+import click.reelscout.backend.model.jpa.ProductionCompany;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 

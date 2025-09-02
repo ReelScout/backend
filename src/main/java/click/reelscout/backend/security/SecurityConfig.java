@@ -62,6 +62,7 @@ public class SecurityConfig {
                 .requestMatchers(environment.getProperty("api.paths.auth")+"/**").permitAll()
                 .requestMatchers(environment.getProperty("api.paths.user")+"/**").authenticated()
                 .requestMatchers(environment.getProperty("api.paths.content")+"/**").permitAll()
+                .requestMatchers(environment.getProperty("api.paths.search")+"/**").permitAll()
                 .anyRequest().denyAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

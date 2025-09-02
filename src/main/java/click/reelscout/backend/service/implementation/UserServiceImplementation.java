@@ -11,8 +11,8 @@ import click.reelscout.backend.exception.custom.EntityUpdateException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
-import click.reelscout.backend.model.User;
-import click.reelscout.backend.repository.UserRepository;
+import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.AuthService;
 import click.reelscout.backend.service.definition.UserService;
@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -34,6 +35,19 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final AuthService<R> authService;
+
+    @Override
+    public List<S> getAll() {
+        List<U> users = userRepository.findAll();
+
+        return users.stream().map(user -> {
+            userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+
+            String base64Image = s3Service.getFile(user.getS3ImageKey());
+
+            return userMapperContext.toDto(user, base64Image);
+        }).toList();
+    }
 
     @Override
     public S getById(Long id) {

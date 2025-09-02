@@ -1,8 +1,8 @@
 package click.reelscout.backend.dto.response;
 
-import click.reelscout.backend.model.Location;
-import click.reelscout.backend.model.Owner;
-import click.reelscout.backend.model.Role;
+import click.reelscout.backend.model.jpa.Location;
+import click.reelscout.backend.model.jpa.Owner;
+import click.reelscout.backend.model.jpa.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
