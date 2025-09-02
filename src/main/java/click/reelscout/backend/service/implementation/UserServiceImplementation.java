@@ -12,6 +12,7 @@ import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.repository.elasticsearch.UserElasticRepository;
 import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.AuthService;
@@ -30,6 +31,7 @@ import java.util.UUID;
 @Service
 public class UserServiceImplementation <U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements UserService<U,R,S> {
     private final UserRepository<U> userRepository;
+    private final UserElasticRepository userElasticRepository;
     private final UserMapperContext<U, B, R, S, UserMapper<U, R, S, B>> userMapperContext;
     private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
     private final PasswordEncoder passwordEncoder;
@@ -139,7 +141,9 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
                 .build();
 
         try {
-            userRepository.save(updatedUser);
+            U saved = userRepository.save(updatedUser);
+
+            userElasticRepository.save(userMapperContext.toUserDoc(saved));
 
             s3Service.uploadFile(s3ImageKey, userRequestDTO.getBase64Image());
         } catch (Exception e) {

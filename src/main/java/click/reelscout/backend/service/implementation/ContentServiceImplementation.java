@@ -12,6 +12,7 @@ import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ContentType;
 import click.reelscout.backend.model.jpa.Genre;
 import click.reelscout.backend.model.jpa.ProductionCompany;
+import click.reelscout.backend.repository.elasticsearch.ContentElasticRepository;
 import click.reelscout.backend.repository.jpa.ContentRepository;
 import click.reelscout.backend.repository.jpa.ContentTypeRepository;
 import click.reelscout.backend.repository.jpa.GenreRepository;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Service
 public class ContentServiceImplementation implements ContentService {
     private final ContentRepository contentRepository;
+    private final ContentElasticRepository contentElasticRepository;
     private final ContentTypeRepository contentTypeRepository;
     private final GenreRepository genreRepository;
     private final S3Service s3Service;
@@ -47,7 +49,9 @@ public class ContentServiceImplementation implements ContentService {
                     .genres(savedGenres)
                     .build();
 
-            contentRepository.save(content);
+            Content saved = contentRepository.save(content);
+
+            contentElasticRepository.save(contentMapper.toDoc(saved));
 
             s3Service.uploadFile(s3ImageKey, contentRequestDTO.getBase64Image());
 
@@ -85,7 +89,8 @@ public class ContentServiceImplementation implements ContentService {
                 .build();
 
         try {
-            contentRepository.save(updatedContent);
+            Content saved = contentRepository.save(updatedContent);
+            contentElasticRepository.save(contentMapper.toDoc(saved));
 
             s3Service.uploadFile(s3ImageKey, contentRequestDTO.getBase64Image());
 

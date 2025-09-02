@@ -4,6 +4,7 @@ import click.reelscout.backend.builder.definition.ContentBuilder;
 import click.reelscout.backend.dto.request.ContentRequestDTO;
 import click.reelscout.backend.dto.response.ContentResponseDTO;
 import click.reelscout.backend.mapper.definition.ContentMapper;
+import click.reelscout.backend.model.elasticsearch.ContentDoc;
 import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ProductionCompany;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,10 @@ public class ContentMapperImplementation implements ContentMapper {
                 .trailerUrl(contentRequestDTO.getTrailerUrl())
                 .productionCompany(productionCompany)
                 .build();
+    }
+
+    @Override
+    public ContentDoc toDoc(Content content) {
+        return new ContentDoc(content);
     }
 }

@@ -6,13 +6,16 @@ import click.reelscout.backend.dto.response.SearchResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
+import click.reelscout.backend.mapper.definition.ContentMapper;
 import click.reelscout.backend.mapper.definition.UserMapper;
+import click.reelscout.backend.model.elasticsearch.ContentDoc;
 import click.reelscout.backend.model.elasticsearch.UserDoc;
+import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.repository.jpa.ContentRepository;
 import click.reelscout.backend.repository.jpa.UserRepository;
-import click.reelscout.backend.service.definition.ContentService;
+import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.SearchService;
-import click.reelscout.backend.service.definition.UserService;
 import click.reelscout.backend.strategy.UserMapperContext;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryStringQuery;
@@ -28,21 +31,29 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @RequiredArgsConstructor
 @Service
-public class SearchServiceImplementation<U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements SearchService {
-    private final UserService<U, R, S> userService;
+public class SearchServiceImplementation<U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements SearchService<S> {
     private final UserRepository<U> userRepository;
-    private final ContentService contentService;
-    private final ThreadPoolExecutor executor;
     private final UserMapperContext<U,B,R,S,M> userMapperContext;
     private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
 
+    private final ContentRepository contentRepository;
+    private final ContentMapper contentMapper;
+
     private final ElasticsearchOperations elasticsearchOperations;
+
+    private final S3Service s3Service;
+
+    private final ThreadPoolExecutor executor;
 
     @Override
     public SearchResponseDTO<S> search(String query) {
         try {
+            // Append wildcard to enable partial word matching (e.g., "Matt" -> "Matteo Pio")
+            // This works with the Search_As_You_Type fields already configured in the model
+            String wildcardQuery = query + "*";
+            
             QueryStringQuery queryStringQuery = QueryBuilders.queryString()
-                    .query(query)
+                    .query(wildcardQuery)
                     .fields("*")
                     .build();
 
@@ -56,13 +67,25 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
                     searchHits.stream().map(SearchHit::getContent).map(UserDoc::getId).toList()
             );
 
+            SearchHits<ContentDoc> contentHits = elasticsearchOperations.search(searchQuery, ContentDoc.class);
+
+            List<Content> foundContent = contentRepository.findAllById(
+                    contentHits.stream().map(SearchHit::getContent).map(ContentDoc::getId).toList()
+            );
+
             return new SearchResponseDTO<>(
                     found.stream().map(user -> {
                         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
 
-                        return userMapperContext.toDto(user, null);
+
+
+                        return userMapperContext.toDto(user, s3Service.getFile(user.getS3ImageKey()));
                     }).toList(),
-            null
+                    foundContent.stream().map(content -> contentMapper.toDto(
+                            content,
+                            content.getProductionCompany(),
+                            s3Service.getFile(content.getS3ImageKey())
+                    )).toList()
             );
         } catch (Exception e) {
             e.printStackTrace();

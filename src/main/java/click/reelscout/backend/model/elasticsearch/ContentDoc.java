@@ -1,29 +1,29 @@
 package click.reelscout.backend.model.elasticsearch;
 
-import click.reelscout.backend.model.jpa.User;
-import lombok.*;
+import click.reelscout.backend.model.jpa.Content;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@ToString
-@Document(indexName = "users")
 @NoArgsConstructor
 @Data
-public abstract class UserDoc {
+@Document(indexName = "contents")
+public class ContentDoc {
     @Id
     private Long id;
 
     @Field(type = FieldType.Search_As_You_Type)
-    private String username;
+    private String title;
 
     @Field(type = FieldType.Search_As_You_Type)
-    private String email;
+    private String description;
 
-    protected UserDoc(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.email = user.getEmail();
+    public ContentDoc(Content content) {
+        this.id = content.getId();
+        this.title = content.getTitle();
+        this.description = content.getDescription();
     }
 }
