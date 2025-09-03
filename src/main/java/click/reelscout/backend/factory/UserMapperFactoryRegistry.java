@@ -5,7 +5,7 @@ import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.mapper.definition.UserMapper;
-import click.reelscout.backend.model.User;
+import click.reelscout.backend.model.jpa.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

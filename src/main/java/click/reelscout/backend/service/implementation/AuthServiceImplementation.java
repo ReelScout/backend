@@ -11,8 +11,9 @@ import click.reelscout.backend.exception.custom.InvalidCredentialsException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
-import click.reelscout.backend.model.User;
-import click.reelscout.backend.repository.UserRepository;
+import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.repository.elasticsearch.UserElasticRepository;
+import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.security.JwtService;
 import click.reelscout.backend.service.definition.AuthService;
@@ -29,6 +30,7 @@ import java.util.UUID;
 @Service
 public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements AuthService<R> {
     private final UserRepository<U> userRepository;
+    private final UserElasticRepository userElasticRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final UserMapperContext<U,B,R,S,M> userMapperContext;
@@ -65,7 +67,9 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
 
         try {
             String s3ImageKey = userRequestDTO.getBase64Image() != null ? "user/" + UUID.randomUUID() : null;
-            userRepository.save(userMapperContext.toEntity(userRequestDTO, s3ImageKey));
+            U saved = userRepository.save(userMapperContext.toEntity(userRequestDTO, s3ImageKey));
+
+            userElasticRepository.save(userMapperContext.toUserDoc(saved));
 
             s3Service.uploadFile(s3ImageKey, userRequestDTO.getBase64Image());
         } catch (Exception e) {

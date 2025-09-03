@@ -1,8 +1,8 @@
 package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
-import click.reelscout.backend.model.Role;
-import click.reelscout.backend.model.User;
+import click.reelscout.backend.model.jpa.Role;
+import click.reelscout.backend.model.jpa.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

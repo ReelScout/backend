@@ -10,7 +10,15 @@ spring:
     password: "${secrets.datasource.password}"
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
+  elasticsearch:
+    uris: "${secrets.elasticsearch.url}"
+    username: "${secrets.elasticsearch.username}"
+    password: "${secrets.elasticsearch.password}"
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
   cloud:
     aws:
       s3:
@@ -36,5 +44,5 @@ api:
   paths:
     auth: "${api.basic-path}/auth"
     user: "${api.basic-path}/user"
-    member: "${api.paths.user}/member"
-    production: "${api.paths.user}/production"
+    content: "${api.basic-path}/content"
+    search: "${api.basic-path}/search"
