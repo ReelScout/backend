@@ -1,11 +1,13 @@
 package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.MemberBuilder;
+import click.reelscout.backend.model.jpa.Genre;
 import click.reelscout.backend.model.jpa.Member;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @Getter
@@ -13,6 +15,7 @@ public class MemberBuilderImplementation extends AbstractUserBuilderImplementati
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
+    private List<Genre> favoriteGenres;
 
     @Override
     public MemberBuilder firstName(String firstName) {
@@ -29,6 +32,12 @@ public class MemberBuilderImplementation extends AbstractUserBuilderImplementati
     @Override
     public MemberBuilder birthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
+        return this;
+    }
+
+    @Override
+    public MemberBuilder favoriteGenres(List<Genre> favoriteGenres) {
+        this.favoriteGenres = favoriteGenres;
         return this;
     }
 

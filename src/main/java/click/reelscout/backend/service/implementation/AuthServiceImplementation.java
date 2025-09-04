@@ -1,6 +1,7 @@
 package click.reelscout.backend.service.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
+import click.reelscout.backend.dto.request.MemberRequestDTO;
 import click.reelscout.backend.dto.request.UserLoginRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
@@ -11,8 +12,10 @@ import click.reelscout.backend.exception.custom.InvalidCredentialsException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
+import click.reelscout.backend.model.jpa.Genre;
 import click.reelscout.backend.model.jpa.User;
 import click.reelscout.backend.repository.elasticsearch.UserElasticRepository;
+import click.reelscout.backend.repository.jpa.GenreRepository;
 import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.security.JwtService;
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
     private final UserMapperContext<U,B,R,S,M> userMapperContext;
     private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
     private final S3Service s3Service;
+    private final GenreRepository genreRepository;
 
     @Override
     public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
@@ -65,8 +70,19 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(userRequestDTO));
 
+        if (userRequestDTO instanceof MemberRequestDTO memberRequestDTO && memberRequestDTO.getFavoriteGenres() != null) {
+            List<Genre> savedGenres = genreRepository.findAllByNameIgnoreCaseIn(
+                    memberRequestDTO.getFavoriteGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .toList()
+            );
+            memberRequestDTO.setFavoriteGenres(savedGenres);
+        }
+
         try {
             String s3ImageKey = userRequestDTO.getBase64Image() != null ? "user/" + UUID.randomUUID() : null;
+
             U saved = userRepository.save(userMapperContext.toEntity(userRequestDTO, s3ImageKey));
 
             userElasticRepository.save(userMapperContext.toUserDoc(saved));

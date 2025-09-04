@@ -3,6 +3,7 @@ package click.reelscout.backend.model.jpa;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
