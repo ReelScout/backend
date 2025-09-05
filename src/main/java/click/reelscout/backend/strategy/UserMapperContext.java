@@ -29,4 +29,5 @@ public class UserMapperContext <U extends User, B extends UserBuilder<U, B>, R e
     public UserDoc toUserDoc(U user) {
         return userMapper.toDoc(user);
     }
+
 }
