@@ -1,4 +1,4 @@
-package click.reelscout.backend.model;
+package click.reelscout.backend.model.jpa;
 
 import jakarta.persistence.*;
 import lombok.*;

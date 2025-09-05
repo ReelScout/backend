@@ -1,9 +1,10 @@
 package click.reelscout.backend.builder.definition;
 
-import click.reelscout.backend.model.Role;
-import click.reelscout.backend.model.User;
+import click.reelscout.backend.model.jpa.Role;
+import click.reelscout.backend.model.jpa.User;
 
-public interface UserBuilder<U extends User, B extends UserBuilder<U, B>> extends EntityBuilder<U, B> {
+public interface
+UserBuilder<U extends User, B extends UserBuilder<U, B>> extends EntityBuilder<U, B> {
     B username(String username);
     B email(String email);
     B password(String password);

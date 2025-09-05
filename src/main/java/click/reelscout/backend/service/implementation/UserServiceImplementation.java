@@ -11,8 +11,9 @@ import click.reelscout.backend.exception.custom.EntityUpdateException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
-import click.reelscout.backend.model.User;
-import click.reelscout.backend.repository.UserRepository;
+import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.repository.elasticsearch.UserElasticRepository;
+import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.AuthService;
 import click.reelscout.backend.service.definition.UserService;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -29,11 +31,25 @@ import java.util.UUID;
 @Service
 public class UserServiceImplementation <U extends User, B extends UserBuilder<U, B>, R extends UserRequestDTO, S extends UserResponseDTO, M extends UserMapper<U,R,S,B>> implements UserService<U,R,S> {
     private final UserRepository<U> userRepository;
+    private final UserElasticRepository userElasticRepository;
     private final UserMapperContext<U, B, R, S, UserMapper<U, R, S, B>> userMapperContext;
     private final UserMapperFactoryRegistry<U,B,R,S,M, UserMapperFactory<U,B,R,S,M>> userMapperFactoryRegistry;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final AuthService<R> authService;
+
+    @Override
+    public List<S> getAll() {
+        List<U> users = userRepository.findAll();
+
+        return users.stream().map(user -> {
+            userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+
+            String base64Image = s3Service.getFile(user.getS3ImageKey());
+
+            return userMapperContext.toDto(user, base64Image);
+        }).toList();
+    }
 
     @Override
     public S getById(Long id) {
@@ -125,7 +141,9 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
                 .build();
 
         try {
-            userRepository.save(updatedUser);
+            U saved = userRepository.save(updatedUser);
+
+            userElasticRepository.save(userMapperContext.toUserDoc(saved));
 
             s3Service.uploadFile(s3ImageKey, userRequestDTO.getBase64Image());
         } catch (Exception e) {

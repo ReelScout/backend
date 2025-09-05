@@ -1,6 +1,6 @@
 package click.reelscout.backend.security;
 
-import click.reelscout.backend.model.User;
+import click.reelscout.backend.model.jpa.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

@@ -1,7 +1,10 @@
 package click.reelscout.backend.builder.implementation;
 
 import click.reelscout.backend.builder.definition.ProductionCompanyBuilder;
-import click.reelscout.backend.model.*;
+import click.reelscout.backend.model.jpa.Content;
+import click.reelscout.backend.model.jpa.Location;
+import click.reelscout.backend.model.jpa.Owner;
+import click.reelscout.backend.model.jpa.ProductionCompany;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +16,7 @@ public class ProductionCompanyBuilderImplementation extends AbstractUserBuilderI
     private String name;
     private Location location;
     private String website;
+    private List<Content> contents;
     private List<Owner> owners;
 
     @Override
@@ -42,6 +46,12 @@ public class ProductionCompanyBuilderImplementation extends AbstractUserBuilderI
     @Override
     public ProductionCompanyBuilder owners(List<Owner> owners) {
         this.owners = owners;
+        return this;
+    }
+
+    @Override
+    public ProductionCompanyBuilder contents(List<Content> contents) {
+        this.contents = contents;
         return this;
     }
 

@@ -140,6 +140,21 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handles {@link SearchException} exceptions that occur during search operations.
+     * <p>
+     * This method returns an HTTP 500 (Internal Server Error) response with a {@link CustomResponseDTO} containing the exception's message.
+     * </p>
+     *
+     * @param e the {@link SearchException} that triggered this handler
+     * @return a {@link ResponseEntity} with a 500 status code and a {@link CustomResponseDTO} with the error message
+     */
+    @ExceptionHandler(SearchException.class)
+    public ResponseEntity<CustomResponseDTO> handleSearchException(SearchException e) {
+        CustomResponseDTO response = new CustomResponseDTO(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
      * Handles {@link ExpiredJwtException} exceptions that occur when JWT tokens have expired.
      * <p>
      * This method returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing a specific message for expired tokens.

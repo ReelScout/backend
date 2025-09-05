@@ -1,6 +1,6 @@
 package click.reelscout.backend.builder.definition;
 
-import click.reelscout.backend.model.Member;
+import click.reelscout.backend.model.jpa.Member;
 
 import java.time.LocalDate;
 
