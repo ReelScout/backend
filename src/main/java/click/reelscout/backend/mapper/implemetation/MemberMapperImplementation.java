@@ -40,6 +40,7 @@ public class MemberMapperImplementation implements MemberMapper {
     @Override
     public Member toEntity(MemberRequestDTO memberRequestDTO, String s3ImageKey) {
         return memberBuilder
+                .id(null)
                 .firstName(memberRequestDTO.getFirstName())
                 .lastName(memberRequestDTO.getLastName())
                 .birthDate(memberRequestDTO.getBirthDate())

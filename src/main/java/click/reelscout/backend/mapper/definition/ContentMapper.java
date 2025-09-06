@@ -8,7 +8,7 @@ import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ProductionCompany;
 
 public interface ContentMapper {
-    ContentResponseDTO toDto(Content content, ProductionCompany productionCompany, String base64Image);
+    ContentResponseDTO toDto(Content content, String base64Image);
 
     ContentBuilder toBuilder(Content content);
 

@@ -146,6 +146,10 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
             } else {
                 s3ImageKey = authenticatedUser.getS3ImageKey();
             }
+        } else {
+            if (authenticatedUser.getS3ImageKey() != null && !authenticatedUser.getS3ImageKey().isEmpty()) {
+                s3Service.deleteFile(authenticatedUser.getS3ImageKey());
+            }
         }
 
         U updatedUser = userMapperContext

@@ -41,6 +41,7 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
     @Override
     public ProductionCompany toEntity(ProductionCompanyRequestDTO productionCompanyRequestDTO, String s3ImageKey) {
         return productionCompanyBuilder
+                .id(null)
                 .name(productionCompanyRequestDTO.getName())
                 .location(productionCompanyRequestDTO.getLocation())
                 .website(productionCompanyRequestDTO.getWebsite())
