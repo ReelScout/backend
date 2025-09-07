@@ -23,4 +23,6 @@ public interface WatchlistService {
     WatchlistResponseDTO getById(Member member, Long id);
 
     List<WatchlistResponseDTO> getAllByMemberAndContent(Member member, Long contentId);
+
+    List<WatchlistResponseDTO> getAllPublicByMember(Long memberId);
 }

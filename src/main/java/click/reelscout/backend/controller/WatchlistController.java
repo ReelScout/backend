@@ -57,4 +57,9 @@ public class WatchlistController {
     public ResponseEntity<List<WatchlistResponseDTO>> getWatchlistsByContent(@AuthenticationPrincipal Member member, @PathVariable Long contentId) {
         return ResponseEntity.ok(watchlistService.getAllByMemberAndContent(member, contentId));
     }
+
+    @GetMapping("/public/{memberId}")
+    public ResponseEntity<List<WatchlistResponseDTO>> getPublicWatchlistsByMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(watchlistService.getAllPublicByMember(memberId));
+    }
 }

@@ -14,6 +14,7 @@ import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.Member;
 import click.reelscout.backend.model.jpa.Watchlist;
 import click.reelscout.backend.repository.jpa.ContentRepository;
+import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.repository.jpa.WatchlistRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.WatchlistService;
@@ -34,6 +35,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
     private final ContentRepository contentRepository;
     private final ContentMapper contentMapper;
     private final S3Service s3Service;
+    private final UserRepository<Member> userRepository;
 
     @Override
     public WatchlistResponseDTO create(Member member, WatchlistRequestDTO watchlistRequestDTO) {
@@ -164,5 +166,16 @@ public class WatchlistServiceImplementation implements WatchlistService {
                 .stream()
                 .map(watchlistMapper::toDto)
                 .toList();
-        }
+    }
+
+    @Override
+    public List<WatchlistResponseDTO> getAllPublicByMember(Long memberId) {
+        Member member = userRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(Member.class));
+
+        return Optional.ofNullable(watchlistRepository.findAllByMemberAndIsPublic(member, true))
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(watchlistMapper::toDto)
+                .toList();
+    }
 }

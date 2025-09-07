@@ -28,7 +28,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
     }
 
     @Override
-    public WatchlistWithContentsResponseDTO toDto(Watchlist watchlist, List<ContentResponseDTO> contents) {
+    public WatchlistResponseDTO toDto(Watchlist watchlist, List<ContentResponseDTO> contents) {
         return new WatchlistWithContentsResponseDTO(
                 watchlist.getId(),
                 watchlist.getName(),
