@@ -102,8 +102,8 @@ class SearchServiceImplementationTest {
         User u2 = mock(User.class); when(u2.getS3ImageKey()).thenReturn("u2k");
         when(userRepository.findAllById(anyList())).thenReturn(List.of(u1, u2));
 
-        Content c1 = mock(Content.class); when(c1.getS3ImageKey()).thenReturn("c1k"); when(c1.getProductionCompany()).thenReturn(null);
-        Content c2 = mock(Content.class); when(c2.getS3ImageKey()).thenReturn("c2k"); when(c2.getProductionCompany()).thenReturn(null);
+        Content c1 = mock(Content.class); when(c1.getS3ImageKey()).thenReturn("c1k");
+        Content c2 = mock(Content.class); when(c2.getS3ImageKey()).thenReturn("c2k");
         when(contentRepository.findAllById(anyList())).thenReturn(List.of(c1, c2));
 
         // S3
@@ -123,8 +123,8 @@ class SearchServiceImplementationTest {
         // Mapping content
         ContentResponseDTO cdto1 = new ContentResponseDTO();
         ContentResponseDTO cdto2 = new ContentResponseDTO();
-        when(contentMapper.toDto(c1, null, "imgC1")).thenReturn(cdto1);
-        when(contentMapper.toDto(c2, null, "imgC2")).thenReturn(cdto2);
+        when(contentMapper.toDto(c1, "imgC1")).thenReturn(cdto1);
+        when(contentMapper.toDto(c2, "imgC2")).thenReturn(cdto2);
 
         // Executor runs callables immediately
         when(executor.submit(any(Callable.class))).thenAnswer(inv -> {

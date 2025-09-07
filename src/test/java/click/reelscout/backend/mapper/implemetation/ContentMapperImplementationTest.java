@@ -62,11 +62,12 @@ class ContentMapperImplementationTest {
         when(content.getTrailerUrl()).thenReturn("https://trailer");
         when(company.getId()).thenReturn(7L);
         when(company.getName()).thenReturn("Syncopy");
+        when(content.getProductionCompany()).thenReturn(company);
 
         String base64 = "img==";
 
         // Act
-        ContentResponseDTO dto = mapper.toDto(content, company, base64);
+        ContentResponseDTO dto = mapper.toDto(content, base64);
 
         // Assert
         assertNotNull(dto);

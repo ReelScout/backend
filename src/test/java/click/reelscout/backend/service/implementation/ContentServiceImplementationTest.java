@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
  * Pure unit tests for ContentServiceImplementation.
  * - No Spring context.
  * - All collaborators are mocked.
- * - We assert returned values and key interactions/branches.
+ * - We assert returned values and key interACTIONs/branches.
  */
 @ExtendWith(MockitoExtension.class)
 class ContentServiceImplementationTest {
@@ -59,9 +59,9 @@ class ContentServiceImplementationTest {
         ContentRequestDTO dto = new ContentRequestDTO();
         dto.setTitle("t");
         dto.setDescription("d");
-        ContentType ct = new ContentType("Movie"); // your entity has a (String) ctor
+        ContentType ct = new ContentType("MOVIE"); // your entity has a (String) ctor
         dto.setContentType(ct);
-        dto.setGenres(List.of(new Genre("Action"), new Genre("Drama")));
+        dto.setGenres(List.of(new Genre("ACTION"), new Genre("DRAMA")));
         dto.setActors(List.of());     // leave empty if not relevant to the test
         dto.setDirectors(List.of());  // idem
         dto.setTrailerUrl("url");
@@ -85,7 +85,7 @@ class ContentServiceImplementationTest {
         var dto = mkDto("base64-img");
 
         // content type not existing -> saved
-        when(contentTypeRepository.existsByNameIgnoreCase("Movie")).thenReturn(false);
+        when(contentTypeRepository.existsByNameIgnoreCase("MOVIE")).thenReturn(false);
 
         // genres flow
         stubGenresRoundTrip(dto.getGenres());
@@ -107,7 +107,7 @@ class ContentServiceImplementationTest {
 
         // DTO response
         ContentResponseDTO response = new ContentResponseDTO();
-        when(contentMapper.toDto(any(Content.class), any(ProductionCompany.class), anyString())).thenReturn(response);
+        when(contentMapper.toDto(any(Content.class), anyString())).thenReturn(response);
 
         // act
         ContentResponseDTO res = service.create(producer, dto);
@@ -125,7 +125,7 @@ class ContentServiceImplementationTest {
         var producer = mock(ProductionCompany.class);
         var dto = mkDto("img");
 
-        when(contentTypeRepository.existsByNameIgnoreCase("Movie")).thenReturn(true);
+        when(contentTypeRepository.existsByNameIgnoreCase("MOVIE")).thenReturn(true);
         stubGenresRoundTrip(dto.getGenres());
 
         // make mapper throw inside try block
@@ -148,18 +148,18 @@ class ContentServiceImplementationTest {
         // existing content
         Content existing = mock(Content.class);
         when(existing.getS3ImageKey()).thenReturn("old/key");
+        when(existing.getProductionCompany()).thenReturn(producer);
         when(contentRepository.findById(id)).thenReturn(Optional.of(existing));
 
         // content type exists (or is saved)
-        when(contentTypeRepository.existsByNameIgnoreCase("Movie")).thenReturn(true);
+        when(contentTypeRepository.existsByNameIgnoreCase("MOVIE")).thenReturn(true);
 
         // genres
         stubGenresRoundTrip(dto.getGenres());
 
         // builder chain from existing
         ContentBuilder builder = mock(ContentBuilder.class, RETURNS_SELF);
-        when(contentMapper.toBuilder(existing)).thenReturn(builder);
-        Content updated = mock(Content.class);
+        doReturn(builder).when(contentMapper).toBuilder(any());        Content updated = mock(Content.class);
         when(builder.build()).thenReturn(updated);
 
         // repo & indexing
@@ -170,14 +170,14 @@ class ContentServiceImplementationTest {
 
         // response
         ContentResponseDTO response = new ContentResponseDTO();
-        when(contentMapper.toDto(any(Content.class), any(ProductionCompany.class), anyString())).thenReturn(response);
+        when(contentMapper.toDto(any(Content.class), anyString())).thenReturn(response);
 
         // act
         ContentResponseDTO res = service.update(producer, id, dto);
 
         // assert
         assertSame(response, res);
-        verify(s3Service).uploadFile(startsWith("content/"), eq("new-base64")); // new key generated
+        verify(s3Service).uploadFile("old/key", "new-base64");
         verify(contentElasticRepository).save(doc);
     }
 
@@ -203,13 +203,13 @@ class ContentServiceImplementationTest {
         Content existing = mock(Content.class);
         when(contentRepository.findById(id)).thenReturn(Optional.of(existing));
         when(existing.getS3ImageKey()).thenReturn(null);
+        when(existing.getProductionCompany()).thenReturn(producer);
 
-        when(contentTypeRepository.existsByNameIgnoreCase("Movie")).thenReturn(true);
+        when(contentTypeRepository.existsByNameIgnoreCase("MOVIE")).thenReturn(true);
         stubGenresRoundTrip(dto.getGenres());
 
         ContentBuilder builder = mock(ContentBuilder.class, RETURNS_SELF);
-        when(contentMapper.toBuilder(existing)).thenReturn(builder);
-        Content updated = mock(Content.class);
+        doReturn(builder).when(contentMapper).toBuilder(any());        Content updated = mock(Content.class);
         when(builder.build()).thenReturn(updated);
         when(contentRepository.save(updated)).thenThrow(new RuntimeException("explode"));
 
@@ -227,11 +227,7 @@ class ContentServiceImplementationTest {
     void getAll_mapsToDto() {
         Content c1 = mock(Content.class);
         Content c2 = mock(Content.class);
-        ProductionCompany pc1 = mock(ProductionCompany.class);
-        ProductionCompany pc2 = mock(ProductionCompany.class);
 
-        when(c1.getProductionCompany()).thenReturn(pc1);
-        when(c2.getProductionCompany()).thenReturn(pc2);
         when(c1.getS3ImageKey()).thenReturn("k1");
         when(c2.getS3ImageKey()).thenReturn("k2");
 
@@ -241,8 +237,8 @@ class ContentServiceImplementationTest {
 
         ContentResponseDTO d1 = new ContentResponseDTO();
         ContentResponseDTO d2 = new ContentResponseDTO();
-        when(contentMapper.toDto(c1, pc1, "img1")).thenReturn(d1);
-        when(contentMapper.toDto(c2, pc2, "img2")).thenReturn(d2);
+        when(contentMapper.toDto(c1, "img1")).thenReturn(d1);
+        when(contentMapper.toDto(c2, "img2")).thenReturn(d2);
 
         List<ContentResponseDTO> result = service.getAll();
 
@@ -254,15 +250,15 @@ class ContentServiceImplementationTest {
     @Test
     @DisplayName("getContentTypes(): returns names from repository")
     void getContentTypes_returnsNames() {
-        when(contentTypeRepository.findAll()).thenReturn(List.of(new ContentType("Movie"), new ContentType("Series")));
-        assertEquals(List.of("Movie", "Series"), service.getContentTypes());
+        when(contentTypeRepository.findAll()).thenReturn(List.of(new ContentType("MOVIE"), new ContentType("SERIES")));
+        assertEquals(List.of("MOVIE", "SERIES"), service.getContentTypes());
     }
 
     @Test
     @DisplayName("getGenres(): returns names from repository")
     void getGenres_returnsNames() {
-        when(genreRepository.findAll()).thenReturn(List.of(new Genre("Action"), new Genre("Drama")));
-        assertEquals(List.of("Action", "Drama"), service.getGenres());
+        when(genreRepository.findAll()).thenReturn(List.of(new Genre("ACTION"), new Genre("DRAMA")));
+        assertEquals(List.of("ACTION", "DRAMA"), service.getGenres());
     }
 
     @Test
@@ -274,7 +270,7 @@ class ContentServiceImplementationTest {
         when(c.getS3ImageKey()).thenReturn("k");
         when(s3Service.getFile("k")).thenReturn("img");
         ContentResponseDTO dto = new ContentResponseDTO();
-        when(contentMapper.toDto(c, pc, "img")).thenReturn(dto);
+        when(contentMapper.toDto(c, "img")).thenReturn(dto);
 
         List<ContentResponseDTO> result = service.getByProductionCompany(pc);
 
