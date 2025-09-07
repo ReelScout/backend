@@ -23,7 +23,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
         return new WatchlistResponseDTO(
                 watchlist.getId(),
                 watchlist.getName(),
-                watchlist.isPublic()
+                watchlist.getIsPublic()
         );
     }
 
@@ -32,7 +32,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
         return new WatchlistWithContentsResponseDTO(
                 watchlist.getId(),
                 watchlist.getName(),
-                watchlist.isPublic(),
+                watchlist.getIsPublic(),
                 contents
         );
     }
@@ -43,7 +43,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
                 .id(watchlist.getId())
                 .name(watchlist.getName())
                 .contents(watchlist.getContents())
-                .isPublic(watchlist.isPublic())
+                .isPublic(watchlist.getIsPublic())
                 .member(watchlist.getMember());
     }
 

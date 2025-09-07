@@ -23,11 +23,11 @@ public class Watchlist implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Content> contents;
 
     @Column(nullable = false)
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @ManyToOne
     private Member member;

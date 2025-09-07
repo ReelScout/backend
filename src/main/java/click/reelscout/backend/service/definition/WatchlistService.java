@@ -14,9 +14,13 @@ public interface WatchlistService {
 
     CustomResponseDTO delete(Member member, Long id);
 
-    List<WatchlistResponseDTO> getByMember(Member member);
+    List<WatchlistResponseDTO> getAllByMember(Member member);
 
     WatchlistResponseDTO addContentToWatchlist(Member member, Long watchlistId, Long contentId);
-    
+
     WatchlistResponseDTO removeContentFromWatchlist(Member member, Long watchlistId, Long contentId);
+
+    WatchlistResponseDTO getById(Member member, Long id);
+
+    List<WatchlistResponseDTO> getAllByMemberAndContent(Member member, Long contentId);
 }

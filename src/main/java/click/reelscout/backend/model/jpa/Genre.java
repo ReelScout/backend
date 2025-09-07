@@ -33,6 +33,6 @@ public class Genre implements Serializable {
 
     @JsonCreator
     public Genre(String name) {
-        this.name = name;
+        this.name = name.toUpperCase();
     }
 }

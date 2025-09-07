@@ -35,7 +35,7 @@ public class WatchlistController {
 
     @GetMapping("/my-watchlists")
     public ResponseEntity<List<WatchlistResponseDTO>> getWatchlists(@AuthenticationPrincipal Member member) {
-        return ResponseEntity.ok(watchlistService.getByMember(member));
+        return ResponseEntity.ok(watchlistService.getAllByMember(member));
     }
 
     @PatchMapping("/{watchlistId}/add-content/{contentId}")
@@ -46,5 +46,15 @@ public class WatchlistController {
     @PatchMapping("/{watchlistId}/remove-content/{contentId}")
     public ResponseEntity<WatchlistResponseDTO> removeContentFromWatchlist(@AuthenticationPrincipal Member member, @PathVariable Long watchlistId, @PathVariable Long contentId) {
         return ResponseEntity.ok(watchlistService.removeContentFromWatchlist(member, watchlistId, contentId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<WatchlistResponseDTO> getWatchlistById(@AuthenticationPrincipal Member member, @PathVariable Long id) {
+        return ResponseEntity.ok(watchlistService.getById(member, id));
+    }
+
+    @GetMapping("/by-content/{contentId}")
+    public ResponseEntity<List<WatchlistResponseDTO>> getWatchlistsByContent(@AuthenticationPrincipal Member member, @PathVariable Long contentId) {
+        return ResponseEntity.ok(watchlistService.getAllByMemberAndContent(member, contentId));
     }
 }

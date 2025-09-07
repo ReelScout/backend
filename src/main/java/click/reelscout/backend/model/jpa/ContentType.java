@@ -7,7 +7,6 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Entity
@@ -18,4 +17,8 @@ public class ContentType implements Serializable {
     @JsonValue
     @Id
     private String name;
+
+    public ContentType(String name) {
+        this.name = name.toUpperCase();
+    }
 }

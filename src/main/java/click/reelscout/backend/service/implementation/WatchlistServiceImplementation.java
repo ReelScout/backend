@@ -88,7 +88,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
     }
 
     @Override
-    public List<WatchlistResponseDTO> getByMember(Member member) {
+    public List<WatchlistResponseDTO> getAllByMember(Member member) {
         return watchlistRepository.findAllByMember(member)
                 .stream()
                 .map(watchlistMapper::toDto)
@@ -138,4 +138,31 @@ public class WatchlistServiceImplementation implements WatchlistService {
             throw new EntityUpdateException(Watchlist.class);
         }
     }
+
+    @Override
+    public WatchlistResponseDTO getById(Member member, Long id) {
+        Watchlist watchlist = watchlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Watchlist.class));
+
+        if (!watchlist.getMember().getId().equals(member.getId()) && !watchlist.getIsPublic()) {
+            throw new EntityNotFoundException(Watchlist.class);
+        }
+
+        List<ContentResponseDTO> contents = Optional.ofNullable(watchlist.getContents())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(content -> contentMapper.toDto(content, s3Service.getFile(content.getS3ImageKey()))).toList();
+
+        return watchlistMapper.toDto(watchlist, contents);
+    }
+
+    @Override
+    public List<WatchlistResponseDTO> getAllByMemberAndContent(Member member, Long contentId) {
+        Content content = contentRepository.findById(contentId).orElseThrow(() -> new EntityNotFoundException(Content.class));
+
+        return Optional.ofNullable(watchlistRepository.findAllByMemberAndContentsIsContaining(member, content))
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(watchlistMapper::toDto)
+                .toList();
+        }
 }
