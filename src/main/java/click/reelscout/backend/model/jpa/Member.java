@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
+import java.util.List;
 
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
@@ -21,11 +22,15 @@ public class Member extends User {
     @Column(nullable = false)
     private LocalDate birthDate;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Genre> favoriteGenres;
+
     public Member(MemberBuilderImplementation builder) {
         super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole(), builder.getS3ImageKey());
         this.firstName = builder.getFirstName();
         this.lastName = builder.getLastName();
         this.birthDate = builder.getBirthDate();
+        this.favoriteGenres = builder.getFavoriteGenres();
     }
 
     @Override

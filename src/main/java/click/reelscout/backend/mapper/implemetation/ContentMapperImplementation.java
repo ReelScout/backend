@@ -16,7 +16,7 @@ public class ContentMapperImplementation implements ContentMapper {
     private final ContentBuilder contentBuilder;
 
     @Override
-    public ContentResponseDTO toDto(Content content, ProductionCompany productionCompany, String base64Image) {
+    public ContentResponseDTO toDto(Content content, String base64Image) {
         return new ContentResponseDTO(
                 content.getId(),
                 content.getTitle(),
@@ -27,8 +27,8 @@ public class ContentMapperImplementation implements ContentMapper {
                 content.getDirectors(),
                 base64Image,
                 content.getTrailerUrl(),
-                productionCompany.getId(),
-                productionCompany.getName()
+                content.getProductionCompany().getId(),
+                content.getProductionCompany().getName()
         );
     }
 
@@ -50,6 +50,7 @@ public class ContentMapperImplementation implements ContentMapper {
     @Override
     public Content toEntity(ContentRequestDTO contentRequestDTO, ProductionCompany productionCompany, String s3ImageKey) {
         return contentBuilder
+                .id(null)
                 .title(contentRequestDTO.getTitle())
                 .description(contentRequestDTO.getDescription())
                 .contentType(contentRequestDTO.getContentType())

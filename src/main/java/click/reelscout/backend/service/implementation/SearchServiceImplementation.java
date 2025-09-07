@@ -86,7 +86,6 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
 
             return foundContent.stream().map(content -> contentMapper.toDto(
                     content,
-                    content.getProductionCompany(),
                     s3Service.getFile(content.getS3ImageKey())
             )).toList();
         });

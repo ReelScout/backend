@@ -10,7 +10,7 @@ spring:
     password: "${secrets.datasource.password}"
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   elasticsearch:
     uris: "${secrets.elasticsearch.url}"
     username: "${secrets.elasticsearch.username}"

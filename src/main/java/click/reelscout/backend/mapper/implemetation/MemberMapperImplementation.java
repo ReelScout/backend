@@ -19,7 +19,7 @@ public class MemberMapperImplementation implements MemberMapper {
 
     @Override
     public MemberResponseDTO toDto(Member member, String base64Image) {
-        return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getUsername(), member.getEmail(), member.getRole(), base64Image);
+        return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getFavoriteGenres(), member.getUsername(), member.getEmail(), member.getRole(), base64Image);
     }
 
     @Override
@@ -29,6 +29,7 @@ public class MemberMapperImplementation implements MemberMapper {
                 .firstName(member.getFirstName())
                 .lastName(member.getLastName())
                 .birthDate(member.getBirthDate())
+                .favoriteGenres(member.getFavoriteGenres())
                 .username(member.getUsername())
                 .email(member.getEmail())
                 .password(member.getPassword())
@@ -39,9 +40,11 @@ public class MemberMapperImplementation implements MemberMapper {
     @Override
     public Member toEntity(MemberRequestDTO memberRequestDTO, String s3ImageKey) {
         return memberBuilder
+                .id(null)
                 .firstName(memberRequestDTO.getFirstName())
                 .lastName(memberRequestDTO.getLastName())
                 .birthDate(memberRequestDTO.getBirthDate())
+                .favoriteGenres(memberRequestDTO.getFavoriteGenres())
                 .username(memberRequestDTO.getUsername())
                 .email(memberRequestDTO.getEmail())
                 .password(passwordEncoder.encode(memberRequestDTO.getPassword()))

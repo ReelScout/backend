@@ -1,6 +1,7 @@
 package click.reelscout.backend.service.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
+import click.reelscout.backend.dto.request.MemberRequestDTO;
 import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
@@ -11,8 +12,10 @@ import click.reelscout.backend.exception.custom.EntityUpdateException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
+import click.reelscout.backend.model.jpa.Genre;
 import click.reelscout.backend.model.jpa.User;
 import click.reelscout.backend.repository.elasticsearch.UserElasticRepository;
+import click.reelscout.backend.repository.jpa.GenreRepository;
 import click.reelscout.backend.repository.jpa.UserRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.AuthService;
@@ -37,6 +40,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final AuthService<R> authService;
+    private final GenreRepository genreRepository;
 
     @Override
     public List<S> getAll() {
@@ -124,6 +128,16 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(authenticatedUser));
 
+        if (userRequestDTO instanceof MemberRequestDTO memberRequestDTO && memberRequestDTO.getFavoriteGenres() != null) {
+            List<Genre> savedGenres = genreRepository.findAllByNameIgnoreCaseIn(
+                    memberRequestDTO.getFavoriteGenres()
+                            .stream()
+                            .map(Genre::getName)
+                            .toList()
+            );
+            memberRequestDTO.setFavoriteGenres(savedGenres);
+        }
+
         String s3ImageKey = null;
 
         if (userRequestDTO.getBase64Image() != null && !userRequestDTO.getBase64Image().isEmpty()) {
@@ -131,6 +145,10 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
                 s3ImageKey = "user/" + UUID.randomUUID();
             } else {
                 s3ImageKey = authenticatedUser.getS3ImageKey();
+            }
+        } else {
+            if (authenticatedUser.getS3ImageKey() != null && !authenticatedUser.getS3ImageKey().isEmpty()) {
+                s3Service.deleteFile(authenticatedUser.getS3ImageKey());
             }
         }
 

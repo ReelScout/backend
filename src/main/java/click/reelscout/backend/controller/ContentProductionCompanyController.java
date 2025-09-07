@@ -12,6 +12,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RequestMapping("${api.paths.content}")
 @RestController
@@ -30,7 +32,7 @@ public class ContentProductionCompanyController {
     }
 
     @GetMapping("/my-contents")
-    public ResponseEntity<java.util.List<ContentResponseDTO>> getMyContents(@AuthenticationPrincipal ProductionCompany authenticatedProduction) {
+    public ResponseEntity<List<ContentResponseDTO>> getMyContents(@AuthenticationPrincipal ProductionCompany authenticatedProduction) {
         return ResponseEntity.ok(contentService.getByProductionCompany(authenticatedProduction));
     }
 

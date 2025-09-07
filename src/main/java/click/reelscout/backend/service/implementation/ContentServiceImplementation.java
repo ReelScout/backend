@@ -55,7 +55,7 @@ public class ContentServiceImplementation implements ContentService {
 
             s3Service.uploadFile(s3ImageKey, contentRequestDTO.getBase64Image());
 
-            return contentMapper.toDto(content, authenticatedProduction, contentRequestDTO.getBase64Image());
+            return contentMapper.toDto(content, contentRequestDTO.getBase64Image());
         } catch (Exception e) {
             throw new EntityCreateException(Content.class);
         }
@@ -66,26 +66,31 @@ public class ContentServiceImplementation implements ContentService {
         Content existingContent = contentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Content.class));
 
+        if (!existingContent.getProductionCompany().getId().equals(authenticatedProduction.getId())) {
+            throw new EntityUpdateException("You are not authorized to update this content");
+        }
+
         saveContentTypeIfNotExists(contentRequestDTO.getContentType());
 
         List<Genre> savedGenres = saveGenresIfNotExist(contentRequestDTO.getGenres());
 
-        String s3ImageKey = existingContent.getS3ImageKey();
+        String s3ImageKey = null;
 
         if (contentRequestDTO.getBase64Image() != null && !contentRequestDTO.getBase64Image().isEmpty()) {
-            s3ImageKey = "content/" + UUID.randomUUID();
+            if (existingContent.getS3ImageKey() == null || existingContent.getS3ImageKey().isEmpty()) {
+                s3ImageKey = "content/" + UUID.randomUUID();
+            } else {
+                s3ImageKey = existingContent.getS3ImageKey();
+            }
+        } else {
+            if (existingContent.getS3ImageKey() != null && !existingContent.getS3ImageKey().isEmpty()) {
+                s3Service.deleteFile(existingContent.getS3ImageKey());
+            }
         }
 
-        Content updatedContent = contentMapper.toBuilder(existingContent)
-                .title(contentRequestDTO.getTitle())
-                .description(contentRequestDTO.getDescription())
-                .contentType(contentRequestDTO.getContentType())
+        Content updatedContent = contentMapper.toBuilder(contentMapper.toEntity(contentRequestDTO, authenticatedProduction, s3ImageKey))
+                .id(id)
                 .genres(savedGenres)
-                .actors(contentRequestDTO.getActors())
-                .directors(contentRequestDTO.getDirectors())
-                .s3ImageKey(s3ImageKey)
-                .trailerUrl(contentRequestDTO.getTrailerUrl())
-                .productionCompany(authenticatedProduction)
                 .build();
 
         try {
@@ -94,7 +99,7 @@ public class ContentServiceImplementation implements ContentService {
 
             s3Service.uploadFile(s3ImageKey, contentRequestDTO.getBase64Image());
 
-            return contentMapper.toDto(updatedContent, authenticatedProduction, contentRequestDTO.getBase64Image());
+            return contentMapper.toDto(updatedContent, contentRequestDTO.getBase64Image());
         } catch (Exception e) {
             throw new EntityUpdateException(Content.class);
         }
@@ -105,7 +110,7 @@ public class ContentServiceImplementation implements ContentService {
         List<Content> contents = contentRepository.findAll();
 
         return contents.stream()
-                .map(content -> contentMapper.toDto(content, content.getProductionCompany(), s3Service.getFile(content.getS3ImageKey())))
+                .map(content -> contentMapper.toDto(content, s3Service.getFile(content.getS3ImageKey())))
                 .toList();
     }
 
@@ -130,7 +135,7 @@ public class ContentServiceImplementation implements ContentService {
         List<Content> contents = contentRepository.findAllByProductionCompany((authenticatedProduction));
 
         return contents.stream()
-                .map(content -> contentMapper.toDto(content, authenticatedProduction, s3Service.getFile(content.getS3ImageKey())))
+                .map(content -> contentMapper.toDto(content, s3Service.getFile(content.getS3ImageKey())))
                 .toList();
     }
 

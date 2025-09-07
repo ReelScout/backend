@@ -1,5 +1,6 @@
 package click.reelscout.backend.dto.request;
 
+import click.reelscout.backend.model.jpa.Genre;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -7,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -20,4 +22,6 @@ public class MemberRequestDTO extends UserRequestDTO {
         @NotNull(message = "Birthdate is mandatory")
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         private LocalDate birthDate;
+
+        private List<Genre> favoriteGenres;
 }
