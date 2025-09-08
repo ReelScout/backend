@@ -10,10 +10,9 @@ import java.time.LocalDateTime;
 public class ForumPostResponseDTO {
     private Long id;
     private Long threadId;
-    private String authorUsername;
+    private Long authorId;
     private String body;
     private Long parentId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
-

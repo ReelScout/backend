@@ -27,7 +27,7 @@ public class ForumMapperImplementation implements ForumMapper {
         return new ForumPostResponseDTO(
                 post.getId(),
                 post.getThread().getId(),
-                post.getAuthor().getUsername(),
+                post.getAuthor().getId(),
                 post.getBody(),
                 post.getParent() != null ? post.getParent().getId() : null,
                 post.getCreatedAt(),
@@ -35,4 +35,3 @@ public class ForumMapperImplementation implements ForumMapper {
         );
     }
 }
-
