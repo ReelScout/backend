@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import validation.Update;
+import click.reelscout.backend.validation.Update;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
         return ResponseEntity.ok(userResponseDTO);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<S> getById(@PathVariable Long id) {
         S userResponseDTO = userService.getById(id);
         return ResponseEntity.ok(userResponseDTO);

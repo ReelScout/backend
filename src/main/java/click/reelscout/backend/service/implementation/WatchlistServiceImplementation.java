@@ -145,7 +145,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
     public WatchlistResponseDTO getById(Member member, Long id) {
         Watchlist watchlist = watchlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Watchlist.class));
 
-        if (!watchlist.getMember().getId().equals(member.getId()) && !watchlist.getIsPublic()) {
+        if ((member != null && !watchlist.getMember().getId().equals(member.getId())) && !watchlist.getIsPublic()) {
             throw new EntityNotFoundException(Watchlist.class);
         }
 

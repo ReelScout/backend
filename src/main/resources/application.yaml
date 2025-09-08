@@ -46,3 +46,4 @@ api:
     user: "${api.basic-path}/user"
     content: "${api.basic-path}/content"
     search: "${api.basic-path}/search"
+    watchlist: "${api.paths.user}/watchlist"
