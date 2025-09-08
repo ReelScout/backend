@@ -61,7 +61,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(environment.getProperty("api.paths.auth")+"/**").permitAll()
                 .requestMatchers(environment.getProperty("api.paths.watchlist")+"/**").permitAll()
-                .requestMatchers(environment.getProperty("api.paths.user")+"/**").authenticated()
+                .requestMatchers(environment.getProperty("api.paths.user")+"/**").permitAll()
                 .requestMatchers(environment.getProperty("api.paths.content")+"/**").permitAll()
                 .requestMatchers(environment.getProperty("api.paths.search")+"/**").permitAll()
                 .anyRequest().denyAll()

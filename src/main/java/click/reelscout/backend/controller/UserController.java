@@ -10,6 +10,7 @@ import click.reelscout.backend.service.definition.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
         return ResponseEntity.ok(users);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public ResponseEntity<S> getCurrentUser(@AuthenticationPrincipal U authenticatedUser) {
         S userResponseDTO = userService.getCurrentUserDto(authenticatedUser);
@@ -47,12 +49,14 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
         return ResponseEntity.ok(userResponseDTO);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PutMapping("/update")
     public ResponseEntity<UserLoginResponseDTO> update(@AuthenticationPrincipal U authenticatedUser, @Validated(Update.class) @RequestBody R userRequestDTO) {
         UserLoginResponseDTO userResponseDTO = userService.update(authenticatedUser, userRequestDTO);
         return ResponseEntity.ok(userResponseDTO);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/change-password")
     public ResponseEntity<CustomResponseDTO> changePassword(@AuthenticationPrincipal U authenticatedPrincipal, @Valid @RequestBody UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
         CustomResponseDTO response = userService.changePassword(authenticatedPrincipal, userPasswordChangeRequestDTO);
