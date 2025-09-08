@@ -22,7 +22,6 @@ public class WatchlistController {
     @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).MEMBER)")
     @PostMapping("/add")
     public ResponseEntity<WatchlistResponseDTO> addWatchlist(@AuthenticationPrincipal Member authenticatedMember, @RequestBody WatchlistRequestDTO watchlistRequestDTO) {
-        System.out.println("addWatchlist");
         return ResponseEntity.ok(watchlistService.create(authenticatedMember, watchlistRequestDTO));
     }
 
