@@ -2,6 +2,7 @@ package click.reelscout.backend.service.implementation;
 
 import click.reelscout.backend.builder.definition.UserBuilder;
 import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.response.ContentResponseDTO;
 import click.reelscout.backend.dto.response.SearchResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.SearchException;
@@ -10,6 +11,7 @@ import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.ContentMapper;
 import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.elasticsearch.ContentDoc;
+import click.reelscout.backend.model.elasticsearch.MemberDoc;
 import click.reelscout.backend.model.elasticsearch.UserDoc;
 import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.User;
@@ -50,45 +52,10 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
 
     @Override
     public SearchResponseDTO<S> search(String query) {
-        // Append wildcard to enable partial word matching (e.g., "Matt" -> "Matteo Pio")
-        // This works with the Search_As_You_Type fields already configured in the model
-        String wildcardQuery = query + "*";
+        // Search users and content in parallel
+        Future<List<S>> usersFuture = executor.submit(() -> searchUsers(query, UserDoc.class));
 
-        QueryStringQuery queryStringQuery = QueryBuilders.queryString()
-                .query(wildcardQuery)
-                .fields("*")
-                .build();
-
-        NativeQuery searchQuery = NativeQuery.builder()
-                .withQuery(queryStringQuery._toQuery())
-                .build();
-
-        // Create concurrent tasks for searching users and content
-        Future<List<S>> usersFuture = executor.submit(() -> {
-            SearchHits<UserDoc> searchHits = elasticsearchOperations.search(searchQuery, UserDoc.class);
-
-            List<U> foundUsers = userRepository.findAllById(
-                    searchHits.stream().map(SearchHit::getContent).map(UserDoc::getId).toList()
-            );
-
-            return foundUsers.stream().map(user -> {
-                userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
-                return userMapperContext.toDto(user, s3Service.getFile(user.getS3ImageKey()));
-            }).toList();
-        });
-
-        Future<List<click.reelscout.backend.dto.response.ContentResponseDTO>> contentFuture = executor.submit(() -> {
-            SearchHits<ContentDoc> contentHits = elasticsearchOperations.search(searchQuery, ContentDoc.class);
-
-            List<Content> foundContent = contentRepository.findAllById(
-                    contentHits.stream().map(SearchHit::getContent).map(ContentDoc::getId).toList()
-            );
-
-            return foundContent.stream().map(content -> contentMapper.toDto(
-                    content,
-                    s3Service.getFile(content.getS3ImageKey())
-            )).toList();
-        });
+        Future<List<click.reelscout.backend.dto.response.ContentResponseDTO>> contentFuture = executor.submit(() -> searchContent(query));
 
         try {
             // Wait for both tasks to complete and combine results
@@ -100,5 +67,55 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
             Thread.currentThread().interrupt();
             throw new SearchException();
         }
+    }
+
+    @Override
+    public List<S> searchMembers(String query) {
+        return searchUsers(query, MemberDoc.class);
+    }
+
+    private <D extends UserDoc> List<S> searchUsers(String query, Class<D> userDocClass) {
+        NativeQuery searchQuery = buildNativeQuery(query);
+
+        SearchHits<D> searchHits = elasticsearchOperations.search(searchQuery, userDocClass);
+
+        List<U> foundUsers = userRepository.findAllById(
+                searchHits.stream().map(SearchHit::getContent).map(UserDoc::getId).toList()
+        );
+
+        return foundUsers.stream().map(user -> {
+            userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
+            return userMapperContext.toDto(user, s3Service.getFile(user.getS3ImageKey()));
+        }).toList();
+    }
+
+    private List<ContentResponseDTO> searchContent(String query) {
+        NativeQuery searchQuery = buildNativeQuery(query);
+
+        SearchHits<ContentDoc> contentHits = elasticsearchOperations.search(searchQuery, ContentDoc.class);
+
+        List<Content> foundContent = contentRepository.findAllById(
+                contentHits.stream().map(SearchHit::getContent).map(ContentDoc::getId).toList()
+        );
+
+        return foundContent.stream().map(content -> contentMapper.toDto(
+                content,
+                s3Service.getFile(content.getS3ImageKey())
+        )).toList();
+    }
+
+    private NativeQuery buildNativeQuery(String query) {
+        // Append wildcard to enable partial word matching (e.g., "Matt" -> "Matteo Pio")
+        // This works with the Search_As_You_Type fields already configured in the model
+        String wildcardQuery = query + "*";
+
+        QueryStringQuery queryStringQuery = QueryBuilders.queryString()
+                .query(wildcardQuery)
+                .fields("*")
+                .build();
+
+        return NativeQuery.builder()
+                .withQuery(queryStringQuery._toQuery())
+                .build();
     }
 }

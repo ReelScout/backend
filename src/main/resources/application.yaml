@@ -47,3 +47,5 @@ api:
     content: "${api.basic-path}/content"
     search: "${api.basic-path}/search"
     watchlist: "${api.paths.user}/watchlist"
+    friends: "${api.paths.user}/friends"
+    chat: "${api.basic-path}/chat"
