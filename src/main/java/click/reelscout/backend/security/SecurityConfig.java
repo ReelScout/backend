@@ -66,6 +66,9 @@ public class SecurityConfig {
                 .requestMatchers(environment.getProperty("api.paths.friends")+"/**").hasRole(Role.MEMBER.name())
                 .requestMatchers(environment.getProperty("api.paths.content")+"/**").permitAll()
                 .requestMatchers(environment.getProperty("api.paths.search")+"/**").permitAll()
+                .requestMatchers(environment.getProperty("api.paths.chat")+"/**").hasRole(Role.MEMBER.name())
+                // Allow STOMP/WebSocket handshake
+                .requestMatchers("/ws/**").permitAll()
                 .anyRequest().denyAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
