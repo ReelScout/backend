@@ -18,6 +18,7 @@ import click.reelscout.backend.repository.jpa.ContentTypeRepository;
 import click.reelscout.backend.repository.jpa.GenreRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.ContentService;
+import click.reelscout.backend.observer.content.ContentSubject;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class ContentServiceImplementation implements ContentService {
     private final GenreRepository genreRepository;
     private final S3Service s3Service;
     private final ContentMapper contentMapper;
+    private final ContentSubject contentSubject;
 
     @Override
     public ContentResponseDTO create(ProductionCompany authenticatedProduction, ContentRequestDTO contentRequestDTO) {
@@ -55,7 +57,10 @@ public class ContentServiceImplementation implements ContentService {
 
             s3Service.uploadFile(s3ImageKey, contentRequestDTO.getBase64Image());
 
-            return contentMapper.toDto(content, contentRequestDTO.getBase64Image());
+            ContentResponseDTO response = contentMapper.toDto(content, contentRequestDTO.getBase64Image());
+            // Notify observers (e.g., WebSocket push) that new content was created
+            contentSubject.notifyContentCreated(response);
+            return response;
         } catch (Exception e) {
             throw new EntityCreateException(Content.class);
         }
