@@ -14,12 +14,6 @@ public class ContentEventPublisher implements ContentSubject {
 
     private final List<ContentObserver> observers = new CopyOnWriteArrayList<>();
 
-    public ContentEventPublisher(List<ContentObserver> initialObservers) {
-        if (initialObservers != null) {
-            observers.addAll(initialObservers);
-        }
-    }
-
     @Override
     public void registerObserver(ContentObserver observer) {
         if (observer != null) {
@@ -43,4 +37,3 @@ public class ContentEventPublisher implements ContentSubject {
         }
     }
 }
-
