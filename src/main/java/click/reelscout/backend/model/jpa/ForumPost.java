@@ -1,5 +1,6 @@
 package click.reelscout.backend.model.jpa;
 
+import click.reelscout.backend.builder.implementation.ForumPostBuilderImplementation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,11 +40,13 @@ public class ForumPost implements Serializable {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public ForumPost(ForumThread thread, User author, ForumPost parent, String body) {
-        this.thread = thread;
-        this.author = author;
-        this.parent = parent;
-        this.body = body;
+    public ForumPost(ForumPostBuilderImplementation b) {
+        this.id = b.getId();
+        this.thread = b.getThread();
+        this.author = b.getAuthor();
+        this.parent = b.getParent();
+        this.body = b.getBody();
+        this.createdAt = b.getCreatedAt();
+        this.updatedAt = b.getUpdatedAt();
     }
 }
-

@@ -56,10 +56,10 @@ public class ForumServiceImplementation implements ForumService {
                 .orElseThrow(() -> new EntityNotFoundException(Content.class));
 
         try {
-            ForumThread thread = new ForumThread(content, dto.getTitle(), author);
+            ForumThread thread = forumMapper.toEntity(content, author, dto.getTitle());
             threadRepository.save(thread);
 
-            ForumPost firstPost = new ForumPost(thread, author, null, dto.getBody());
+            ForumPost firstPost = forumMapper.toEntity(thread, author, null, dto.getBody());
             postRepository.save(firstPost);
 
             return forumMapper.toThreadDto(thread, 1);
@@ -94,7 +94,7 @@ public class ForumServiceImplementation implements ForumService {
         }
 
         try {
-            ForumPost post = new ForumPost(thread, author, parent, dto.getBody());
+            ForumPost post = forumMapper.toEntity(thread, author, parent, dto.getBody());
             postRepository.save(post);
             return forumMapper.toPostDto(post);
         } catch (Exception e) {

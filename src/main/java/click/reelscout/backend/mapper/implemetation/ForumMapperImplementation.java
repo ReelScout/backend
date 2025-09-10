@@ -1,14 +1,22 @@
 package click.reelscout.backend.mapper.implemetation;
 
+import click.reelscout.backend.builder.definition.ForumPostBuilder;
+import click.reelscout.backend.builder.definition.ForumThreadBuilder;
 import click.reelscout.backend.dto.response.ForumPostResponseDTO;
 import click.reelscout.backend.dto.response.ForumThreadResponseDTO;
 import click.reelscout.backend.mapper.definition.ForumMapper;
+import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ForumPost;
 import click.reelscout.backend.model.jpa.ForumThread;
+import click.reelscout.backend.model.jpa.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ForumMapperImplementation implements ForumMapper {
+    private final ForumThreadBuilder threadBuilder;
+    private final ForumPostBuilder postBuilder;
     @Override
     public ForumThreadResponseDTO toThreadDto(ForumThread thread, long postCount) {
         return new ForumThreadResponseDTO(
@@ -33,5 +41,53 @@ public class ForumMapperImplementation implements ForumMapper {
                 post.getCreatedAt(),
                 post.getUpdatedAt()
         );
+    }
+
+    @Override
+    public ForumThreadBuilder toBuilder(ForumThread thread) {
+        return threadBuilder
+                .id(thread.getId())
+                .content(thread.getContent())
+                .title(thread.getTitle())
+                .createdBy(thread.getCreatedBy())
+                .createdAt(thread.getCreatedAt())
+                .updatedAt(thread.getUpdatedAt());
+    }
+
+    @Override
+    public ForumPostBuilder toBuilder(ForumPost post) {
+        return postBuilder
+                .id(post.getId())
+                .thread(post.getThread())
+                .author(post.getAuthor())
+                .parent(post.getParent())
+                .body(post.getBody())
+                .createdAt(post.getCreatedAt())
+                .updatedAt(post.getUpdatedAt());
+    }
+
+    @Override
+    public ForumThread toEntity(Content content, User author, String title) {
+        return threadBuilder
+                .id(null)
+                .content(content)
+                .title(title)
+                .createdBy(author)
+                .createdAt(null)
+                .updatedAt(null)
+                .build();
+    }
+
+    @Override
+    public ForumPost toEntity(ForumThread thread, User author, ForumPost parent, String body) {
+        return postBuilder
+                .id(null)
+                .thread(thread)
+                .author(author)
+                .parent(parent)
+                .body(body)
+                .createdAt(null)
+                .updatedAt(null)
+                .build();
     }
 }
