@@ -10,6 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +42,9 @@ public class ForumPost implements Serializable {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ForumPostReport> reports;
+
     public ForumPost(ForumPostBuilderImplementation b) {
         this.id = b.getId();
         this.thread = b.getThread();
@@ -48,5 +53,6 @@ public class ForumPost implements Serializable {
         this.body = b.getBody();
         this.createdAt = b.getCreatedAt();
         this.updatedAt = b.getUpdatedAt();
+        this.reports = new ArrayList<>();
     }
 }

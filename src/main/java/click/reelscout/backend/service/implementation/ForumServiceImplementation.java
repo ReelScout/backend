@@ -6,10 +6,12 @@ import click.reelscout.backend.dto.response.ForumPostResponseDTO;
 import click.reelscout.backend.dto.response.ForumThreadResponseDTO;
 import click.reelscout.backend.exception.custom.DataValidationException;
 import click.reelscout.backend.exception.custom.EntityCreateException;
+import click.reelscout.backend.exception.custom.EntityDeleteException;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.mapper.definition.ForumMapper;
 import click.reelscout.backend.mapper.definition.ForumReportMapper;
 import click.reelscout.backend.dto.request.ReportPostRequestDTO;
+import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ForumPost;
 import click.reelscout.backend.model.jpa.ForumPostReport;
@@ -116,6 +118,44 @@ public class ForumServiceImplementation implements ForumService {
             postReportRepository.save(report);
         } catch (Exception e) {
             throw new EntityCreateException(ForumPostReport.class);
+        }
+    }
+
+    @Override
+    public CustomResponseDTO deleteThread(User moderator, Long threadId) {
+        ForumThread thread = threadRepository.findById(threadId)
+                .orElseThrow(() -> new EntityNotFoundException(ForumThread.class));
+
+        try {
+            postRepository.deleteByThread(thread);
+            threadRepository.delete(thread);
+            return new CustomResponseDTO("Thread deleted");
+        } catch (Exception e) {
+            throw new EntityDeleteException(ForumThread.class);
+        }
+    }
+
+    @Override
+    public CustomResponseDTO deletePost(User moderator, Long postId) {
+        ForumPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(ForumPost.class));
+
+        try {
+            // Reassign or nullify children parent to avoid FK issues
+            List<ForumPost> children = postRepository.findAllByParent(post);
+            if (!children.isEmpty()) {
+                for (ForumPost child : children) {
+                    ForumPost updated = forumMapper.toBuilder(child)
+                            .parent(null)
+                            .build();
+                    postRepository.save(updated);
+                }
+            }
+
+            postRepository.delete(post);
+            return new CustomResponseDTO("Post deleted");
+        } catch (Exception e) {
+            throw new EntityDeleteException(ForumPost.class);
         }
     }
 }
