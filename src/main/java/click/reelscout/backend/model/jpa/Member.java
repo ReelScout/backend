@@ -26,7 +26,7 @@ public class Member extends User {
     private List<Genre> favoriteGenres;
 
     public Member(MemberBuilderImplementation builder) {
-        super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole(), builder.getS3ImageKey());
+        super(builder.getId(), builder.getUsername(), builder.getEmail(), builder.getPassword(), builder.getRole(), builder.getS3ImageKey(), builder.getSuspendedUntil());
         this.firstName = builder.getFirstName();
         this.lastName = builder.getLastName();
         this.birthDate = builder.getBirthDate();

@@ -34,7 +34,8 @@ public class MemberMapperImplementation implements MemberMapper {
                 .email(member.getEmail())
                 .password(member.getPassword())
                 .s3ImageKey(member.getS3ImageKey())
-                .role(member.getRole());
+                .role(member.getRole())
+                .suspendedUntil(member.getSuspendedUntil());
     }
 
     @Override

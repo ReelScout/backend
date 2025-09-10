@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,10 +37,17 @@ public abstract class User implements UserDetails {
 
     private String s3ImageKey;
 
+    private LocalDateTime suspendedUntil;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     public abstract boolean superEquals(User other);
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return suspendedUntil == null || suspendedUntil.isBefore(LocalDateTime.now());
+    }
 }

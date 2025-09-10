@@ -35,7 +35,8 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .password(productionCompany.getPassword())
                 .role(productionCompany.getRole())
                 .s3ImageKey(productionCompany.getS3ImageKey())
-                .contents(productionCompany.getContents());
+                .contents(productionCompany.getContents())
+                .suspendedUntil(productionCompany.getSuspendedUntil());
     }
 
     @Override

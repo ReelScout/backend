@@ -2,6 +2,7 @@ package click.reelscout.backend.controller;
 
 import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
+import click.reelscout.backend.dto.request.SuspendUserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
@@ -60,6 +61,20 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
     @PatchMapping("/change-password")
     public ResponseEntity<CustomResponseDTO> changePassword(@AuthenticationPrincipal U authenticatedPrincipal, @Valid @RequestBody UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
         CustomResponseDTO response = userService.changePassword(authenticatedPrincipal, userPasswordChangeRequestDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).MODERATOR)")
+    @PostMapping("/id/{id}/suspend")
+    public ResponseEntity<CustomResponseDTO> suspendUser(@PathVariable Long id, @Valid @RequestBody SuspendUserRequestDTO dto) {
+        CustomResponseDTO response = userService.suspendUser(id, dto.getUntil());
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).MODERATOR)")
+    @DeleteMapping("/id/{id}/suspend")
+    public ResponseEntity<CustomResponseDTO> unsuspendUser(@PathVariable Long id) {
+        CustomResponseDTO response = userService.unsuspendUser(id);
         return ResponseEntity.ok(response);
     }
 }

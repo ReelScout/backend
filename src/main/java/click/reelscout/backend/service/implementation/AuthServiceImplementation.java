@@ -9,6 +9,7 @@ import click.reelscout.backend.dto.response.UserResponseDTO;
 import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.exception.custom.InvalidCredentialsException;
+import click.reelscout.backend.exception.custom.AccountSuspendedException;
 import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
@@ -27,6 +28,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -53,6 +55,10 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new InvalidCredentialsException();
+        }
+
+        if (user.getSuspendedUntil() != null && user.getSuspendedUntil().isAfter(LocalDateTime.now())) {
+            throw new AccountSuspendedException("Account suspended until " + user.getSuspendedUntil());
         }
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));

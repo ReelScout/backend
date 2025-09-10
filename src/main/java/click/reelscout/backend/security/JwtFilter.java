@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
+import java.time.LocalDateTime;
+import click.reelscout.backend.exception.custom.AccountSuspendedException;
+import click.reelscout.backend.model.jpa.User;
+
 @Component
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -38,6 +42,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+                if (userDetails instanceof User domainUser && domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(LocalDateTime.now())) {
+                        throw new AccountSuspendedException("Account suspended until " + domainUser.getSuspendedUntil());
+                }
 
                 if(jwtService.isTokenValid(jwtToken, userDetails)) {
                     final UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

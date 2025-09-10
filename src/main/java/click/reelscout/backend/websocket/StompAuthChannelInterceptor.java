@@ -1,6 +1,8 @@
 package click.reelscout.backend.websocket;
 
 import click.reelscout.backend.security.JwtService;
+import click.reelscout.backend.exception.custom.AccountSuspendedException;
+import click.reelscout.backend.model.jpa.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
@@ -41,6 +43,10 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
 
             if (!jwtService.isTokenValid(token, userDetails)) {
                 throw new IllegalArgumentException("Invalid JWT token for STOMP CONNECT");
+            }
+
+            if (userDetails instanceof User domainUser && domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(java.time.LocalDateTime.now())) {
+                    throw new AccountSuspendedException("Account suspended until " + domainUser.getSuspendedUntil());
             }
 
             // Only allow members to chat (verified members included). Production companies excluded.
