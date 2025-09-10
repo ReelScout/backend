@@ -3,6 +3,7 @@ package click.reelscout.backend.controller;
 import click.reelscout.backend.dto.request.UserPasswordChangeRequestDTO;
 import click.reelscout.backend.dto.request.UserRequestDTO;
 import click.reelscout.backend.dto.request.SuspendUserRequestDTO;
+import click.reelscout.backend.dto.request.BanUserRequestDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.UserLoginResponseDTO;
 import click.reelscout.backend.dto.response.UserResponseDTO;
@@ -76,5 +77,28 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
     public ResponseEntity<CustomResponseDTO> unsuspendUser(@PathVariable Long id) {
         CustomResponseDTO response = userService.unsuspendUser(id);
         return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).ADMIN)")
+    @PostMapping("/id/{id}/ban")
+    public ResponseEntity<CustomResponseDTO> permanentlyBan(@AuthenticationPrincipal U admin, @PathVariable Long id, @RequestBody(required = false) BanUserRequestDTO dto) {
+        String reason = (dto != null) ? dto.getReason() : null;
+        CustomResponseDTO response = userService.permanentlyBanUser(id, admin, reason);
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).ADMIN)")
+    @DeleteMapping("/id/{id}/ban")
+    public ResponseEntity<CustomResponseDTO> unban(@AuthenticationPrincipal U admin, @PathVariable Long id, @RequestBody(required = false) BanUserRequestDTO dto) {
+        String reason = (dto != null) ? dto.getReason() : null;
+        CustomResponseDTO response = userService.unbanUser(id, admin, reason);
+        return ResponseEntity.ok(response);
+    }
+
+    @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).ADMIN)")
+    @GetMapping("/reported/moderator")
+    public ResponseEntity<List<S>> listUsersReportedByModerators() {
+        List<S> users = userService.listUsersReportedByModerators();
+        return ResponseEntity.ok(users);
     }
 }

@@ -13,10 +13,14 @@ import click.reelscout.backend.factory.UserMapperFactory;
 import click.reelscout.backend.factory.UserMapperFactoryRegistry;
 import click.reelscout.backend.mapper.definition.UserMapper;
 import click.reelscout.backend.model.jpa.Genre;
+import click.reelscout.backend.model.jpa.Role;
 import click.reelscout.backend.model.jpa.User;
+import click.reelscout.backend.model.jpa.ForumPost;
 import click.reelscout.backend.repository.elasticsearch.UserElasticRepository;
 import click.reelscout.backend.repository.jpa.GenreRepository;
 import click.reelscout.backend.repository.jpa.UserRepository;
+import click.reelscout.backend.repository.jpa.ForumPostRepository;
+import click.reelscout.backend.repository.jpa.ForumPostReportRepository;
 import click.reelscout.backend.s3.S3Service;
 import click.reelscout.backend.service.definition.AuthService;
 import click.reelscout.backend.service.definition.UserService;
@@ -27,6 +31,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -41,6 +46,9 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     private final S3Service s3Service;
     private final AuthService<R> authService;
     private final GenreRepository genreRepository;
+    private final ForumPostRepository forumPostRepository;
+    private final ForumPostReportRepository forumPostReportRepository;
+    private static final LocalDateTime PERMANENT_BAN_UNTIL = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
 
     @Override
     public List<S> getAll() {
@@ -237,5 +245,61 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
             throw new EntityUpdateException("Failed to unsuspend user");
         }
         return new CustomResponseDTO("User suspension removed");
+    }
+
+    @Override
+    public CustomResponseDTO permanentlyBanUser(Long targetUserId, U performedBy, String reason) {
+        U target = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
+
+        // Check if target has been reported by a moderator for any of their posts (optimized JPA queries)
+        List<ForumPost> targetPosts = forumPostRepository.findAllByAuthor(target);
+        boolean hasModeratorReport = !targetPosts.isEmpty() && forumPostReportRepository.existsByPostsAndReporterRole(targetPosts, Role.MODERATOR);
+
+        if (!hasModeratorReport) {
+            throw new EntityUpdateException("User cannot be permanently banned: no moderator reports found");
+        }
+
+        U updated = userMapperContext
+                .toBuilder(target)
+                .suspendedUntil(PERMANENT_BAN_UNTIL)
+                .suspendedReason(reason != null && !reason.isBlank() ? reason : "Permanent ban")
+                .build();
+
+        try {
+            userRepository.save(updated);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Failed to permanently ban user");
+        }
+        return new CustomResponseDTO("User permanently banned");
+    }
+
+    @Override
+    public CustomResponseDTO unbanUser(Long targetUserId, U performedBy, String reason) {
+        U target = userRepository.findById(targetUserId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
+
+        U updated = userMapperContext
+                .toBuilder(target)
+                .suspendedUntil(null)
+                .suspendedReason(null)
+                .build();
+
+        try {
+            userRepository.save(updated);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Failed to unban user");
+        }
+        return new CustomResponseDTO("User unbanned");
+    }
+
+    @Override
+    public List<S> listUsersReportedByModerators() {
+        List<U> authors = forumPostReportRepository.findDistinctAuthorsReportedByModerators();
+        return authors.stream().map(u -> {
+            userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(u));
+            String base64Image = s3Service.getFile(u.getS3ImageKey());
+            return userMapperContext.toDto(u, base64Image);
+        }).toList();
     }
 }

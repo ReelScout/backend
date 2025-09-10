@@ -58,7 +58,9 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
         }
 
         if (user.getSuspendedUntil() != null && user.getSuspendedUntil().isAfter(LocalDateTime.now())) {
-            String msg = "Account suspended until " + user.getSuspendedUntil();
+            boolean isPermanent = (user.getSuspendedReason() != null && user.getSuspendedReason().toLowerCase().contains("permanent"))
+                    || (user.getSuspendedUntil() != null && user.getSuspendedUntil().getYear() >= 9999);
+            String msg = isPermanent ? "Account permanently banned" : ("Account suspended until " + user.getSuspendedUntil());
             if (user.getSuspendedReason() != null && !user.getSuspendedReason().isBlank()) {
                 msg += ": " + user.getSuspendedReason();
             }

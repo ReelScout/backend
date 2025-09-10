@@ -43,8 +43,10 @@ public class JwtFilter extends OncePerRequestFilter {
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (userDetails instanceof User domainUser && domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(LocalDateTime.now())) {
-                    String msg = "Account suspended until " + domainUser.getSuspendedUntil();
+                if (userDetails instanceof User domainUser && (domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(LocalDateTime.now()))) {
+                    boolean isPermanent = (domainUser.getSuspendedReason() != null && domainUser.getSuspendedReason().toLowerCase().contains("permanent"))
+                            || (domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().getYear() >= 9999);
+                    String msg = isPermanent ? "Account permanently banned" : ("Account suspended until " + domainUser.getSuspendedUntil());
                     if (domainUser.getSuspendedReason() != null && !domainUser.getSuspendedReason().isBlank()) {
                         msg += ": " + domainUser.getSuspendedReason();
                     }
