@@ -29,4 +29,10 @@ public interface UserService <U extends User, R extends UserRequestDTO, S extend
     CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until, String reason);
 
     CustomResponseDTO unsuspendUser(Long userId);
+
+    CustomResponseDTO permanentlyBanUser(Long targetUserId, U performedBy, String reason);
+
+    CustomResponseDTO unbanUser(Long targetUserId, U performedBy, String reason);
+
+    List<S> listUsersReportedByModerators();
 }

@@ -45,8 +45,10 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
                 throw new IllegalArgumentException("Invalid JWT token for STOMP CONNECT");
             }
 
-            if (userDetails instanceof User domainUser && domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(java.time.LocalDateTime.now())) {
-                String msg = "Account suspended until " + domainUser.getSuspendedUntil();
+            if (userDetails instanceof User domainUser && (domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(java.time.LocalDateTime.now()))) {
+                boolean isPermanent = (domainUser.getSuspendedReason() != null && domainUser.getSuspendedReason().toLowerCase().contains("permanent"))
+                        || (domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().getYear() >= 9999);
+                String msg = isPermanent ? "Account permanently banned" : ("Account suspended until " + domainUser.getSuspendedUntil());
                 if (domainUser.getSuspendedReason() != null && !domainUser.getSuspendedReason().isBlank()) {
                     msg += ": " + domainUser.getSuspendedReason();
                 }
