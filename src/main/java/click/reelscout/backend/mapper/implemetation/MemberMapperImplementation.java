@@ -35,7 +35,8 @@ public class MemberMapperImplementation implements MemberMapper {
                 .password(member.getPassword())
                 .s3ImageKey(member.getS3ImageKey())
                 .role(member.getRole())
-                .suspendedUntil(member.getSuspendedUntil());
+                .suspendedUntil(member.getSuspendedUntil())
+                .suspendedReason(member.getSuspendedReason());
     }
 
     @Override
@@ -51,6 +52,8 @@ public class MemberMapperImplementation implements MemberMapper {
                 .password(passwordEncoder.encode(memberRequestDTO.getPassword()))
                 .role(Role.MEMBER)
                 .s3ImageKey(s3ImageKey)
+                .suspendedUntil(null)
+                .suspendedReason(null)
                 .build();
     }
 

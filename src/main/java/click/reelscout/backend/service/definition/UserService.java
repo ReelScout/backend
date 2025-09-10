@@ -26,7 +26,7 @@ public interface UserService <U extends User, R extends UserRequestDTO, S extend
 
     CustomResponseDTO changePassword(U authenticatedUser, UserPasswordChangeRequestDTO userPasswordChangeRequestDTO);
 
-    CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until);
+    CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until, String reason);
 
     CustomResponseDTO unsuspendUser(Long userId);
 }

@@ -18,6 +18,7 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
     protected Role role;
     protected String s3ImageKey;
     protected LocalDateTime suspendedUntil;
+    protected String suspendedReason;
 
     @Override
     public B id(Long id) {
@@ -57,6 +58,11 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
 
     public B suspendedUntil(LocalDateTime suspendedUntil) {
         this.suspendedUntil = suspendedUntil;
+        return (B) this;
+    }
+
+    public B suspendedReason(String suspendedReason) {
+        this.suspendedReason = suspendedReason;
         return (B) this;
     }
 }

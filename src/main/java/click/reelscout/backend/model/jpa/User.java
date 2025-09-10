@@ -39,6 +39,8 @@ public abstract class User implements UserDetails {
 
     private LocalDateTime suspendedUntil;
 
+    private String suspendedReason;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

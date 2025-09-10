@@ -46,7 +46,11 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             }
 
             if (userDetails instanceof User domainUser && domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(java.time.LocalDateTime.now())) {
-                    throw new AccountSuspendedException("Account suspended until " + domainUser.getSuspendedUntil());
+                String msg = "Account suspended until " + domainUser.getSuspendedUntil();
+                if (domainUser.getSuspendedReason() != null && !domainUser.getSuspendedReason().isBlank()) {
+                    msg += ": " + domainUser.getSuspendedReason();
+                }
+                throw new AccountSuspendedException(msg);
             }
 
             // Only allow members to chat (verified members included). Production companies excluded.

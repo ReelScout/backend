@@ -157,6 +157,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
                 .id(authenticatedUser.getId())
                 .role(authenticatedUser.getRole())
                 .suspendedUntil(authenticatedUser.getSuspendedUntil())
+                .suspendedReason(authenticatedUser.getSuspendedReason())
                 .build();
 
         try {
@@ -197,13 +198,14 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     }
 
     @Override
-    public CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until) {
+    public CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until, String reason) {
         U user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(User.class));
 
         U updated = userMapperContext
                 .toBuilder(user)
                 .suspendedUntil(until)
+                .suspendedReason(reason)
                 .build();
 
         try {
@@ -226,6 +228,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         U updated = userMapperContext
                 .toBuilder(user)
                 .suspendedUntil(null)
+                .suspendedReason(null)
                 .build();
 
         try {

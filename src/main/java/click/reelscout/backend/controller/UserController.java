@@ -67,7 +67,7 @@ public class UserController <U extends User, R extends UserRequestDTO, S extends
     @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).MODERATOR)")
     @PostMapping("/id/{id}/suspend")
     public ResponseEntity<CustomResponseDTO> suspendUser(@PathVariable Long id, @Valid @RequestBody SuspendUserRequestDTO dto) {
-        CustomResponseDTO response = userService.suspendUser(id, dto.getUntil());
+        CustomResponseDTO response = userService.suspendUser(id, dto.getUntil(), dto.getReason());
         return ResponseEntity.ok(response);
     }
 

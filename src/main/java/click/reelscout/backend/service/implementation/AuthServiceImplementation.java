@@ -58,7 +58,11 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
         }
 
         if (user.getSuspendedUntil() != null && user.getSuspendedUntil().isAfter(LocalDateTime.now())) {
-            throw new AccountSuspendedException("Account suspended until " + user.getSuspendedUntil());
+            String msg = "Account suspended until " + user.getSuspendedUntil();
+            if (user.getSuspendedReason() != null && !user.getSuspendedReason().isBlank()) {
+                msg += ": " + user.getSuspendedReason();
+            }
+            throw new AccountSuspendedException(msg);
         }
 
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(user));
