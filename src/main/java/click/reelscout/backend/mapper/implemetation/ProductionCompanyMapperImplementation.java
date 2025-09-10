@@ -35,7 +35,9 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .password(productionCompany.getPassword())
                 .role(productionCompany.getRole())
                 .s3ImageKey(productionCompany.getS3ImageKey())
-                .contents(productionCompany.getContents());
+                .contents(productionCompany.getContents())
+                .suspendedUntil(productionCompany.getSuspendedUntil())
+                .suspendedReason(productionCompany.getSuspendedReason());
     }
 
     @Override
@@ -51,6 +53,8 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .password(passwordEncoder.encode(productionCompanyRequestDTO.getPassword()))
                 .role(Role.PRODUCTION_COMPANY)
                 .s3ImageKey(s3ImageKey)
+                .suspendedUntil(null)
+                .suspendedReason(null)
                 .build();
     }
 

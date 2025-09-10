@@ -1,6 +1,8 @@
 package click.reelscout.backend.websocket;
 
 import click.reelscout.backend.security.JwtService;
+import click.reelscout.backend.exception.custom.AccountSuspendedException;
+import click.reelscout.backend.model.jpa.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
@@ -43,8 +45,16 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
                 throw new IllegalArgumentException("Invalid JWT token for STOMP CONNECT");
             }
 
+            if (userDetails instanceof User domainUser && domainUser.getSuspendedUntil() != null && domainUser.getSuspendedUntil().isAfter(java.time.LocalDateTime.now())) {
+                String msg = "Account suspended until " + domainUser.getSuspendedUntil();
+                if (domainUser.getSuspendedReason() != null && !domainUser.getSuspendedReason().isBlank()) {
+                    msg += ": " + domainUser.getSuspendedReason();
+                }
+                throw new AccountSuspendedException(msg);
+            }
+
             // Only allow members to chat (verified members included). Production companies excluded.
-            if (!hasAnyRole(userDetails.getAuthorities(), List.of("ROLE_MEMBER", "ROLE_VERIFIED_MEMBER"))) {
+            if (!hasAnyRole(userDetails.getAuthorities(), List.of("ROLE_MEMBER", "ROLE_VERIFIED_MEMBER", "ROLE_ADMIN", "ROLE_MODERATOR"))) {
                 throw new SecurityException("Only members can use chat");
             }
 

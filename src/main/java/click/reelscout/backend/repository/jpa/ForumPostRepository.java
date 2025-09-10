@@ -10,5 +10,8 @@ public interface ForumPostRepository extends JpaRepository<ForumPost, Long> {
     List<ForumPost> findAllByThreadOrderByCreatedAtAsc(ForumThread thread);
 
     long countByThread(ForumThread thread);
-}
 
+    void deleteByThread(ForumThread thread);
+
+    List<ForumPost> findAllByParent(ForumPost parent);
+}

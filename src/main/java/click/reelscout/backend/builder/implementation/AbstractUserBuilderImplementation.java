@@ -5,6 +5,7 @@ import click.reelscout.backend.model.jpa.Role;
 import click.reelscout.backend.model.jpa.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
 
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
@@ -16,6 +17,8 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
     protected String password;
     protected Role role;
     protected String s3ImageKey;
+    protected LocalDateTime suspendedUntil;
+    protected String suspendedReason;
 
     @Override
     public B id(Long id) {
@@ -50,6 +53,16 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
     @Override
     public B s3ImageKey(String s3ImageKey) {
         this.s3ImageKey = s3ImageKey;
+        return (B) this;
+    }
+
+    public B suspendedUntil(LocalDateTime suspendedUntil) {
+        this.suspendedUntil = suspendedUntil;
+        return (B) this;
+    }
+
+    public B suspendedReason(String suspendedReason) {
+        this.suspendedReason = suspendedReason;
         return (B) this;
     }
 }

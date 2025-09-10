@@ -202,4 +202,13 @@ public class GlobalExceptionHandler {
         CustomResponseDTO response = new CustomResponseDTO("Authentication failed");
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
+
+    /**
+     * Handles account suspension errors.
+     */
+    @ExceptionHandler(AccountSuspendedException.class)
+    public ResponseEntity<CustomResponseDTO> handleAccountSuspended(AccountSuspendedException e) {
+        CustomResponseDTO response = new CustomResponseDTO(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+    }
 }

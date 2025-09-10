@@ -2,6 +2,8 @@ package click.reelscout.backend.controller;
 
 import click.reelscout.backend.dto.request.CreatePostRequestDTO;
 import click.reelscout.backend.dto.request.CreateThreadRequestDTO;
+import click.reelscout.backend.dto.request.ReportPostRequestDTO;
+import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.dto.response.ForumPostResponseDTO;
 import click.reelscout.backend.dto.response.ForumThreadResponseDTO;
 import click.reelscout.backend.model.jpa.User;
@@ -45,5 +47,28 @@ public class ForumController {
                                                            @PathVariable Long threadId,
                                                            @Valid @RequestBody CreatePostRequestDTO dto) {
         return ResponseEntity.ok(forumService.createPost(authenticatedUser, threadId, dto));
+    }
+
+    @PostMapping("/posts/{postId}/report")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> reportPost(@AuthenticationPrincipal User authenticatedUser,
+                                           @PathVariable Long postId,
+                                           @Valid @RequestBody ReportPostRequestDTO dto) {
+        forumService.reportPost(authenticatedUser, postId, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/threads/{threadId}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<CustomResponseDTO> deleteThread(@AuthenticationPrincipal User authenticatedUser,
+                                                          @PathVariable Long threadId) {
+        return ResponseEntity.ok(forumService.deleteThread(authenticatedUser, threadId));
+    }
+
+    @DeleteMapping("/posts/{postId}")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<CustomResponseDTO> deletePost(@AuthenticationPrincipal User authenticatedUser,
+                                                        @PathVariable Long postId) {
+        return ResponseEntity.ok(forumService.deletePost(authenticatedUser, postId));
     }
 }

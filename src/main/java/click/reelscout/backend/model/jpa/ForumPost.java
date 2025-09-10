@@ -1,5 +1,6 @@
 package click.reelscout.backend.model.jpa;
 
+import click.reelscout.backend.builder.implementation.ForumPostBuilderImplementation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,11 +42,17 @@ public class ForumPost implements Serializable {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public ForumPost(ForumThread thread, User author, ForumPost parent, String body) {
-        this.thread = thread;
-        this.author = author;
-        this.parent = parent;
-        this.body = body;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ForumPostReport> reports;
+
+    public ForumPost(ForumPostBuilderImplementation b) {
+        this.id = b.getId();
+        this.thread = b.getThread();
+        this.author = b.getAuthor();
+        this.parent = b.getParent();
+        this.body = b.getBody();
+        this.createdAt = b.getCreatedAt();
+        this.updatedAt = b.getUpdatedAt();
+        this.reports = new ArrayList<>();
     }
 }
-

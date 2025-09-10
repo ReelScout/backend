@@ -156,6 +156,8 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
                 .toBuilder(userMapperContext.toEntity(userRequestDTO, s3ImageKey))
                 .id(authenticatedUser.getId())
                 .role(authenticatedUser.getRole())
+                .suspendedUntil(authenticatedUser.getSuspendedUntil())
+                .suspendedReason(authenticatedUser.getSuspendedReason())
                 .build();
 
         try {
@@ -193,5 +195,47 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         }
 
         return new CustomResponseDTO("Password changed successfully");
+    }
+
+    @Override
+    public CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until, String reason) {
+        U user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
+
+        U updated = userMapperContext
+                .toBuilder(user)
+                .suspendedUntil(until)
+                .suspendedReason(reason)
+                .build();
+
+        try {
+            userRepository.save(updated);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Failed to suspend user");
+        }
+        return new CustomResponseDTO("User suspended until " + until);
+    }
+
+    @Override
+    public CustomResponseDTO unsuspendUser(Long userId) {
+        U user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class));
+
+        if (user.getSuspendedUntil() == null) {
+            return new CustomResponseDTO("User is not suspended");
+        }
+
+        U updated = userMapperContext
+                .toBuilder(user)
+                .suspendedUntil(null)
+                .suspendedReason(null)
+                .build();
+
+        try {
+            userRepository.save(updated);
+        } catch (Exception e) {
+            throw new EntityUpdateException("Failed to unsuspend user");
+        }
+        return new CustomResponseDTO("User suspension removed");
     }
 }
