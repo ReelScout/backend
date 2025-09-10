@@ -19,6 +19,7 @@ import click.reelscout.backend.repository.jpa.ContentRepository;
 import click.reelscout.backend.repository.jpa.ContentTypeRepository;
 import click.reelscout.backend.repository.jpa.GenreRepository;
 import click.reelscout.backend.s3.S3Service;
+import click.reelscout.backend.observer.content.ContentSubject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,6 +49,7 @@ class ContentServiceImplementationTest {
     @Mock private GenreRepository genreRepository;
     @Mock private S3Service s3Service;
     @Mock private ContentMapper contentMapper;
+    @Mock private ContentSubject contentSubject;
 
     @InjectMocks
     private ContentServiceImplementation service;
@@ -117,6 +119,7 @@ class ContentServiceImplementationTest {
         verify(contentTypeRepository).save(dto.getContentType());
         verify(contentElasticRepository).save(doc);
         verify(s3Service).uploadFile(startsWith("content/"), eq("base64-img"));
+        verify(contentSubject).notifyContentCreated(response);
     }
 
     @Test
