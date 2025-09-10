@@ -8,12 +8,16 @@ import click.reelscout.backend.exception.custom.DataValidationException;
 import click.reelscout.backend.exception.custom.EntityCreateException;
 import click.reelscout.backend.exception.custom.EntityNotFoundException;
 import click.reelscout.backend.mapper.definition.ForumMapper;
+import click.reelscout.backend.mapper.definition.ForumReportMapper;
+import click.reelscout.backend.dto.request.ReportPostRequestDTO;
 import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ForumPost;
+import click.reelscout.backend.model.jpa.ForumPostReport;
 import click.reelscout.backend.model.jpa.ForumThread;
 import click.reelscout.backend.model.jpa.User;
 import click.reelscout.backend.repository.jpa.ContentRepository;
 import click.reelscout.backend.repository.jpa.ForumPostRepository;
+import click.reelscout.backend.repository.jpa.ForumPostReportRepository;
 import click.reelscout.backend.repository.jpa.ForumThreadRepository;
 import click.reelscout.backend.service.definition.ForumService;
 import jakarta.transaction.Transactional;
@@ -30,7 +34,9 @@ public class ForumServiceImplementation implements ForumService {
     private final ContentRepository contentRepository;
     private final ForumThreadRepository threadRepository;
     private final ForumPostRepository postRepository;
+    private final ForumPostReportRepository postReportRepository;
     private final ForumMapper forumMapper;
+    private final ForumReportMapper forumReportMapper;
 
     @Override
     public List<ForumThreadResponseDTO> getThreadsByContent(Long contentId) {
@@ -95,5 +101,21 @@ public class ForumServiceImplementation implements ForumService {
             throw new EntityCreateException(ForumPost.class);
         }
     }
-}
 
+    @Override
+    public void reportPost(User reporter, Long postId, ReportPostRequestDTO dto) {
+        ForumPost post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException(ForumPost.class));
+
+        if (postReportRepository.existsByPostAndReporter(post, reporter)) {
+            throw new DataValidationException("You have already reported this post");
+        }
+
+        try {
+            ForumPostReport report = forumReportMapper.toEntity(post, reporter, dto.getReason());
+            postReportRepository.save(report);
+        } catch (Exception e) {
+            throw new EntityCreateException(ForumPostReport.class);
+        }
+    }
+}
