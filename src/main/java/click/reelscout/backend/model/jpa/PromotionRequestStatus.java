@@ -1,6 +1,6 @@
 package click.reelscout.backend.model.jpa;
 
-public enum VerificationRequestStatus {
+public enum PromotionRequestStatus {
     PENDING,
     APPROVED,
     REJECTED

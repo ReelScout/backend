@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class VerificationRequestCreateDTO {
+public class PromotionRequestCreateDTO {
     @Size(max = 1000)
     private String message;
 }

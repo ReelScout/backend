@@ -1,6 +1,6 @@
 package click.reelscout.backend.model.jpa;
 
-import click.reelscout.backend.builder.implementation.VerificationRequestBuilderImplementation;
+import click.reelscout.backend.builder.implementation.PromotionRequestBuilderImplementation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +14,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "verification_request", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"requester_id", "status"})
+@Table(name = "promotion_request", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"requester_id", "status", "requested_role"})
 })
-public class VerificationRequest implements Serializable {
+public class PromotionRequest implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -31,13 +31,17 @@ public class VerificationRequest implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private VerificationRequestStatus status;
+    private PromotionRequestStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role requestedRole;
 
     @Column(length = 1000)
     private String message;
 
     @Column(length = 1000)
-    private String decisionReason; // optional reason for rejection
+    private String decisionReason;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "processed_by_id")
@@ -49,10 +53,11 @@ public class VerificationRequest implements Serializable {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public VerificationRequest(VerificationRequestBuilderImplementation builder) {
+    public PromotionRequest(PromotionRequestBuilderImplementation builder) {
         this.id = builder.getId();
         this.requester = builder.getRequester();
         this.status = builder.getStatus();
+        this.requestedRole = builder.getRequestedRole();
         this.message = builder.getMessage();
         this.decisionReason = builder.getDecisionReason();
         this.processedBy = builder.getProcessedBy();
@@ -60,3 +65,4 @@ public class VerificationRequest implements Serializable {
         this.updatedAt = builder.getUpdatedAt();
     }
 }
+

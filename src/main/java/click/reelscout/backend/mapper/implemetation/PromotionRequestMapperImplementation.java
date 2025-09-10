@@ -1,26 +1,25 @@
 package click.reelscout.backend.mapper.implemetation;
 
-import click.reelscout.backend.builder.definition.VerificationRequestBuilder;
-import click.reelscout.backend.dto.response.VerificationRequestResponseDTO;
-import click.reelscout.backend.mapper.definition.VerificationRequestMapper;
-import click.reelscout.backend.model.jpa.Member;
-import click.reelscout.backend.model.jpa.VerificationRequest;
-import click.reelscout.backend.model.jpa.VerificationRequestStatus;
+import click.reelscout.backend.builder.definition.PromotionRequestBuilder;
+import click.reelscout.backend.dto.response.PromotionRequestResponseDTO;
+import click.reelscout.backend.mapper.definition.PromotionRequestMapper;
+import click.reelscout.backend.model.jpa.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class VerificationRequestMapperImplementation implements VerificationRequestMapper {
-    private final VerificationRequestBuilder builder;
+public class PromotionRequestMapperImplementation implements PromotionRequestMapper {
+    private final PromotionRequestBuilder builder;
 
     @Override
-    public VerificationRequestResponseDTO toDto(VerificationRequest request) {
-        return new VerificationRequestResponseDTO(
+    public PromotionRequestResponseDTO toDto(PromotionRequest request) {
+        return new PromotionRequestResponseDTO(
                 request.getId(),
                 request.getRequester().getId(),
                 request.getRequester().getUsername(),
                 request.getStatus(),
+                request.getRequestedRole(),
                 request.getMessage(),
                 request.getDecisionReason(),
                 request.getCreatedAt(),
@@ -29,11 +28,12 @@ public class VerificationRequestMapperImplementation implements VerificationRequ
     }
 
     @Override
-    public VerificationRequestBuilder toBuilder(VerificationRequest request) {
+    public PromotionRequestBuilder toBuilder(PromotionRequest request) {
         return builder
                 .id(request.getId())
                 .requester(request.getRequester())
                 .status(request.getStatus())
+                .requestedRole(request.getRequestedRole())
                 .message(request.getMessage())
                 .decisionReason(request.getDecisionReason())
                 .processedBy(request.getProcessedBy())
@@ -42,11 +42,12 @@ public class VerificationRequestMapperImplementation implements VerificationRequ
     }
 
     @Override
-    public VerificationRequest toEntity(Member requester, String message, VerificationRequestStatus status) {
+    public PromotionRequest toEntity(Member requester, String message, PromotionRequestStatus status, Role requestedRole) {
         return builder
                 .id(null)
                 .requester(requester)
                 .status(status)
+                .requestedRole(requestedRole)
                 .message(message)
                 .decisionReason(null)
                 .processedBy(null)
