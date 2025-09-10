@@ -54,7 +54,7 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
             }
 
             // Only allow members to chat (verified members included). Production companies excluded.
-            if (!hasAnyRole(userDetails.getAuthorities(), List.of("ROLE_MEMBER", "ROLE_VERIFIED_MEMBER"))) {
+            if (!hasAnyRole(userDetails.getAuthorities(), List.of("ROLE_MEMBER", "ROLE_VERIFIED_MEMBER", "ROLE_ADMIN", "ROLE_MODERATOR"))) {
                 throw new SecurityException("Only members can use chat");
             }
 
