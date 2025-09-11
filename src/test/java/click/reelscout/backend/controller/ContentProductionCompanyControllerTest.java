@@ -4,6 +4,7 @@ import click.reelscout.backend.dto.request.ContentRequestDTO;
 import click.reelscout.backend.dto.response.ContentResponseDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.model.jpa.ProductionCompany;
+import click.reelscout.backend.service.definition.AnalyticsService;
 import click.reelscout.backend.service.definition.ContentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,11 +34,14 @@ class ContentProductionCompanyControllerTest {
     @Mock
     private ContentService contentService;
 
+    @Mock
+    private AnalyticsService analyticsService;
+
     private ContentProductionCompanyController controller;
 
     @BeforeEach
     void setUp() {
-        controller = new ContentProductionCompanyController(contentService);
+        controller = new ContentProductionCompanyController(contentService, analyticsService);
     }
 
     @Test
