@@ -18,4 +18,6 @@ public interface ForumPostReportRepository extends JpaRepository<ForumPostReport
 
     @Query("select distinct p.author from ForumPostReport r join r.post p where r.reporter.role = click.reelscout.backend.model.jpa.Role.MODERATOR")
     <U extends User> List<U> findDistinctAuthorsReportedByModerators();
+
+    List<ForumPostReport> findAllByPostIn(List<ForumPost> posts);
 }

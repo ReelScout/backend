@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ForumThreadRepository extends JpaRepository<ForumThread, Long> {
     List<ForumThread> findAllByContent(Content content);
+    List<ForumThread> findAllByContentIn(List<Content> contents);
 }
-

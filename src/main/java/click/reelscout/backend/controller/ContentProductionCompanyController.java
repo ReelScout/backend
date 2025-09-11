@@ -1,10 +1,12 @@
 package click.reelscout.backend.controller;
 
 import click.reelscout.backend.dto.request.ContentRequestDTO;
+import click.reelscout.backend.dto.response.analytics.ContentTableRowDTO;
 import click.reelscout.backend.dto.response.ContentResponseDTO;
 import click.reelscout.backend.dto.response.CustomResponseDTO;
 import click.reelscout.backend.model.jpa.ProductionCompany;
 import click.reelscout.backend.service.definition.ContentService;
+import click.reelscout.backend.service.definition.AnalyticsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 @PreAuthorize("hasRole(T(click.reelscout.backend.model.jpa.Role).PRODUCTION_COMPANY)")
 public class ContentProductionCompanyController {
     private final ContentService contentService;
+    private final AnalyticsService analyticsService;
 
     @PostMapping("/add")
     public ResponseEntity<ContentResponseDTO> addContent(@AuthenticationPrincipal ProductionCompany authenticatedProduction, @Valid @RequestBody ContentRequestDTO contentRequestDTO) {
@@ -39,5 +42,11 @@ public class ContentProductionCompanyController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CustomResponseDTO> deleteContent(@AuthenticationPrincipal ProductionCompany authenticatedProduction, @PathVariable Long id) {
         return ResponseEntity.ok(contentService.delete(authenticatedProduction, id));
+    }
+
+    @GetMapping("/my-contents/stats")
+    public ResponseEntity<List<ContentTableRowDTO>> getMyContentsStats(@AuthenticationPrincipal ProductionCompany authenticatedProduction) {
+        var dashboard = analyticsService.getProductionDashboard(authenticatedProduction);
+        return ResponseEntity.ok(dashboard.getTable());
     }
 }
