@@ -5,12 +5,14 @@ import click.reelscout.backend.dto.request.CreateThreadRequestDTO;
 import click.reelscout.backend.dto.response.ForumPostResponseDTO;
 import click.reelscout.backend.dto.response.ForumThreadResponseDTO;
 import click.reelscout.backend.exception.custom.DataValidationException;
-import click.reelscout.backend.mapper.implemetation.ForumMapperImplementation;
+import click.reelscout.backend.mapper.definition.ForumMapper;
+import click.reelscout.backend.mapper.definition.ForumReportMapper;
 import click.reelscout.backend.model.jpa.Content;
 import click.reelscout.backend.model.jpa.ForumPost;
 import click.reelscout.backend.model.jpa.ForumThread;
 import click.reelscout.backend.model.jpa.User;
 import click.reelscout.backend.repository.jpa.ContentRepository;
+import click.reelscout.backend.repository.jpa.ForumPostReportRepository;
 import click.reelscout.backend.repository.jpa.ForumPostRepository;
 import click.reelscout.backend.repository.jpa.ForumThreadRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +33,16 @@ class ForumServiceImplementationTest {
     @Mock private ContentRepository contentRepository;
     @Mock private ForumThreadRepository threadRepository;
     @Mock private ForumPostRepository postRepository;
+    @Mock private ForumPostReportRepository reportRepository;
+    @Mock private ForumMapper mapper;
+    @Mock private ForumReportMapper reportMapper;
 
     private ForumServiceImplementation service;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        service = new ForumServiceImplementation(contentRepository, threadRepository, postRepository, new ForumMapperImplementation());
+        service = new ForumServiceImplementation(contentRepository, threadRepository, postRepository, reportRepository, mapper, reportMapper);
     }
 
     @Test
@@ -49,15 +54,25 @@ class ForumServiceImplementationTest {
         User user = Mockito.mock(User.class);
         when(user.getUsername()).thenReturn("author");
 
-        ForumThread t1 = new ForumThread(content, "T1", user);
-        ReflectionTestUtils.setField(t1, "updatedAt", LocalDateTime.now().minusHours(1));
+        ForumThread t1 = Mockito.mock(ForumThread.class);
+        ForumThread t2 = Mockito.mock(ForumThread.class);
 
-        ForumThread t2 = new ForumThread(content, "T2", user);
-        ReflectionTestUtils.setField(t2, "updatedAt", LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        when(t1.getUpdatedAt()).thenReturn(now.minusHours(1));
+        when(t2.getUpdatedAt()).thenReturn(now);
 
         when(threadRepository.findAllByContent(content)).thenReturn(List.of(t1, t2));
         when(postRepository.countByThread(t1)).thenReturn(2L);
         when(postRepository.countByThread(t2)).thenReturn(5L);
+
+        when(mapper.toThreadDto(t1, 2L))
+                .thenReturn(new ForumThreadResponseDTO(
+                        null, null, "T1", "author", null, null, 2L
+                ));
+        when(mapper.toThreadDto(t2, 5L))
+                .thenReturn(new ForumThreadResponseDTO(
+                        null, null, "T2", "author", null, null, 5L
+                ));
 
         List<ForumThreadResponseDTO> result = service.getThreadsByContent(1L);
 
@@ -81,6 +96,21 @@ class ForumServiceImplementationTest {
         dto.setTitle("Title");
         dto.setBody("First body");
 
+        when(mapper.toThreadDto(any(ForumThread.class), anyLong()))
+                .thenReturn(new ForumThreadResponseDTO(
+                        null, 9L, "Title", "u1", null, null, 1L
+                ));
+
+        // Make mapper build real (non-null) entities
+        ForumThread builtThread = new ForumThread();
+        ForumPost builtPost = new ForumPost();
+        when(mapper.toEntity(content, author, "Title")).thenReturn(builtThread);
+        when(mapper.toEntity(any(ForumThread.class), any(User.class), isNull(), anyString())).thenReturn(builtPost);
+
+        // Repositories return the same instance they receive (mimic Spring Data save)
+        when(threadRepository.save(any(ForumThread.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(postRepository.save(any(ForumPost.class))).thenAnswer(inv -> inv.getArgument(0));
+
         ForumThreadResponseDTO result = service.createThread(author, 9L, dto);
 
         assertEquals("Title", result.getTitle());
@@ -101,11 +131,20 @@ class ForumServiceImplementationTest {
         when(user.getUsername()).thenReturn("u");
         when(user.getId()).thenReturn(5L);
 
-        ForumPost p1 = new ForumPost(thread, user, null, "A");
+        ForumPost p1 = Mockito.mock(ForumPost.class);
         ReflectionTestUtils.setField(p1, "id", 21L);
-        ForumPost p2 = new ForumPost(thread, user, p1, "B");
+        ForumPost p2 = Mockito.mock(ForumPost.class);
 
         when(postRepository.findAllByThreadOrderByCreatedAtAsc(thread)).thenReturn(List.of(p1, p2));
+
+        when(mapper.toPostDto(p1))
+                .thenReturn(new ForumPostResponseDTO(
+                        21L, 3L, 5L, "A", null, null, null
+                ));
+        when(mapper.toPostDto(p2))
+                .thenReturn(new ForumPostResponseDTO(
+                        22L, 3L, 5L, "B", 21L, null, null
+                ));
 
         List<ForumPostResponseDTO> result = service.getPostsByThread(3L);
         assertEquals(2, result.size());
