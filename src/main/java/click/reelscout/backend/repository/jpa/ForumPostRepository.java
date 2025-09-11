@@ -17,4 +17,6 @@ public interface ForumPostRepository extends JpaRepository<ForumPost, Long> {
     List<ForumPost> findAllByParent(ForumPost parent);
 
     List<ForumPost> findAllByAuthor(User author);
+
+    List<ForumPost> findAllByThreadIn(List<ForumThread> threads);
 }

@@ -13,4 +13,6 @@ public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
     List<Watchlist> findAllByMemberAndContentsIsContaining(Member member, Content content);
 
     List<Watchlist> findAllByMemberAndIsPublic(Member member, boolean isPublic);
+
+    long countByContentsContaining(Content content);
 }
