@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for WatchlistServiceImplementation.
+ * Unit tests for {@link WatchlistServiceImplementation}.
  * We mock all collaborators and verify pure service logic / interactions.
  */
 @ExtendWith(MockitoExtension.class)
@@ -132,6 +132,11 @@ class WatchlistServiceImplementationTest {
     @DisplayName("create")
     class Create {
 
+        /**
+         * Test creating a watchlist successfully.
+         * We verify that the mapper is called to convert the request DTO to an entity,
+         * the repository saves it, and then the mapper converts it back to a response DTO.
+         */
         @Test
         @DisplayName("should create and map to DTO")
         void create_ok() {
@@ -151,6 +156,10 @@ class WatchlistServiceImplementationTest {
             verify(watchlistMapper).toDto(mappedEntity);
         }
 
+        /**
+         * Test that if the repository throws an exception during save,
+         * the service wraps it in an EntityCreateException.
+         */
         @Test
         @DisplayName("should wrap repository exception into EntityCreateException")
         void create_wrapsException() {
@@ -168,7 +177,12 @@ class WatchlistServiceImplementationTest {
     @Nested
     @DisplayName("update")
     class Update {
-
+        /**
+         * Test updating a watchlist successfully.
+         * We verify that the existing watchlist is fetched, ownership is checked,
+         * the request DTO is mapped to an entity, the ID is set via builder,
+         * and then it's saved and mapped to a response DTO.
+         */
         @Test
         @DisplayName("should update when owner matches and map to DTO")
         void update_ok() {
@@ -199,6 +213,9 @@ class WatchlistServiceImplementationTest {
             verify(watchlistRepository).save(built);
         }
 
+        /**
+         * Test that if the watchlist ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw EntityNotFoundException when ID not found")
         void update_notFound() {
@@ -208,6 +225,10 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if a user who is not the owner tries to update the watchlist,
+         * an EntityUpdateException is thrown indicating lack of authorization.
+         */
         @Test
         @DisplayName("should throw EntityUpdateException when user is not the owner")
         void update_unauthorized() {
@@ -219,6 +240,10 @@ class WatchlistServiceImplementationTest {
                     .hasMessageContaining("not authorized");
         }
 
+        /**
+         * Test that if the repository throws an exception during save,
+         * the service wraps it in an EntityUpdateException.
+         */
         @Test
         @DisplayName("should wrap repository exception into EntityUpdateException")
         void update_wrapsException() {
@@ -249,6 +274,10 @@ class WatchlistServiceImplementationTest {
     @DisplayName("delete")
     class Delete {
 
+        /**
+         * Test deleting a watchlist successfully when the owner matches.
+         * We verify that the repository's delete method is called.
+         */
         @Test
         @DisplayName("should delete when owner matches")
         void delete_ok() {
@@ -261,6 +290,9 @@ class WatchlistServiceImplementationTest {
             verify(watchlistRepository).delete(watchlist);
         }
 
+        /**
+         * Test that if the watchlist ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw not found if id missing")
         void delete_notFound() {
@@ -270,6 +302,10 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if a user who is not the owner tries to delete the watchlist,
+         * an EntityDeleteException is thrown indicating lack of authorization.
+         */
         @Test
         @DisplayName("should throw EntityDeleteException when user not owner")
         void delete_unauthorized() {
@@ -280,6 +316,10 @@ class WatchlistServiceImplementationTest {
                     .hasMessageContaining("not authorized");
         }
 
+        /**
+         * Test that if the repository throws an exception during delete,
+         * the service wraps it in an EntityDeleteException.
+         */
         @Test
         @DisplayName("should wrap repository exception into EntityDeleteException")
         void delete_wrapsException() {
@@ -291,6 +331,9 @@ class WatchlistServiceImplementationTest {
         }
     }
 
+    /**
+     * Test fetching all watchlists by a member and mapping them to DTOs.
+     */
     @Test
     @DisplayName("getAllByMember: should map list to DTOs")
     void getAllByMember_ok() {
@@ -306,6 +349,11 @@ class WatchlistServiceImplementationTest {
     @DisplayName("addContentToWatchlist")
     class AddContent {
 
+        /**
+         * Test adding content to a watchlist successfully.
+         * We verify that the watchlist and content are fetched, the content is added,
+         * the watchlist is saved, and the result is mapped to a DTO including image data.
+         */
         @Test
         @DisplayName("should add content, save, and map with images")
         void add_ok() {
@@ -336,6 +384,9 @@ class WatchlistServiceImplementationTest {
             verify(watchlistMapper).toDto(eq(watchlist), argThat(list -> list.size() == 1));
         }
 
+        /**
+         * Test that if the watchlist ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw not found when watchlist id missing")
         void add_watchlistNotFound() {
@@ -345,6 +396,9 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if the content ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw not found when content id missing")
         void add_contentNotFound() {
@@ -355,6 +409,10 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if the repository throws an exception during save,
+         * the service wraps it in an EntityUpdateException.
+         */
         @Test
         @DisplayName("should wrap save exception into EntityUpdateException")
         void add_wrapsException() {
@@ -374,6 +432,11 @@ class WatchlistServiceImplementationTest {
     @DisplayName("removeContentFromWatchlist")
     class RemoveContent {
 
+        /**
+         * Test removing content from a watchlist successfully.
+         * We verify that the watchlist and content are fetched, the content is removed,
+         * the watchlist is saved, and the result is mapped to a DTO.
+         */
         @Test
         @DisplayName("should remove content, save, and map with images")
         void remove_ok() {
@@ -395,6 +458,9 @@ class WatchlistServiceImplementationTest {
             verify(watchlistRepository).save(watchlist);
         }
 
+        /**
+         * Test that if the watchlist ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw not found when watchlist missing")
         void remove_watchlistNotFound() {
@@ -404,6 +470,9 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if the content ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw not found when content missing")
         void remove_contentNotFound() {
@@ -414,6 +483,10 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if the repository throws an exception during save,
+         * the service wraps it in an EntityUpdateException.
+         */
         @Test
         @DisplayName("should wrap save exception into EntityUpdateException")
         void remove_wrapsException() {
@@ -432,6 +505,10 @@ class WatchlistServiceImplementationTest {
     @DisplayName("getById")
     class GetById {
 
+        /**
+         * Test fetching a watchlist by ID when the owner requests their own private list.
+         * We verify that the watchlist is fetched and mapped to a DTO with an empty content list.
+         */
         @Test
         @DisplayName("should return DTO if owner requests private list")
         void getById_ownerPrivate_ok() {
@@ -446,6 +523,10 @@ class WatchlistServiceImplementationTest {
             verify(watchlistMapper).toDto(eq(watchlist), argThat(List::isEmpty));
         }
 
+        /**
+         * Test fetching a watchlist by ID when another user requests a public list.
+         * We verify that the watchlist is fetched and mapped to a DTO.
+         */
         @Test
         @DisplayName("should return DTO if public list requested by other user")
         void getById_public_ok() {
@@ -458,6 +539,10 @@ class WatchlistServiceImplementationTest {
             assertThat(result).isSameAs(watchlistDto);
         }
 
+        /**
+         * Test that if a non-owner user tries to access a private watchlist,
+         * an EntityNotFoundException is thrown to avoid leaking its existence.
+         */
         @Test
         @DisplayName("should throw not found when private list requested by non-owner")
         void getById_private_unauthorized() {
@@ -468,6 +553,9 @@ class WatchlistServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Test that if the watchlist ID does not exist, an EntityNotFoundException is thrown.
+         */
         @Test
         @DisplayName("should throw not found if id missing")
         void getById_notFound() {
@@ -478,6 +566,10 @@ class WatchlistServiceImplementationTest {
         }
     }
 
+    /**
+     * Test fetching all watchlists by a member that contain a specific content,
+     * and mapping them to DTOs.
+     */
     @Test
     @DisplayName("getAllByMemberAndContent: should map lists")
     void getAllByMemberAndContent_ok() {
@@ -493,6 +585,9 @@ class WatchlistServiceImplementationTest {
         assertThat(result).hasSize(1).first().isSameAs(watchlistDto);
     }
 
+    /**
+     * Test that if the content ID does not exist, an EntityNotFoundException is thrown.
+     */
     @Test
     @DisplayName("getAllByMemberAndContent: should throw not found when content ID missing")
     void getAllByMemberAndContent_contentNotFound() {
@@ -502,6 +597,10 @@ class WatchlistServiceImplementationTest {
                 .isInstanceOf(EntityNotFoundException.class);
     }
 
+    /**
+     * Test fetching all public watchlists by a member ID,
+     * verifying that the member is fetched and the watchlists are mapped to DTOs.
+     */
     @Test
     @DisplayName("getAllPublicByMember: should fetch member and map lists")
     void getAllPublicByMember_ok() {
@@ -517,6 +616,9 @@ class WatchlistServiceImplementationTest {
         assertThat(result).hasSize(1).first().isSameAs(watchlistDto);
     }
 
+    /**
+     * Test that if the member ID does not exist, an EntityNotFoundException is thrown.
+     */
     @Test
     @DisplayName("getAllPublicByMember: should throw not found when member missing")
     void getAllPublicByMember_memberNotFound() {

@@ -18,36 +18,42 @@ public class WatchlistBuilderImplementation implements WatchlistBuilder {
     private Boolean isPublic;
     private Member member;
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistBuilder id(Long id) {
         this.id = id;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistBuilder name(String name) {
         this.name = name;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistBuilder contents(List<Content> contents) {
         this.contents = contents;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistBuilder isPublic(Boolean isPublic) {
         this.isPublic = isPublic;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistBuilder member(Member member) {
         this.member = member;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Watchlist build() {
         return new Watchlist(this);

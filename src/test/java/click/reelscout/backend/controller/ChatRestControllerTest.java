@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link ChatRestController}.
+ */
 class ChatRestControllerTest {
 
     @Mock
@@ -37,6 +40,7 @@ class ChatRestControllerTest {
         when(authentication.getName()).thenReturn("meUser");
     }
 
+    /** Tests for getDirectHistory method */
     @Test
     void getDirectHistory_shouldClampPageAndSize_andDelegateToService() {
         // Arrange
@@ -62,6 +66,7 @@ class ChatRestControllerTest {
         assertEquals(200, usedPageable.getPageSize(), "Size should be clamped to 200");
     }
 
+    /** Tests for getDirectHistory method */
     @Test
     void getDirectHistory_shouldUseValidPageAndSize() {
         // Arrange
@@ -80,6 +85,7 @@ class ChatRestControllerTest {
         assertEquals(20, pageable.getPageSize());
     }
 
+    /** Tests for getRecentConversations method */
     @Test
     void getRecentConversations_shouldClampSize_andDelegateToService() {
         // Arrange
@@ -99,6 +105,7 @@ class ChatRestControllerTest {
         verify(chatService).getRecentDirectConversations("meUser", 100);
     }
 
+    /** Tests for getRecentConversations method */
     @Test
     void getRecentConversations_shouldClampSizeToMin1() {
         // Arrange
@@ -112,6 +119,7 @@ class ChatRestControllerTest {
         verify(chatService).getRecentDirectConversations("meUser", 1);
     }
 
+    /** Tests for getRecentConversations method */
     @Test
     void getRecentConversations_shouldUseDefaultValueWithinRange() {
         // Arrange

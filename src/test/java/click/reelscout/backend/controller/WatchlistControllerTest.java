@@ -20,12 +20,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for WatchlistController.
- * These tests focus on verifying:
- *  - correct delegation to WatchlistService,
- *  - correct wrapping of service results in ResponseEntity.ok(...),
- *  - correct propagation of exceptions.
- * No Spring context, no MockMvc: just a plain Mockito-based unit test.
+ * Unit tests for {@link WatchlistController}.
+ * Uses Mockito to mock the {@link WatchlistService} dependency.
+ * Focuses on verifying that the controller correctly delegates to the service
+ * and returns the expected responses.
  */
 @ExtendWith(MockitoExtension.class)
 class WatchlistControllerTest {
@@ -73,6 +71,10 @@ class WatchlistControllerTest {
             verifyNoMoreInteractions(watchlistService);
         }
 
+        /**
+         * Ensures that exceptions thrown by the service layer are not caught or altered by the controller.
+         * This is important for proper error handling and propagation in the application.
+         */
         @Test
         void shouldPropagateServiceException() {
             // Arrange
@@ -93,6 +95,10 @@ class WatchlistControllerTest {
     @Nested
     class UpdateWatchlist {
 
+        /**
+         * Verifies that the controller correctly delegates the update operation to the service
+         * and returns the expected response.
+         */
         @Test
         void shouldDelegateUpdateAndReturnOkResponse() {
             // Arrange
@@ -117,7 +123,10 @@ class WatchlistControllerTest {
 
     @Nested
     class DeleteWatchlist {
-
+        /**
+         * Verifies that the controller correctly delegates the delete operation to the service
+         * and returns the expected response.
+         */
         @Test
         void shouldDelegateDeleteAndReturnOkResponse() {
             // Arrange
@@ -140,7 +149,9 @@ class WatchlistControllerTest {
 
     @Nested
     class GetMyWatchlists {
-
+        /**
+         * Verifies that the controller correctly retrieves all watchlists for the authenticated member.
+         */
         @Test
         void shouldReturnAllWatchlistsForMember() {
             // Arrange
@@ -165,7 +176,10 @@ class WatchlistControllerTest {
 
     @Nested
     class AddContentToWatchlist {
-
+        /**
+         * Verifies that the controller correctly adds content to a watchlist
+         * and returns the updated watchlist.
+         */
         @Test
         void shouldAddContentAndReturnUpdatedWatchlist() {
             // Arrange
@@ -190,7 +204,10 @@ class WatchlistControllerTest {
 
     @Nested
     class RemoveContentFromWatchlist {
-
+        /**
+         * Verifies that the controller correctly removes content from a watchlist
+         * and returns the updated watchlist.
+         */
         @Test
         void shouldRemoveContentAndReturnUpdatedWatchlist() {
             // Arrange
@@ -215,7 +232,10 @@ class WatchlistControllerTest {
 
     @Nested
     class GetWatchlistById {
-
+        /**
+         * Verifies that the controller correctly retrieves a watchlist by its ID
+         * for the authenticated member.
+         */
         @Test
         void shouldReturnWatchlistById() {
             // Arrange
@@ -238,7 +258,9 @@ class WatchlistControllerTest {
 
     @Nested
     class GetWatchlistsByContent {
-
+        /** Verifies that the controller correctly retrieves all watchlists
+         * containing a specific content item for the authenticated member.
+         */
         @Test
         void shouldReturnWatchlistsThatContainContent() {
             // Arrange
@@ -262,7 +284,9 @@ class WatchlistControllerTest {
 
     @Nested
     class GetPublicWatchlistsByMember {
-
+        /** Verifies that the controller correctly retrieves all public watchlists
+         * for a given member ID.
+         */
         @Test
         void shouldReturnPublicWatchlistsForGivenMemberId() {
             // Arrange

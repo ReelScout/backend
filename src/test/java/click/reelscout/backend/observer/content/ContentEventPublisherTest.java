@@ -9,11 +9,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for ContentEventPublisher (Subject/Publisher).
+ * Unit tests for {@link ContentEventPublisher} (Subject/Publisher).
  */
 @ExtendWith(MockitoExtension.class)
 class ContentEventPublisherTest {
 
+    /**
+     * Tests that registering a non-null observer results in it receiving events,
+     * and that registering null is safely ignored.
+     * Also verifies that the observer receives the correct payload.
+     * No exceptions should be thrown during these operations.
+     * This test covers both the registration and notification functionality.
+     */
     @Test
     @DisplayName("registerObserver(): registering a non-null observer makes it receive events")
     void registerObserver_registersAndReceivesEvents() {
@@ -32,6 +39,11 @@ class ContentEventPublisherTest {
         verifyNoMoreInteractions(observer);
     }
 
+    /**
+     * Tests that registering a null observer is safely ignored without throwing exceptions.
+     * This ensures robustness of the registration method against null inputs.
+     * No observers should be notified since none were successfully registered.
+     */
     @Test
     @DisplayName("registerObserver(): ignores null without throwing")
     void registerObserver_ignoresNull() {
@@ -46,6 +58,11 @@ class ContentEventPublisherTest {
         verifyNoInteractions(payload);
     }
 
+    /**
+     * Tests that removing an observer prevents it from receiving further notifications.
+     * This ensures that the removal functionality works correctly.
+     * The observer should receive events before removal, but not after.
+     */
     @Test
     @DisplayName("removeObserver(): removing an observer prevents further notifications")
     void removeObserver_stopsReceivingEvents() {
@@ -67,6 +84,11 @@ class ContentEventPublisherTest {
         verifyNoMoreInteractions(observer);
     }
 
+    /**
+     * Tests that if one observer throws an exception during notification,
+     * it does not prevent other observers from being notified.
+     * This ensures robustness of the notification mechanism.
+     */
     @Test
     @DisplayName("notifyContentCreated(): continues notifying other observers if one throws")
     void notifyContentCreated_continuesOnException() {
@@ -92,6 +114,11 @@ class ContentEventPublisherTest {
         verifyNoMoreInteractions(badObserver, goodObserver);
     }
 
+    /**
+     * Tests that notifying observers when none are registered results in no operations
+     * and does not throw any exceptions.
+     * This ensures that the notification method handles the empty observer list gracefully.
+     */
     @Test
     @DisplayName("notifyContentCreated(): no observers -> no interactions")
     void notifyContentCreated_noObservers_noOps() {

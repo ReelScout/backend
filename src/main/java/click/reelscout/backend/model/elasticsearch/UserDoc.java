@@ -7,6 +7,9 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+/**
+ * Abstract Elasticsearch document for User entity.
+ */
 @ToString
 @Document(indexName = "users")
 @NoArgsConstructor

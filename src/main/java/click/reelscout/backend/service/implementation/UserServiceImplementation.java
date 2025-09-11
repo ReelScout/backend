@@ -50,6 +50,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
     private final ForumPostReportRepository forumPostReportRepository;
     private static final LocalDateTime PERMANENT_BAN_UNTIL = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
 
+    /** {@inheritDoc} */
     @Override
     public List<S> getAll() {
         List<U> users = userRepository.findAll();
@@ -63,6 +64,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         }).toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public S getById(Long id) {
         U user = userRepository.findById(id)
@@ -75,6 +77,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return userMapperContext.toDto(user, base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public S getByEmail(String email) {
         U user = userRepository.findByEmail(email)
@@ -87,6 +90,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return userMapperContext.toDto(user, base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public S getByUsername(String username) {
         U user = userRepository.findByUsername(username)
@@ -99,6 +103,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return userMapperContext.toDto(user, base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public S getByUsernameOrEmail(String usernameOrEmail) {
         U user = userRepository.findByUsernameOrEmail(usernameOrEmail)
@@ -111,6 +116,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return userMapperContext.toDto(user, base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public S getCurrentUserDto(U authenticatedUser) {
         userMapperContext.setUserMapper(userMapperFactoryRegistry.getMapperFor(authenticatedUser));
@@ -120,6 +126,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return userMapperContext.toDto(authenticatedUser, base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public UserLoginResponseDTO update(U authenticatedUser, R userRequestDTO) {
         if(!passwordEncoder.matches(userRequestDTO.getPassword(), authenticatedUser.getPassword())) {
@@ -181,6 +188,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return authenticatedUser.superEquals(updatedUser) ? null : authService.login(updatedUser.getUsername(), userRequestDTO.getPassword());
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO changePassword(U authenticatedUser, UserPasswordChangeRequestDTO userPasswordChangeRequestDTO) {
         if (!passwordEncoder.matches(userPasswordChangeRequestDTO.getCurrentPassword(), authenticatedUser.getPassword())) {
@@ -205,6 +213,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return new CustomResponseDTO("Password changed successfully");
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO suspendUser(Long userId, java.time.LocalDateTime until, String reason) {
         U user = userRepository.findById(userId)
@@ -224,6 +233,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return new CustomResponseDTO("User suspended until " + until);
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO unsuspendUser(Long userId) {
         U user = userRepository.findById(userId)
@@ -247,6 +257,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return new CustomResponseDTO("User suspension removed");
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO permanentlyBanUser(Long targetUserId, U performedBy, String reason) {
         U target = userRepository.findById(targetUserId)
@@ -274,6 +285,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return new CustomResponseDTO("User permanently banned");
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO unbanUser(Long targetUserId, U performedBy, String reason) {
         U target = userRepository.findById(targetUserId)
@@ -293,6 +305,7 @@ public class UserServiceImplementation <U extends User, B extends UserBuilder<U,
         return new CustomResponseDTO("User unbanned");
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<S> listUsersReportedByModerators() {
         List<U> authors = forumPostReportRepository.findDistinctAuthorsReportedByModerators();

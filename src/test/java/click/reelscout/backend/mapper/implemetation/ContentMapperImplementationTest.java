@@ -18,12 +18,8 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.withSettings;
 
 /**
- * Pure unit tests for ContentMapperImplementation.
- * <p>
- * Notes:
- * - No Spring context is started.
- * - Everything is mocked; we call mapper methods directly.
- * - ContentBuilder is mocked with RETURNS_SELF so fluent chaining works.
+ * Unit test for {@link ContentMapperImplementation}.
+ * Uses Mockito to mock dependencies and verify interactions.
  */
 class ContentMapperImplementationTest {
 
@@ -37,6 +33,9 @@ class ContentMapperImplementationTest {
         mapper = new ContentMapperImplementation(contentBuilder);
     }
 
+    /** Test mapping of Content to ContentReponseDTO
+     * Tests that all fields are correctly mapped, including nested ProductionCompany and base64 image.
+     */
     @Test
     @DisplayName("toDto maps Content + ProductionCompany + base64 image to DTO")
     void toDto_mapsAllFields() {
@@ -84,6 +83,10 @@ class ContentMapperImplementationTest {
         assertEquals("Syncopy", dto.getProductionCompanyName());
     }
 
+    /**
+     * Test that toBuilder correctly populates a ContentBuilder with all fields from a Content.
+     * Verifies that each field is forwarded to the builder.
+     */
     @Test
     @DisplayName("toBuilder copies all fields from Content onto the fluent builder")
     void toBuilder_populatesBuilder() {
@@ -131,6 +134,12 @@ class ContentMapperImplementationTest {
         verify(contentBuilder).productionCompany(pc);
     }
 
+    /**
+     * Test that toEntity uses the ContentBuilder to build a Content from a ContentRequestDTO,
+     * a ProductionCompany, and an S3 image key.
+     * Verifies that all fields from the request are passed to the builder in order,
+     * and that the built Content is returned.
+     */
     @Test
     @DisplayName("toEntity builds a Content using the builder and returns the built instance")
     void toEntity_buildsAndReturnsEntity() {
@@ -171,6 +180,10 @@ class ContentMapperImplementationTest {
         verify(contentBuilder).build();
     }
 
+    /**
+     * Test that toDoc wraps a Content into a ContentDoc.
+     * Since ContentDoc is a simple wrapper, we just verify non-null result.
+     */
     @Test
     @DisplayName("toDoc wraps a Content into a ContentDoc")
     void toDoc_wrapsContent() {

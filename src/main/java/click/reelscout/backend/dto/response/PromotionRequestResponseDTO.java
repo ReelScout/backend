@@ -7,6 +7,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object for Promotion Request responses.
+ */
 @Getter
 @AllArgsConstructor
 public class PromotionRequestResponseDTO {

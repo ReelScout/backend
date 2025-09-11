@@ -14,6 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * Factory class for creating MemberMapper instances.
+ * Implements the UserMapperFactory interface.
+ * Uses MemberBuilder and PasswordEncoder for mapping operations.
+ */
 @SuppressWarnings("rawtypes")
 @Component
 @RequiredArgsConstructor
@@ -21,21 +26,25 @@ public class MemberMapperFactory implements UserMapperFactory {
     private final MemberBuilder memberBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(UserRequestDTO userRequestDTO) {
         return userRequestDTO instanceof MemberRequestDTO;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(UserResponseDTO userResponseDTO) {
         return userResponseDTO instanceof MemberResponseDTO;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(User user) {
         return user instanceof Member;
     }
 
+    /** {@inheritDoc} */
     @Override
     public UserMapper createMapper() {
         return new MemberMapperImplementation(memberBuilder, passwordEncoder);

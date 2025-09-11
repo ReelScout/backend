@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+/**
+ * DTO for user password change request.
+ */
 @Data
 public class UserPasswordChangeRequestDTO {
     @NotBlank(message = "Current password is mandatory")

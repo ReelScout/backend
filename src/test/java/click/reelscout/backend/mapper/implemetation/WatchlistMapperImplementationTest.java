@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests for WatchlistMapperImplementation.
+ * Unit tests for {@link WatchlistMapperImplementation}.
  * Tests all mapping operations between entities and DTOs with comprehensive coverage
  * including edge cases and boundary conditions.
  */
@@ -99,6 +99,10 @@ class WatchlistMapperImplementationTest {
     @DisplayName("toDto(Watchlist) - Simple mapping without contents")
     class SimpleToDtoTests {
 
+        /**
+         * Tests mapping a Watchlist entity to WatchlistResponseDTO.
+         * Verifies all basic fields are correctly mapped.
+         */
         @Test
         @DisplayName("should map watchlist entity to DTO with all basic fields")
         void mapWatchlistToDto_shouldMapAllBasicFields() {
@@ -112,6 +116,10 @@ class WatchlistMapperImplementationTest {
             assertThat(result.getIsPublic()).isEqualTo(IS_PUBLIC);
         }
 
+        /**
+         * Tests mapping a null Watchlist entity.
+         * Expects a NullPointerException to be thrown.
+         */
         @Test
         @DisplayName("should handle null watchlist gracefully")
         void mapNullWatchlist_shouldHandleGracefully() {
@@ -132,6 +140,10 @@ class WatchlistMapperImplementationTest {
             assertThat(result.getIsPublic()).isEqualTo(IS_PRIVATE);
         }
 
+        /**
+         * Tests mapping a watchlist with null name.
+         * Verifies that the null name is preserved in the DTO.
+         */
         @Test
         @DisplayName("should handle watchlist with null name")
         void mapWatchlistWithNullName_shouldPreserveNull() {
@@ -146,6 +158,10 @@ class WatchlistMapperImplementationTest {
             assertThat(result.getId()).isEqualTo(WATCHLIST_ID);
         }
 
+        /**
+         * Tests mapping a watchlist with null ID.
+         * Verifies that the null ID is preserved in the DTO.
+         */
         @Test
         @DisplayName("should handle watchlist with null ID")
         void mapWatchlistWithNullId_shouldPreserveNull() {
@@ -165,6 +181,11 @@ class WatchlistMapperImplementationTest {
     @DisplayName("toDto(Watchlist, List<ContentResponseDTO>) - Mapping with contents")
     class ToDtoWithContentsTests {
 
+        /**
+         * Tests mapping a Watchlist entity along with a list of ContentResponseDTOs.
+         * Verifies that the resulting DTO is of type WatchlistWithContentsResponseDTO
+         * and contains all expected fields and contents.
+         */
         @Test
         @DisplayName("should map watchlist with contents to WatchlistWithContentsResponseDTO")
         void mapWatchlistWithContents_shouldReturnWatchlistWithContentsResponseDTO() {
@@ -188,6 +209,10 @@ class WatchlistMapperImplementationTest {
                     .containsExactly(WATCHLIST_ID, WATCHLIST_NAME, IS_PUBLIC);
         }
 
+        /**
+         * Tests mapping a watchlist with an empty content list.
+         * Verifies that the resulting DTO contains an empty contents list.
+         */
         @Test
         @DisplayName("should handle empty content list")
         void mapWatchlistWithEmptyContents_shouldReturnEmptyContentsList() {
@@ -203,6 +228,10 @@ class WatchlistMapperImplementationTest {
             assertThat(withContents.getContents()).isEmpty();
         }
 
+        /**
+         * Tests mapping a watchlist with a null content list.
+         * Verifies that the resulting DTO has null contents.
+         */
         @Test
         @DisplayName("should handle null content list")
         void mapWatchlistWithNullContents_shouldPreserveNull() {
@@ -215,6 +244,10 @@ class WatchlistMapperImplementationTest {
             assertThat(withContents.getContents()).isNull();
         }
 
+        /**
+         * Tests mapping a watchlist with a single content item.
+         * Verifies that the resulting DTO contains exactly one content item.
+         */
         @Test
         @DisplayName("should handle single content item")
         void mapWatchlistWithSingleContent_shouldMapCorrectly() {
@@ -247,6 +280,10 @@ class WatchlistMapperImplementationTest {
     @DisplayName("toBuilder(Watchlist) - Converting entity to builder")
     class ToBuilderTests {
 
+        /**
+         * Tests converting a Watchlist entity to a WatchlistBuilder.
+         * Verifies that all properties are correctly set on the builder.
+         */
         @Test
         @DisplayName("should create builder with all watchlist properties")
         void convertWatchlistToBuilder_shouldSetAllProperties() {
@@ -268,6 +305,10 @@ class WatchlistMapperImplementationTest {
             assertThat(result).isSameAs(mockWatchlistBuilder);
         }
 
+        /**
+         * Tests converting a watchlist with null properties to a builder.
+         * Verifies that the builder methods are called with null values.
+         */
         @Test
         @DisplayName("should handle watchlist with null properties")
         void convertWatchlistWithNullProperties_shouldHandleGracefully() {
@@ -293,6 +334,10 @@ class WatchlistMapperImplementationTest {
             assertThat(result).isSameAs(mockWatchlistBuilder);
         }
 
+        /**
+         * Tests converting a null watchlist to a builder.
+         * Expects a NullPointerException to be thrown.
+         */
         @Test
         @DisplayName("should handle null watchlist input")
         void convertNullWatchlist_shouldThrowException() {
@@ -305,6 +350,10 @@ class WatchlistMapperImplementationTest {
     @DisplayName("toEntity(WatchlistRequestDTO, Member) - Converting DTO to entity")
     class ToEntityTests {
 
+        /**
+         * Tests converting a WatchlistRequestDTO to a Watchlist entity.
+         * Verifies that all properties are correctly set on the entity.
+         */
         @Test
         @DisplayName("should create entity from request DTO with member")
         void convertRequestDTOToEntity_shouldCreateValidEntity() {
@@ -328,6 +377,10 @@ class WatchlistMapperImplementationTest {
             assertThat(result).isSameAs(expectedEntity);
         }
 
+        /**
+         * Tests that the ID is always set to null when creating a new entity from a DTO.
+         * Verifies that the builder's id method is called with null.
+         */
         @Test
         @DisplayName("should always set ID to null for new entity")
         void convertRequestDTOToEntity_shouldAlwaysSetIdToNull() {
@@ -345,6 +398,10 @@ class WatchlistMapperImplementationTest {
             // This is verified through the mock expectations above
         }
 
+        /**
+         * Tests converting a request DTO with null name.
+         * Verifies that the null name is preserved in the resulting entity.
+         */
         @Test
         @DisplayName("should handle request DTO with null name")
         void convertRequestDTOWithNullName_shouldPreserveNull() {
@@ -364,6 +421,10 @@ class WatchlistMapperImplementationTest {
             assertNotNull(result);
         }
 
+        /**
+         * Tests converting a request DTO with null isPublic.
+         * Verifies that the null isPublic is preserved in the resulting entity.
+         */
         @Test
         @DisplayName("should handle request DTO with null isPublic")
         void convertRequestDTOWithNullIsPublic_shouldPreserveNull() {
@@ -383,6 +444,10 @@ class WatchlistMapperImplementationTest {
             assertNotNull(result);
         }
 
+        /**
+         * Tests converting a null request DTO.
+         * Expects a NullPointerException to be thrown.
+         */
         @Test
         @DisplayName("should handle null request DTO")
         void convertNullRequestDTO_shouldThrowException() {
@@ -390,6 +455,10 @@ class WatchlistMapperImplementationTest {
             assertThrows(NullPointerException.class, () -> mapper.toEntity(null, member));
         }
 
+        /**
+         * Tests converting a request DTO with null member.
+         * Verifies that the null member is preserved in the resulting entity.
+         */
         @Test
         @DisplayName("should handle null member")
         void convertRequestDTOWithNullMember_shouldAcceptNull() {
@@ -407,6 +476,10 @@ class WatchlistMapperImplementationTest {
             assertNotNull(result);
         }
 
+        /**
+         * Tests converting a request DTO with isPublic set to false.
+         * Verifies that the resulting entity has isPublic set to false.
+         */
         @Test
         @DisplayName("should create private watchlist when isPublic is false")
         void convertPrivateWatchlistRequestDTO_shouldSetIsPublicFalse() {
@@ -431,6 +504,10 @@ class WatchlistMapperImplementationTest {
     @DisplayName("Integration tests - End-to-end mapping scenarios")
     class IntegrationTests {
 
+        /**
+         * Tests a complete round-trip mapping from DTO to entity and back to DTO.
+         * Verifies that the original data is preserved through the transformations.
+         */
         @Test
         @DisplayName("should perform complete round-trip mapping correctly")
         void performRoundTripMapping_shouldPreserveData() {
@@ -462,6 +539,10 @@ class WatchlistMapperImplementationTest {
             assertThat(responseDTO.getId()).isEqualTo(999L);
         }
 
+        /**
+         * Tests a complex scenario involving all mapping methods.
+         * Verifies that each method works correctly in sequence.
+         */
         @Test
         @DisplayName("should handle complex mapping with contents and builder conversion")
         void performComplexMapping_shouldHandleAllOperations() {

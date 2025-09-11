@@ -16,6 +16,10 @@ import java.util.Base64;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link S3Service}.
+ * Covers upload, delete, and get file functionalities including error handling.
+ */
 class S3ServiceTest {
 
     @Mock
@@ -38,6 +42,9 @@ class S3ServiceTest {
         }
     }
 
+    /**
+     * Tests for uploadFile method
+     */
     @Test
     void uploadFile_returnsKey_whenValidBase64() {
         String key = "file.txt";
@@ -49,6 +56,9 @@ class S3ServiceTest {
         verify(s3Template).upload(eq(bucketName), eq(key), any(ByteArrayInputStream.class));
     }
 
+    /**
+     * Tests for uploadFile method with invalid base64 input
+     */
     @Test
     void uploadFile_returnsNull_whenEmptyContent() {
         String key = "file.txt";
@@ -57,6 +67,9 @@ class S3ServiceTest {
         verifyNoInteractions(s3Template);
     }
 
+    /**
+     * Tests for uploadFile method throwing S3Exception on error
+     */
     @Test
     void uploadFile_throwsS3Exception_onError() {
         String key = "file.txt";
@@ -68,6 +81,9 @@ class S3ServiceTest {
         assertThrows(S3Exception.class, () -> s3Service.uploadFile(key, base64));
     }
 
+    /**
+     * Tests for deleteFile method
+     */
     @Test
     void deleteFile_callsS3Template() {
         String key = "file.txt";
@@ -77,6 +93,9 @@ class S3ServiceTest {
         verify(s3Template).deleteObject(bucketName, key);
     }
 
+    /**
+     * Tests for deleteFile method throwing S3Exception on error
+     */
     @Test
     void deleteFile_throwsS3Exception_onError() {
         String key = "file.txt";
@@ -87,6 +106,9 @@ class S3ServiceTest {
         assertThrows(S3Exception.class, () -> s3Service.deleteFile(key));
     }
 
+    /**
+     * Tests for getFile method
+     */
     @Test
     void getFile_returnsBase64Content() throws IOException {
         String key = "file.txt";
@@ -103,12 +125,18 @@ class S3ServiceTest {
         verify(s3Template).download(bucketName, key);
     }
 
+    /**
+     * Tests for getFile method with null key
+     */
     @Test
     void getFile_returnsNull_whenKeyIsNull() {
         assertNull(s3Service.getFile(null));
         verifyNoInteractions(s3Template);
     }
 
+    /**
+     * Tests for getFile method throwing S3Exception on IOException
+     */
     @Test
     void getFile_throwsS3Exception_onIOException() throws IOException {
         String key = "file.txt";

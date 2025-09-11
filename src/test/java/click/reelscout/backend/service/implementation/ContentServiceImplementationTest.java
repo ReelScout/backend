@@ -35,10 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for ContentServiceImplementation.
- * - No Spring context.
- * - All collaborators are mocked.
- * - We assert returned values and key interACTIONs/branches.
+ * Unit tests for {@link ContentServiceImplementation}.
+ * Covers create, update, read and delete operations with various scenarios.
  */
 @ExtendWith(MockitoExtension.class)
 class ContentServiceImplementationTest {
@@ -80,6 +78,9 @@ class ContentServiceImplementationTest {
 
     // --------- create() ---------
 
+    /**
+     * Tests ProductionCompany creation with a base64 encoded image.
+     */
     @Test
     @DisplayName("create(): happy path with base64 image -> persists, indexes, uploads and returns DTO")
     void create_withImage_success() {
@@ -122,6 +123,9 @@ class ContentServiceImplementationTest {
         verify(contentSubject).notifyContentCreated(response);
     }
 
+    /**
+     * Tests that any exception during creation is wrapped into EntityCreateException.
+     */
     @Test
     @DisplayName("create(): wraps any exception into EntityCreateException")
     void create_wrapsInEntityCreateException() {
@@ -141,6 +145,10 @@ class ContentServiceImplementationTest {
 
     // --------- update() ---------
 
+    /**
+     * Tests updating existing content with a new base64 image.
+     * Verifies the full flow: fetch existing, map updates, save, index, upload new image, return DTO.
+     */
     @Test
     @DisplayName("update(): happy path with new image -> generates new key, persists, indexes, uploads and returns DTO")
     void update_withNewImage_success() {
@@ -184,6 +192,10 @@ class ContentServiceImplementationTest {
         verify(contentElasticRepository).save(doc);
     }
 
+    /**
+     * Tests updating existing content without providing a new image.
+     * Verifies that the existing S3 key is retained and no upload occurs.
+     */
     @Test
     @DisplayName("update(): throws EntityNotFoundException when id is missing")
     void update_notFound_throws() {
@@ -196,6 +208,10 @@ class ContentServiceImplementationTest {
                 () -> service.update(pc, 99L, dto));
     }
 
+    /**
+     * Tests updating existing content without providing a new image.
+     * Verifies that the existing S3 key is retained and no upload occurs.
+     */
     @Test
     @DisplayName("update(): wraps any exception into EntityUpdateException")
     void update_wrapsInEntityUpdateException() {
@@ -225,6 +241,9 @@ class ContentServiceImplementationTest {
 
     // --------- reads ---------
 
+    /**
+     * Tests fetching all content, ensuring each entity is mapped to a DTO with its image loaded from S3.
+     */
     @Test
     @DisplayName("getAll(): maps each entity to DTO with image loaded from S3")
     void getAll_mapsToDto() {
@@ -250,6 +269,9 @@ class ContentServiceImplementationTest {
         assertSame(d2, result.get(1));
     }
 
+    /**
+     * Tests fetching content types from the repository and returning their names.
+     */
     @Test
     @DisplayName("getContentTypes(): returns names from repository")
     void getContentTypes_returnsNames() {
@@ -257,6 +279,9 @@ class ContentServiceImplementationTest {
         assertEquals(List.of("MOVIE", "SERIES"), service.getContentTypes());
     }
 
+    /**
+     * Tests fetching genres from the repository and returning their names.
+     */
     @Test
     @DisplayName("getGenres(): returns names from repository")
     void getGenres_returnsNames() {
@@ -264,6 +289,9 @@ class ContentServiceImplementationTest {
         assertEquals(List.of("ACTION", "DRAMA"), service.getGenres());
     }
 
+    /**
+     * Tests fetching content by production company, ensuring each entity is mapped to a DTO with its image loaded from S3.
+     */
     @Test
     @DisplayName("getByProductionCompany(): maps to DTO with S3 file")
     void getByProductionCompany_mapsToDto() {
@@ -283,6 +311,9 @@ class ContentServiceImplementationTest {
 
     // --------- delete() ---------
 
+    /**
+     * Tests deleting content that does not exist, expecting an EntityNotFoundException.
+     */
     @Test
     @DisplayName("delete(): throws when the authenticated production does not own the content")
     void delete_unauthorized_throws() {
@@ -300,6 +331,9 @@ class ContentServiceImplementationTest {
         verify(contentRepository, never()).delete(any());
     }
 
+    /**
+     * Tests deleting content that does not exist, expecting an EntityNotFoundException.
+     */
     @Test
     @DisplayName("delete(): happy path -> deletes entity and S3 object (if present)")
     void delete_success_deletesAndRemovesS3() {
@@ -318,6 +352,9 @@ class ContentServiceImplementationTest {
         verify(s3Service).deleteFile("k");
     }
 
+    /**
+     * Tests deleting content that does not exist, expecting an EntityNotFoundException.
+     */
     @Test
     @DisplayName("delete(): wraps repository errors into EntityDeleteException")
     void delete_wrapsInEntityDeleteException() {

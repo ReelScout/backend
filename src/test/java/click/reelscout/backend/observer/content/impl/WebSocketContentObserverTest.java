@@ -13,7 +13,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for WebSocketContentObserver.
+ * Unit tests for {@link WebSocketContentObserver}.
+ * Uses Mockito to mock dependencies and verify interactions.
+ * Tests the register, unregister, and onContentCreated methods.
  */
 @ExtendWith(MockitoExtension.class)
 class WebSocketContentObserverTest {
@@ -27,6 +29,10 @@ class WebSocketContentObserverTest {
     @InjectMocks
     private WebSocketContentObserver observer;
 
+    /**
+     * Tests that the observer registers itself with the ContentSubject when register() is called.
+     * Verifies that the correct method on the subject is invoked.
+     */
     @Test
     @DisplayName("register(): registers this observer on the ContentSubject")
     void register_registersObserver() {
@@ -39,6 +45,10 @@ class WebSocketContentObserverTest {
         verifyNoMoreInteractions(contentSubject, messagingTemplate);
     }
 
+    /**
+     * Tests that the observer unregisters itself from the ContentSubject when unregister() is called.
+     * Verifies that the correct method on the subject is invoked.
+     */
     @Test
     @DisplayName("unregister(): removes this observer from the ContentSubject")
     void unregister_removesObserver() {
@@ -51,6 +61,10 @@ class WebSocketContentObserverTest {
         verifyNoMoreInteractions(contentSubject, messagingTemplate);
     }
 
+    /**
+     * Tests that when onContentCreated() is called, a STOMP message is sent to the correct destination
+     * with the provided payload. Verifies that no other interactions occur.
+     */
     @Test
     @DisplayName("onContentCreated(): sends a STOMP message to /queue/content/new with the payload")
     void onContentCreated_sendsStompMessage() {

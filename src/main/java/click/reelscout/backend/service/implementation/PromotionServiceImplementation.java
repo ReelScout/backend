@@ -28,6 +28,7 @@ public class PromotionServiceImplementation implements PromotionService {
     private final MemberMapper memberMapper;
     private final PromotionRequestMapper mapper;
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO requestVerifiedPromotion(Member requester, PromotionRequestCreateDTO dto) {
         if (requester.getRole() == Role.VERIFIED_MEMBER || requester.getRole() == Role.MODERATOR || requester.getRole() == Role.ADMIN) {
@@ -45,12 +46,14 @@ public class PromotionServiceImplementation implements PromotionService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<PromotionRequestResponseDTO> listPendingVerifiedRequests() {
         return repository.findAllByStatusAndRequestedRole(PromotionRequestStatus.PENDING, Role.VERIFIED_MEMBER)
                 .stream().map(mapper::toDto).toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO approveVerifiedPromotion(User moderator, Long requestId) {
         PromotionRequest req = repository.findById(requestId)
@@ -77,6 +80,7 @@ public class PromotionServiceImplementation implements PromotionService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO rejectVerifiedPromotion(User moderator, Long requestId, PromotionDecisionRequestDTO dto) {
         PromotionRequest req = repository.findById(requestId)
@@ -98,6 +102,7 @@ public class PromotionServiceImplementation implements PromotionService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO requestModeratorPromotion(Member requester, PromotionRequestCreateDTO dto) {
         if (requester.getRole() == Role.MODERATOR || requester.getRole() == Role.ADMIN) {
@@ -119,12 +124,14 @@ public class PromotionServiceImplementation implements PromotionService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<PromotionRequestResponseDTO> listPendingModeratorRequests() {
         return repository.findAllByStatusAndRequestedRole(PromotionRequestStatus.PENDING, Role.MODERATOR)
                 .stream().map(mapper::toDto).toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO approveModeratorPromotion(User admin, Long requestId) {
         PromotionRequest req = repository.findById(requestId)
@@ -150,6 +157,7 @@ public class PromotionServiceImplementation implements PromotionService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO rejectModeratorPromotion(User admin, Long requestId, PromotionDecisionRequestDTO dto) {
         PromotionRequest req = repository.findById(requestId)
@@ -171,9 +179,9 @@ public class PromotionServiceImplementation implements PromotionService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<PromotionRequestResponseDTO> myRequests(Member requester) {
         return repository.findAllByRequester(requester).stream().map(mapper::toDto).toList();
     }
 }
-

@@ -17,11 +17,13 @@ public class MemberMapperImplementation implements MemberMapper {
     private final MemberBuilder memberBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    /** {@inheritDoc} */
     @Override
     public MemberResponseDTO toDto(Member member, String base64Image) {
         return new MemberResponseDTO(member.getId(), member.getFirstName(), member.getLastName(), member.getBirthDate(), member.getFavoriteGenres(), member.getUsername(), member.getEmail(), member.getRole(), base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public MemberBuilder toBuilder(Member member) {
         return memberBuilder
@@ -39,6 +41,7 @@ public class MemberMapperImplementation implements MemberMapper {
                 .suspendedReason(member.getSuspendedReason());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Member toEntity(MemberRequestDTO memberRequestDTO, String s3ImageKey) {
         return memberBuilder
@@ -57,6 +60,7 @@ public class MemberMapperImplementation implements MemberMapper {
                 .build();
     }
 
+    /** {@inheritDoc} */
     @Override
     public MemberDoc toDoc(Member member) {
         return new MemberDoc(member);

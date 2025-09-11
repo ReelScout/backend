@@ -19,12 +19,9 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.withSettings;
 
 /**
- * Pure unit tests for MemberMapperImplementation.
- * <p>
- * Notes:
- * - No Spring context is started.
- * - MemberBuilder is mocked with RETURNS_SELF so fluent chaining works.
- * - We verify mapping of fields and essential interactions (no verifyNoMoreInteractions to keep tests robust).
+ * Unit tests for MemberMapperImplementation.
+ * Uses Mockito to mock dependencies and verify interactions.
+ * Focuses on mapping logic without involving Spring context or actual database.
  */
 class MemberMapperImplementationTest {
 
@@ -39,6 +36,9 @@ class MemberMapperImplementationTest {
         mapper = new MemberMapperImplementation(memberBuilder, passwordEncoder);
     }
 
+    /**
+     * Tests that toDto correctly maps all fields from Member and base64 image string
+     */
     @Test
     @DisplayName("toDto maps Member and base64 image into MemberResponseDTO")
     void toDto_mapsAllFields() {
@@ -69,6 +69,9 @@ class MemberMapperImplementationTest {
         assertEquals(base64, dto.getBase64Image());
     }
 
+    /**
+     * Tests that toBuilder populates MemberBuilder with all fields from Member
+     */
     @Test
     @DisplayName("toBuilder copies all fields from Member onto the fluent MemberBuilder")
     void toBuilder_populatesBuilder() {
@@ -101,6 +104,10 @@ class MemberMapperImplementationTest {
         verify(memberBuilder).role(Role.MEMBER);
     }
 
+    /**
+     * Tests that toEntity builds a Member from MemberRequestDTO,
+     * encoding the password and setting Role.MEMBER by default.
+     */
     @Test
     @DisplayName("toEntity builds a Member using encoded password and Role.MEMBER")
     void toEntity_buildsMemberWithEncodedPasswordAndRole() {
@@ -138,6 +145,10 @@ class MemberMapperImplementationTest {
         verify(memberBuilder).build();
     }
 
+    /**
+     * Tests that toDoc wraps a Member into a MemberDoc.
+     * No assumptions about MemberDoc internals in unit scope.
+     */
     @Test
     @DisplayName("toDoc wraps Member into MemberDoc")
     void toDoc_wrapsMember() {

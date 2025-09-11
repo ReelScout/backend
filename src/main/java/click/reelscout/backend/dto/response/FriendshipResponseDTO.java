@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for Friendship response.
+ */
 @Data
 @NoArgsConstructor
 public class FriendshipResponseDTO {

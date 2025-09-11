@@ -11,6 +11,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for SecurityConfig class.
+ * Focuses on role hierarchy and CORS configuration behavior.
+ */
 class SecurityConfigTest {
 
     private final SecurityConfig config =
@@ -24,6 +28,10 @@ class SecurityConfigTest {
         assertInstanceOf(RoleHierarchyImpl.class, rh, "Expected the concrete implementation used in the config");
     }
 
+    /**
+     * Tests that the CORS configuration source registers the expected path
+     * and exposes the correct CORS settings.
+     */
     @Test
     @DisplayName("corsConfigurationSource(): registers config under api.basic-path and exposes expected values")
     void corsConfigurationSource_registersAndExposesValues() {
@@ -51,6 +59,10 @@ class SecurityConfigTest {
         assertEquals(Boolean.TRUE, cc.getAllowCredentials());
     }
 
+    /**
+     * Tests that requests outside the configured base path do not receive any CORS configuration.
+     * This ensures that CORS settings are scoped correctly.
+     */
     @Test
     @DisplayName("corsConfigurationSource(): returns null for non-matching paths")
     void corsConfigurationSource_nonMatchingPath_returnsNull() {
@@ -64,6 +76,10 @@ class SecurityConfigTest {
         assertNull(cc, "No CORS config should apply outside /api/**");
     }
 
+    /**
+     * Tests the role hierarchy to ensure that higher roles imply the permissions of lower roles.
+     * Specifically checks that ADMIN implies MODERATOR, VERIFIED_MEMBER, and MEMBER.
+     */
     @Test
     @DisplayName("roleHierarchy(): ADMIN implies MODERATOR, VERIFIED_MEMBER and MEMBER")
     void roleHierarchy_resolvesImpliedRoles() {
@@ -80,6 +96,9 @@ class SecurityConfigTest {
         assertTrue(adminAuths.stream().anyMatch(a -> a.getAuthority().equals("ROLE_MEMBER")));
     }
 
+    /**
+     * Tests that MODERATOR implies VERIFIED_MEMBER and MEMBER, but not ADMIN.
+     */
     @Test
     @DisplayName("roleHierarchy(): MODERATOR implies VERIFIED_MEMBER and MEMBER (but not ADMIN)")
     void roleHierarchy_moderatorImplications() {
@@ -94,6 +113,9 @@ class SecurityConfigTest {
         assertFalse(auths.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
     }
 
+    /**
+     * Tests that VERIFIED_MEMBER implies MEMBER, but not MODERATOR or ADMIN.
+     */
     @Test
     @DisplayName("roleHierarchy(): VERIFIED_MEMBER implies MEMBER only")
     void roleHierarchy_verifiedMemberImplications() {
@@ -108,6 +130,9 @@ class SecurityConfigTest {
         assertFalse(auths.stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN")));
     }
 
+    /**
+     * Tests that MEMBER does not imply any other roles.
+     */
     @Test
     @DisplayName("corsConfigurationSource(): exact values for origins/methods/headers/credentials")
     void corsConfigurationSource_exactValues() {
@@ -123,6 +148,10 @@ class SecurityConfigTest {
         assertEquals(Boolean.TRUE, cc.getAllowCredentials());
     }
 
+    /**
+     * Tests that changing the base path in the environment property
+     * correctly updates the CORS configuration source to match the new path.
+     */
     @Test
     @DisplayName("corsConfigurationSource(): different base path still matches correctly")
     void corsConfigurationSource_differentBasePath() {

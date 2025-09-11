@@ -21,10 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for PromotionController.
- *
- * These are pure unit tests: we instantiate the controller with a mocked PromotionService
- * and call its methods directly. This avoids dealing with Spring MVC plumbing and security.
+ * Unit tests for {@link PromotionController}.
  */
 @ExtendWith(MockitoExtension.class)
 class PromotionControllerTest {
@@ -39,6 +36,9 @@ class PromotionControllerTest {
         controller = new PromotionController(promotionService);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void requestVerified_returnsOk_andDelegatesToService() {
         // Arrange
@@ -56,6 +56,9 @@ class PromotionControllerTest {
         verify(promotionService).requestVerifiedPromotion(requester, dto);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void listPendingVerified_returnsOk_withListFromService() {
         // Arrange
@@ -71,6 +74,9 @@ class PromotionControllerTest {
         verify(promotionService).listPendingVerifiedRequests();
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void approveVerified_returnsOk_andDelegatesToService() {
         // Arrange
@@ -88,6 +94,9 @@ class PromotionControllerTest {
         verify(promotionService).approveVerifiedPromotion(moderator, id);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void rejectVerified_returnsOk_andDelegatesToService() {
         // Arrange
@@ -106,6 +115,9 @@ class PromotionControllerTest {
         verify(promotionService).rejectVerifiedPromotion(moderator, id, dto);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void requestModerator_returnsOk_andDelegatesToService() {
         // Arrange
@@ -123,6 +135,9 @@ class PromotionControllerTest {
         verify(promotionService).requestModeratorPromotion(requester, dto);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void listPendingModerator_returnsOk_withListFromService() {
         // Arrange
@@ -138,6 +153,9 @@ class PromotionControllerTest {
         verify(promotionService).listPendingModeratorRequests();
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void approveModerator_returnsOk_andDelegatesToService() {
         // Arrange
@@ -155,6 +173,9 @@ class PromotionControllerTest {
         verify(promotionService).approveModeratorPromotion(admin, id);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void rejectModerator_returnsOk_andDelegatesToService() {
         // Arrange
@@ -173,6 +194,9 @@ class PromotionControllerTest {
         verify(promotionService).rejectModeratorPromotion(admin, id, dto);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     */
     @Test
     void myRequests_returnsOk_withListFromService() {
         // Arrange
@@ -189,6 +213,11 @@ class PromotionControllerTest {
         verify(promotionService).myRequests(requester);
     }
 
+    /** Tests for each controller method, verifying that they return the expected status and
+     * delegate to the service with the correct parameters.
+     * <p>
+     * Specifically tests that requestVerified allows a null body and passes it to the service.
+     */
     @Test
     void requestVerified_allowsNullBody_andDelegatesToService() {
         // Arrange

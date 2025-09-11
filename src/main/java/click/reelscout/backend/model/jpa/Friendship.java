@@ -13,6 +13,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a friendship relationship between two members.
+ */
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {"addressee_id", "requester_id"})
 })

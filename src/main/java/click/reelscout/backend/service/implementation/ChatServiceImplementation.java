@@ -25,6 +25,7 @@ public class ChatServiceImplementation implements ChatService {
     private final ChatMessageMapper chatMessageMapper;
     private final ConversationMapper conversationMapper;
 
+    /** {@inheritDoc} */
     @Override
     public ChatMessageResponseDTO saveDirectMessage(Member sender, ChatMessageRequestDTO chatMessageRequestDTO) {
         ChatMessage message = chatMessageMapper.toEntity(chatMessageRequestDTO, sender.getUsername());
@@ -32,12 +33,14 @@ public class ChatServiceImplementation implements ChatService {
         return chatMessageMapper.toDto(message);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Page<ChatMessageResponseDTO> getDirectHistory(String userA, String userB, Pageable pageable) {
         return repository.findDirectHistory(userA, userB, pageable)
                 .map(chatMessageMapper::toDto);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<ConversationResponseDTO> getRecentDirectConversations(String me, int size) {
         // Fetch a larger window to allow de-dup by conversation; cap size sensibly

@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for conversation response.
+ */
 @Getter
 @AllArgsConstructor
 public class ConversationResponseDTO {

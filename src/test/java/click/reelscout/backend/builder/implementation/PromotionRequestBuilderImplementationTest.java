@@ -13,8 +13,15 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Unit tests for {@link PromotionRequestBuilderImplementation}.
+ * Tests fluent setters and build() method.
+ */
 class PromotionRequestBuilderImplementationTest {
 
+    /**
+     * Tests that the fluent setters set the fields correctly and return the same builder instance.
+     */
     @Test
     void fluentSetters_setFields_andReturnSameBuilder() {
         // Arrange
@@ -43,7 +50,7 @@ class PromotionRequestBuilderImplementationTest {
                 .createdAt(createdAt)
                 .updatedAt(updatedAt);
 
-        // Assert: same builder instance returned and fields set
+        // Assert: fields set and same instance returned
         assertThat(returned).isSameAs(builder);
         assertThat(builder.getId()).isEqualTo(id);
         assertThat(builder.getRequester()).isSameAs(requester);
@@ -56,6 +63,9 @@ class PromotionRequestBuilderImplementationTest {
         assertThat(builder.getUpdatedAt()).isEqualTo(updatedAt);
     }
 
+    /**
+     * Tests that build() creates a PromotionRequest with all fields copied from the builder.
+     */
     @Test
     void build_returnsPromotionRequest_withAllValuesCopied() {
         // Arrange
@@ -99,6 +109,9 @@ class PromotionRequestBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(pr, "updatedAt")).isEqualTo(updatedAt);
     }
 
+    /**
+     * Tests that build() allows optional fields to be null and preserves null values.
+     */
     @Test
     void build_allowsNullOptionalFields() {
         // Arrange: leave decisionReason/processedBy/timestamps as null

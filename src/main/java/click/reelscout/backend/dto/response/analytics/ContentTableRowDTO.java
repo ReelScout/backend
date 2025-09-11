@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for representing a row in the content analytics table.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

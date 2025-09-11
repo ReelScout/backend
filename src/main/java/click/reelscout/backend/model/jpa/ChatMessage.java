@@ -9,6 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a chat message between users.
+ */
 @Entity
 @Table(name = "chat_messages", indexes = {
         @Index(name = "idx_sender_recipient_ts", columnList = "sender,recipient,timestamp")

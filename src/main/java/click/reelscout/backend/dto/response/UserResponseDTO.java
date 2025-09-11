@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for User responses.
+ * Extends EntityResponseDTO to include common entity fields.
+ */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data

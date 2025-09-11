@@ -9,13 +9,18 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+/**
+ * WebSocket configuration class that sets up STOMP endpoints and message broker.
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     private final StompAuthChannelInterceptor stompAuthChannelInterceptor;
 
+    /**
+     * Configure message broker with application destination prefixes and user destination prefix.
+     */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/queue");
@@ -23,6 +28,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.setUserDestinationPrefix("/user");
     }
 
+    /**
+     * Register STOMP endpoints with allowed origin patterns and SockJS fallback.
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
@@ -35,6 +43,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
+    /**
+     * Configure client inbound channel with authentication interceptor.
+     */
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompAuthChannelInterceptor);

@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO representing a count of content items associated with a specific key.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

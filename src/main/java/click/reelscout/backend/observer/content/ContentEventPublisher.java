@@ -14,6 +14,7 @@ public class ContentEventPublisher implements ContentSubject {
 
     private final List<ContentObserver> observers = new CopyOnWriteArrayList<>();
 
+    /** {@inheritDoc} */
     @Override
     public void registerObserver(ContentObserver observer) {
         if (observer != null) {
@@ -21,11 +22,13 @@ public class ContentEventPublisher implements ContentSubject {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void removeObserver(ContentObserver observer) {
         observers.remove(observer);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void notifyContentCreated(ContentResponseDTO content) {
         for (ContentObserver observer : observers) {

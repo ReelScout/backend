@@ -7,6 +7,9 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entity representing the type of content (e.g., Movie, TV Show).
+ */
 @NoArgsConstructor
 @Getter
 @Entity

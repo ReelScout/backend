@@ -19,6 +19,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for JwtFilter.
+ * <p>
+ * Tests various scenarios including:
+ * - No Authorization header
+ * - Non-Bearer Authorization header
+ * - Valid Bearer token leading to authentication
+ * - Invalid token not setting authentication
+ * - Exception during token processing being handled
+ * - Existing authentication in context skipping processing
+ */
 class JwtFilterTest {
 
     private JwtService jwtService;
@@ -44,6 +55,10 @@ class JwtFilterTest {
         SecurityContextHolder.clearContext();
     }
 
+    /**
+     * Test that a request without an "Authorization" header
+     * simply passes through the filter without setting authentication.
+     */
     @Test
     void noHeader_passThrough() throws Exception {
         // Request without "Authorization" header
@@ -60,6 +75,11 @@ class JwtFilterTest {
         verifyNoInteractions(jwtService, userDetailsService, resolver);
     }
 
+    /**
+     * Test that a request with an "Authorization" header
+     * not starting with "Bearer " simply passes through the filter
+     * without setting authentication.
+     */
     @Test
     void notBearerHeader_passThrough() throws Exception {
         // Request with header, but not starting with "Bearer"
@@ -75,6 +95,10 @@ class JwtFilterTest {
         verifyNoInteractions(jwtService, userDetailsService, resolver);
     }
 
+    /**
+     * Test that a valid "Bearer " token results in setting the authentication
+     * in the SecurityContext.
+     */
     @Test
     void validBearer_setsAuthentication() throws Exception {
         // Request with a valid "Bearer " token
@@ -100,6 +124,10 @@ class JwtFilterTest {
         verify(chain).doFilter(req, res);
     }
 
+    /**
+     * Test that an invalid token does not set authentication
+     * and simply continues the filter chain.
+     */
     @Test
     void invalidToken_doesNotAuthenticate() throws ServletException, IOException {
         // Request with a token that fails validation
@@ -119,6 +147,10 @@ class JwtFilterTest {
         verify(chain).doFilter(req, res);
     }
 
+    /**
+     * Test that if an exception occurs during token processing,
+     * it is handled by the HandlerExceptionResolver.
+     */
     @Test
     void exception_resolvedByHandler() {
         // Request where extracting username throws an exception
@@ -135,6 +167,10 @@ class JwtFilterTest {
         // Chain call depends on resolver behavior, so not asserted here
     }
 
+    /**
+     * Test that if authentication is already present in the SecurityContext,
+     * the filter does not attempt to reprocess the token.
+     */
     @Test
     void authenticationAlreadyPresent_skipSettingAgain() throws Exception {
         // Simulate an existing authentication in context

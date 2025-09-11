@@ -24,6 +24,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * Unit tests for {@link AnalyticsServiceImplementation}.
+ * Focuses on the aggregation logic in getProductionDashboard method.
+ */
 @ExtendWith(MockitoExtension.class)
 class AnalyticsServiceImplementationTest {
 
@@ -68,6 +72,10 @@ class AnalyticsServiceImplementationTest {
                 .build();
     }
 
+    /**
+     * Tests the getProductionDashboard method to ensure it correctly aggregates counts, time series data, and rankings.
+     * Mocks repository responses to simulate various scenarios including recent and old posts/reports.
+     */
     @Test
     void getProductionDashboard_aggregatesCountsTimeSeriesAndRankings() {
         // Threads

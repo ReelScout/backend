@@ -11,6 +11,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a promotion request made by a member.
+ */
 @Entity
 @Getter
 @NoArgsConstructor

@@ -27,6 +27,7 @@ public class AnalyticsServiceImplementation implements AnalyticsService {
     private final ForumPostReportRepository forumPostReportRepository;
     private final WatchlistRepository watchlistRepository;
 
+    /** {@inheritDoc} */
     @Override
     public ProductionDashboardDTO getProductionDashboard(ProductionCompany productionCompany) {
         List<Content> contents = Optional.ofNullable(contentRepository.findAllByProductionCompany(productionCompany))
@@ -143,4 +144,3 @@ public class AnalyticsServiceImplementation implements AnalyticsService {
         return monday.format(DateTimeFormatter.ISO_DATE);
     }
 }
-

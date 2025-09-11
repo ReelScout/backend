@@ -50,6 +50,7 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
 
     private final ThreadPoolExecutor executor;
 
+    /** {@inheritDoc} */
     @Override
     public SearchResponseDTO<S> search(String query) {
         // Search users and content in parallel
@@ -69,6 +70,7 @@ public class SearchServiceImplementation<U extends User, B extends UserBuilder<U
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<S> searchMembers(String query) {
         return searchUsers(query, MemberDoc.class);

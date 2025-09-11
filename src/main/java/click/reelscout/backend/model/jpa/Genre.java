@@ -12,6 +12,9 @@ import org.hibernate.annotations.NaturalId;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Entity representing a genre of content (e.g., Action, Comedy).
+ */
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor

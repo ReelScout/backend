@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for PromotionServiceImplementation with mocked collaborators.
+ * Unit tests for {@link PromotionServiceImplementation} with mocked collaborators.
  */
 @ExtendWith(MockitoExtension.class)
 class PromotionServiceImplementationTest {
@@ -48,6 +48,8 @@ class PromotionServiceImplementationTest {
 
     // ---------- requestVerifiedPromotion ----------
 
+    /** Test that requesting a verified promotion throws an exception if the requester is already verified or higher.
+     */
     @Test
     void requestVerifiedPromotion_throws_ifAlreadyVerifiedOrHigher() {
         // Arrange: requester already verified
@@ -60,6 +62,8 @@ class PromotionServiceImplementationTest {
         verifyNoInteractions(mapper);
     }
 
+    /** Test that requesting a verified promotion throws an exception if the requester is not a regular member.
+     */
     @Test
     void requestVerifiedPromotion_throws_ifPendingAlreadyExists() {
         // Arrange: requester is regular MEMBER
@@ -76,6 +80,8 @@ class PromotionServiceImplementationTest {
         verify(mapper, never()).toEntity(any(), any(), any(), any());
     }
 
+    /** Test that requesting a verified promotion saves the request and returns a success message on the happy path.
+     */
     @Test
     void requestVerifiedPromotion_saves_andReturnsMessage_onHappyPath() {
         // Arrange
@@ -100,6 +106,8 @@ class PromotionServiceImplementationTest {
 
     // ---------- listPendingVerifiedRequests ----------
 
+    /** Test that listing pending verified requests maps each entity to a DTO correctly.
+     */
     @Test
     void listPendingVerifiedRequests_mapsEachEntityToDto() {
         // Arrange
@@ -123,12 +131,16 @@ class PromotionServiceImplementationTest {
 
     // ---------- approveVerifiedPromotion ----------
 
+    /** Test that approving a verified promotion throws an exception if the request is not found.
+     */
     @Test
     void approveVerifiedPromotion_throws_ifRequestNotFound() {
         when(repository.findById(123L)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> service.approveVerifiedPromotion(mock(User.class), 123L));
     }
 
+    /** Test that approving a verified promotion throws an exception if the request is not pending.
+     */
     @Test
     void approveVerifiedPromotion_throws_ifNotPending() {
         PromotionRequest req = new PromotionRequest();
@@ -139,6 +151,8 @@ class PromotionServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.approveVerifiedPromotion(mock(User.class), 1L));
     }
 
+    /** Test that approving a verified promotion throws an exception if the request type is not VERIFIED_MEMBER.
+     */
     @Test
     void approveVerifiedPromotion_throws_ifWrongRequestType() {
         PromotionRequest req = new PromotionRequest();
@@ -149,6 +163,9 @@ class PromotionServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.approveVerifiedPromotion(mock(User.class), 1L));
     }
 
+    /**
+     * Test that approving a verified promotion updates the request status, promotes the member, and returns a success message.
+     */
     @Test
     void approveVerifiedPromotion_updatesRequest_andPromotesMember() {
         // Arrange: a pending VERIFIED_MEMBER request
@@ -194,6 +211,9 @@ class PromotionServiceImplementationTest {
 
     // ---------- rejectVerifiedPromotion ----------
 
+    /**
+     * Test that rejecting a verified promotion throws an exception if the request is not found.
+     */
     @Test
     void rejectVerifiedPromotion_throws_ifNotPendingOrWrongType() {
         PromotionRequest req = new PromotionRequest();
@@ -206,6 +226,9 @@ class PromotionServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.rejectVerifiedPromotion(moderator, 9L, dto));
     }
 
+    /**
+     * Test that rejecting a verified promotion updates the request status and returns a success message.
+     */
     @Test
     void rejectVerifiedPromotion_updatesRequest_withReason() {
         // Arrange
@@ -236,6 +259,9 @@ class PromotionServiceImplementationTest {
 
     // ---------- requestModeratorPromotion ----------
 
+    /**
+     * Test that requesting a moderator promotion throws an exception if the requester is already a moderator or higher.
+     */
     @Test
     void requestModeratorPromotion_throws_ifAlreadyModeratorOrHigher() {
         Member requester = new Member();
@@ -246,6 +272,9 @@ class PromotionServiceImplementationTest {
                 () -> service.requestModeratorPromotion(requester, dto));
     }
 
+    /**
+     * Test that requesting a moderator promotion throws an exception if the requester is not verified.
+     */
     @Test
     void requestModeratorPromotion_throws_ifNotVerified() {
         Member requester = new Member();
@@ -256,6 +285,9 @@ class PromotionServiceImplementationTest {
                 () -> service.requestModeratorPromotion(requester, dto));
     }
 
+    /**
+     * Test that requesting a moderator promotion throws an exception if a pending request already exists.
+     */
     @Test
     void requestModeratorPromotion_throws_ifPendingAlreadyExists() {
         Member requester = new Member();
@@ -270,6 +302,9 @@ class PromotionServiceImplementationTest {
                 () -> service.requestModeratorPromotion(requester, dto));
     }
 
+    /**
+     * Test that requesting a moderator promotion saves the request and returns a success message on the happy path.
+     */
     @Test
     void requestModeratorPromotion_saves_andReturnsMessage_onHappyPath() {
         Member requester = new Member();
@@ -291,6 +326,9 @@ class PromotionServiceImplementationTest {
 
     // ---------- listPendingModeratorRequests ----------
 
+    /**
+     * Test that listing pending moderator requests maps each entity to a DTO correctly.
+     */
     @Test
     void listPendingModeratorRequests_mapsEachEntityToDto() {
         PromotionRequest r1 = new PromotionRequest();
@@ -310,6 +348,9 @@ class PromotionServiceImplementationTest {
 
     // ---------- myRequests ----------
 
+    /**
+     * Test that retrieving a member's promotion requests maps each entity to a DTO correctly.
+     */
     @Test
     void myRequests_mapsEntitiesToDtos() {
         Member requester = new Member();

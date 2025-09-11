@@ -14,6 +14,7 @@ public class ChatMessageMapperImplementation implements ChatMessageMapper {
 
     private final ChatMessageBuilder chatMessageBuilder;
 
+    /** {@inheritDoc} */
     @Override
     public ChatMessageResponseDTO toDto(ChatMessage message) {
         return new ChatMessageResponseDTO(
@@ -24,6 +25,7 @@ public class ChatMessageMapperImplementation implements ChatMessageMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public ChatMessageBuilder toBuilder(ChatMessage message) {
         return chatMessageBuilder
@@ -34,6 +36,7 @@ public class ChatMessageMapperImplementation implements ChatMessageMapper {
                 .timestamp(message.getTimestamp());
     }
 
+    /** {@inheritDoc} */
     @Override
     public ChatMessage toEntity(ChatMessageRequestDTO request, String sender) {
         return chatMessageBuilder

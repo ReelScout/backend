@@ -20,13 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for ContentProductionCompanyController.
- * <p>
- * Notes:
- * - We DO NOT start Spring (no MockMvc, no context).
- * - Security annotations (@PreAuthorize) are NOT evaluated here.
- * - Bean Validation annotations on DTOs are NOT executed in unit tests.
- * - We call controller methods directly and verify interactions with ContentService.
+ * Unit tests for {@link ContentProductionCompanyController}.
+ * Uses Mockito to mock dependencies and verify interactions.
+ * Covers all controller methods for expected behavior.
  */
 @ExtendWith(MockitoExtension.class)
 class ContentProductionCompanyControllerTest {
@@ -44,6 +40,7 @@ class ContentProductionCompanyControllerTest {
         controller = new ContentProductionCompanyController(contentService, analyticsService);
     }
 
+    /** Tests for addContent, updateContent, getMyContents, deleteContent methods */
     @Test
     void addContent_returnsOkAndBodyFromService() {
         // Arrange
@@ -63,6 +60,7 @@ class ContentProductionCompanyControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /** Tests for addContent, updateContent, getMyContents, deleteContent methods */
     @Test
     void updateContent_returnsOkAndBodyFromService() {
         // Arrange
@@ -83,6 +81,7 @@ class ContentProductionCompanyControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /** Tests for addContent, updateContent, getMyContents, deleteContent methods */
     @Test
     void getMyContents_returnsOkWithListFromService() {
         // Arrange
@@ -101,6 +100,7 @@ class ContentProductionCompanyControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /** Tests for addContent, updateContent, getMyContents, deleteContent methods */
     @Test
     void deleteContent_returnsOkWithCustomResponse() {
         // Arrange
@@ -120,6 +120,7 @@ class ContentProductionCompanyControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /** Test for edge case: empty list from getMyContents */
     @Test
     void endpoints_returnOkEvenWhenServiceReturnsEmptyLists() {
         // Arrange

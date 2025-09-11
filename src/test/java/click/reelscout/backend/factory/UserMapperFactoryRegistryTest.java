@@ -14,6 +14,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link UserMapperFactoryRegistry}.
+ */
 class UserMapperFactoryRegistryTest {
 
     // Using raw types to avoid generic boilerplate in tests
@@ -42,6 +45,7 @@ class UserMapperFactoryRegistryTest {
         registry = new UserMapperFactoryRegistry(List.of(factoryA, factoryB));
     }
 
+    /** Tests for getMapperFor(R), getMapperFor(S), getMapperFor(U) */
     @Test
     @DisplayName("getMapperFor(R) picks the first factory that supports the request DTO")
     @SuppressWarnings({"unchecked"})
@@ -61,6 +65,7 @@ class UserMapperFactoryRegistryTest {
         verifyNoMoreInteractions(factoryA, factoryB);
     }
 
+    /** Tests for getMapperFor(R), getMapperFor(S), getMapperFor(U) */
     @Test
     @DisplayName("getMapperFor(S) picks the first factory that supports the response DTO")
     @SuppressWarnings({"unchecked"})
@@ -79,6 +84,7 @@ class UserMapperFactoryRegistryTest {
         verifyNoInteractions(factoryB);
     }
 
+    /** Tests for getMapperFor(R), getMapperFor(S), getMapperFor(U) */
     @Test
     @DisplayName("getMapperFor(U) picks the first factory that supports the user")
     @SuppressWarnings({"unchecked"})
@@ -98,6 +104,7 @@ class UserMapperFactoryRegistryTest {
         verifyNoMoreInteractions(factoryA, factoryB);
     }
 
+    /** Tests for getMapperFor(R), getMapperFor(S), getMapperFor(U) */
     @Test
     @DisplayName("getMapperFor(*) throws EntityCreateException when no factory supports the input")
     @SuppressWarnings({"unchecked"})

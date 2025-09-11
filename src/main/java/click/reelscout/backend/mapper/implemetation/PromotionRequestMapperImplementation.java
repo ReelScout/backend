@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class PromotionRequestMapperImplementation implements PromotionRequestMapper {
     private final PromotionRequestBuilder builder;
 
+    /** {@inheritDoc} */
     @Override
     public PromotionRequestResponseDTO toDto(PromotionRequest request) {
         return new PromotionRequestResponseDTO(
@@ -27,6 +28,7 @@ public class PromotionRequestMapperImplementation implements PromotionRequestMap
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public PromotionRequestBuilder toBuilder(PromotionRequest request) {
         return builder
@@ -41,6 +43,7 @@ public class PromotionRequestMapperImplementation implements PromotionRequestMap
                 .updatedAt(request.getUpdatedAt());
     }
 
+    /** {@inheritDoc} */
     @Override
     public PromotionRequest toEntity(Member requester, String message, PromotionRequestStatus status, Role requestedRole) {
         return builder

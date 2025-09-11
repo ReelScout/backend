@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Data Transfer Object for Member response.
+ * Extends UserResponseDTO to include additional member-specific fields.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor

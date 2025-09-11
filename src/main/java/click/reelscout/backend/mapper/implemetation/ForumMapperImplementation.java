@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 public class ForumMapperImplementation implements ForumMapper {
     private final ForumThreadBuilder threadBuilder;
     private final ForumPostBuilder postBuilder;
+
+    /** {@inheritDoc} */
     @Override
     public ForumThreadResponseDTO toThreadDto(ForumThread thread, long postCount) {
         return new ForumThreadResponseDTO(
@@ -30,6 +32,7 @@ public class ForumMapperImplementation implements ForumMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumPostResponseDTO toPostDto(ForumPost post) {
         return new ForumPostResponseDTO(
@@ -43,6 +46,7 @@ public class ForumMapperImplementation implements ForumMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder toBuilder(ForumThread thread) {
         return threadBuilder
@@ -54,6 +58,7 @@ public class ForumMapperImplementation implements ForumMapper {
                 .updatedAt(thread.getUpdatedAt());
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumPostBuilder toBuilder(ForumPost post) {
         return postBuilder
@@ -66,6 +71,7 @@ public class ForumMapperImplementation implements ForumMapper {
                 .updatedAt(post.getUpdatedAt());
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThread toEntity(Content content, User author, String title) {
         return threadBuilder
@@ -78,6 +84,7 @@ public class ForumMapperImplementation implements ForumMapper {
                 .build();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumPost toEntity(ForumThread thread, User author, ForumPost parent, String body) {
         return postBuilder

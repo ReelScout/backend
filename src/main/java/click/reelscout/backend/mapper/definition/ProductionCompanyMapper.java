@@ -5,5 +5,8 @@ import click.reelscout.backend.dto.request.ProductionCompanyRequestDTO;
 import click.reelscout.backend.dto.response.ProductionCompanyResponseDTO;
 import click.reelscout.backend.model.jpa.ProductionCompany;
 
+/**
+ * Mapper interface for converting between {@link ProductionCompany} entities, DTOs, and builders.
+ */
 public interface ProductionCompanyMapper extends UserMapper<ProductionCompany, ProductionCompanyRequestDTO, ProductionCompanyResponseDTO, ProductionCompanyBuilder>{
 }

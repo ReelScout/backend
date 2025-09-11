@@ -11,6 +11,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a forum thread created by a user.
+ */
 @Entity
 @Getter
 @NoArgsConstructor

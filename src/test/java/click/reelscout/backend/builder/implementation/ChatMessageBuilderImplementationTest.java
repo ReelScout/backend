@@ -9,8 +9,20 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Unit tests for {@link ChatMessageBuilderImplementation}.
+ * <p>
+ * These tests verify the builder's behavior in isolation, ensuring it correctly
+ * manages its internal state and produces {@link ChatMessage} instances as expected.
+ * <p>
+ * Note: This test assumes that {@link ChatMessage} has standard getters for its properties.
+ * If {@link ChatMessage} has validation logic (e.g., non-null constraints), additional tests
+ * should be added to cover those scenarios.
+ */
 class ChatMessageBuilderImplementationTest {
-
+    /**
+     * Tests that the default state of the builder has all fields set to null.
+     */
     @Test
     @DisplayName("Default state: all fields are null before any setter is called")
     void defaultState_allFieldsNull() {
@@ -26,6 +38,9 @@ class ChatMessageBuilderImplementationTest {
         assertThat(builder.getTimestamp()).as("timestamp").isNull();
     }
 
+    /**
+     * Tests that each setter in the builder returns the same builder instance, allowing method chaining.
+     */
     @Test
     @DisplayName("Fluent setters: each setter returns the same builder instance (chainable)")
     void fluentSetters_areChainable() {
@@ -54,6 +69,9 @@ class ChatMessageBuilderImplementationTest {
         assertThat(builder.getTimestamp()).isEqualTo(ts);
     }
 
+    /**
+     * Tests that the build method produces a ChatMessage with fields copied from the builder.
+     */
     @Test
     @DisplayName("Build: produces a ChatMessage with fields copied from the builder")
     void build_producesEntityWithGivenValues() {
@@ -84,6 +102,9 @@ class ChatMessageBuilderImplementationTest {
         assertThat(message.getTimestamp()).isEqualTo(timestamp);
     }
 
+    /**
+     * Tests that building twice returns distinct instances with equal field values.
+     */
     @Test
     @DisplayName("Build twice: returns distinct instances with equal field values")
     void buildTwice_returnsDistinctInstancesWithSameValues() {
@@ -111,6 +132,9 @@ class ChatMessageBuilderImplementationTest {
         assertThat(first.getTimestamp()).isEqualTo(second.getTimestamp());
     }
 
+    /**
+     * Tests that the builder allows empty content and null timestamp if the entity supports it.
+     */
     @Test
     @DisplayName("Allows empty content and null timestamp if the entity supports it")
     void build_allowsEmptyContentAndNullTimestamp() {

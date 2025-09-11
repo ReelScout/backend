@@ -10,6 +10,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing a report made by a user on a forum post.
+ */
 @Entity
 @Getter
 @NoArgsConstructor

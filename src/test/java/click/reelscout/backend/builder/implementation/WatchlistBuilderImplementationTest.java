@@ -32,6 +32,10 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class WatchlistBuilderImplementationTest {
 
+    /**
+     * Test that each fluent setter returns the same builder instance to enable method chaining,
+     * and that the internal state is updated correctly and exposed via Lombok-generated getters.
+     */
     @Test
     @DisplayName("Fluent API should return same instance and set fields")
     void fluentApi_shouldReturnSameInstance_andSetFields() {
@@ -70,6 +74,9 @@ class WatchlistBuilderImplementationTest {
         assertThat(builder.getMember()).isSameAs(expectedMember);
     }
 
+    /**
+     * Test that multiple calls to the same setter overwrite previous values.
+     */
     @Test
     @DisplayName("Setter calls should overwrite previous values")
     void setterCalls_shouldOverwritePreviousValues() {
@@ -97,6 +104,9 @@ class WatchlistBuilderImplementationTest {
         assertThat(builder.getMember()).isSameAs(secondMember);
     }
 
+    /**
+     * Test that the builder accepts null values for all optional fields without throwing exceptions.
+     */
     @Test
     @DisplayName("Builder should accept null values for optional fields")
     void builder_shouldAcceptNullValues() {
@@ -119,6 +129,9 @@ class WatchlistBuilderImplementationTest {
         assertThat(builder.getMember()).isNull();
     }
 
+    /**
+     * Test that build() returns a non-null Watchlist instance.
+     */
     @Test
     @DisplayName("build() should return a non-null Watchlist instance")
     void build_shouldReturnNonNullWatchlist() {
@@ -133,6 +146,9 @@ class WatchlistBuilderImplementationTest {
         assertThat(watchlist).isNotNull();
     }
 
+    /**
+     * Smoke test to verify that a full chain of setter calls followed by build() compiles and runs without exceptions.
+     */
     @Nested
     @DisplayName("Chaining smoke tests")
     class ChainingSmokeTests {

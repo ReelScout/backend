@@ -18,12 +18,9 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.withSettings;
 
 /**
- * Pure unit tests for ProductionCompanyMapperImplementation.
- * <p>
- * Notes:
- * - No Spring context is started.
- * - ProductionCompanyBuilder is mocked with RETURNS_SELF so the fluent API works.
- * - We verify essential interactions without verifyNoMoreInteractions(...) to keep tests future-proof.
+ * Unit tests for {@link ProductionCompanyMapperImplementation}.
+ * Uses Mockito to mock dependencies and verify interactions.
+ * Covers mapping between entity, DTOs, and document.
  */
 class ProductionCompanyMapperImplementationTest {
 
@@ -38,6 +35,10 @@ class ProductionCompanyMapperImplementationTest {
         mapper = new ProductionCompanyMapperImplementation(builder, passwordEncoder);
     }
 
+    /**
+     * Tests that toDto correctly maps all fields from ProductionCompany entity
+     * and includes the provided base64 image string in the response DTO.
+     */
     @Test
     @DisplayName("toDto maps ProductionCompany + base64 image to response DTO")
     void toDto_mapsAllFields() {
@@ -73,6 +74,10 @@ class ProductionCompanyMapperImplementationTest {
         assertEquals(base64, dto.getBase64Image());
     }
 
+    /**
+     * Tests that toBuilder correctly forwards all fields from the ProductionCompany entity
+     * to the ProductionCompanyBuilder for further building or modification.
+     */
     @Test
     @DisplayName("toBuilder forwards all entity fields to the fluent builder")
     void toBuilder_populatesBuilder() {
@@ -116,6 +121,10 @@ class ProductionCompanyMapperImplementationTest {
         verify(builder).contents((List<Content>) contents);
     }
 
+    /**
+     * Tests that toEntity correctly builds a ProductionCompany entity from the request DTO,
+     * encoding the password and setting the appropriate role and S3 image key.
+     */
     @Test
     @DisplayName("toEntity builds a ProductionCompany with encoded password and proper role")
     void toEntity_buildsEntityWithEncodedPassword() {
@@ -157,6 +166,9 @@ class ProductionCompanyMapperImplementationTest {
         verify(builder).build();
     }
 
+    /**
+     * Tests that toDoc correctly wraps a ProductionCompany entity into a ProductionCompanyDoc.
+     */
     @Test
     @DisplayName("toDoc wraps entity into ProductionCompanyDoc")
     void toDoc_wrapsEntity() {

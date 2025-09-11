@@ -38,11 +38,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for SearchServiceImplementation.
- * <p>
- * - No Spring context.
- * - All collaborators mocked.
- * - ThreadPoolExecutor is stubbed so callables run deterministically.
+ * Unit tests for {@link SearchServiceImplementation}.
+ * Mocks out all dependencies.
  */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -88,6 +85,9 @@ class SearchServiceImplementationTest {
         });
     }
 
+    /**
+     * search(): when both tasks succeed, returns combined users + content.
+     */
     @Test
     @DisplayName("search(): returns combined users + content when both tasks succeed")
     void search_success_combinesUsersAndContent(){
@@ -149,6 +149,9 @@ class SearchServiceImplementationTest {
         verify(elasticsearchOperations, atLeastOnce()).search(captor.capture(), eq(UserDoc.class));
     }
 
+    /**
+     * search(): when one task fails, the other result is still returned.
+     */
     @Test
     @DisplayName("search(): wraps failures (ExecutionException/InterruptedException) into SearchException")
     void search_failure_wrappedIntoSearchException() {
@@ -159,6 +162,9 @@ class SearchServiceImplementationTest {
         assertThrows(SearchException.class, () -> service.search("x"));
     }
 
+    /**
+     * search(): ensures the mapper is set per user before mapping to DTO.
+     */
     @Test
     @DisplayName("search(): sets mapper per user before mapping to DTO")
     void search_setsMapperPerUser(){

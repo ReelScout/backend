@@ -8,11 +8,15 @@ import click.reelscout.backend.model.jpa.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Implementation of {@link ForumReportMapper} for mapping forum post reports.
+ */
 @Component
 @RequiredArgsConstructor
 public class ForumReportMapperImplementation implements ForumReportMapper {
     private final ForumPostReportBuilder reportBuilder;
 
+    /** {@inheritDoc} */
     @Override
     public ForumPostReportBuilder toBuilder(ForumPostReport report) {
         return reportBuilder
@@ -23,6 +27,7 @@ public class ForumReportMapperImplementation implements ForumReportMapper {
                 .createdAt(report.getCreatedAt());
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumPostReport toEntity(ForumPost post, User reporter, String reason) {
         return reportBuilder
@@ -34,4 +39,3 @@ public class ForumReportMapperImplementation implements ForumReportMapper {
                 .build();
     }
 }
-

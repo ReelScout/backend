@@ -39,6 +39,9 @@ class WebSocketConfigTest {
     @Mock
     private ChannelRegistration channelRegistration;
 
+    /**
+     * Tests that the configureMessageBroker method sets up the simple broker and destination prefixes correctly.
+     */
     @Test
     void configureMessageBroker_shouldSetSimpleBrokerAndPrefixes() {
         // Arrange
@@ -56,6 +59,10 @@ class WebSocketConfigTest {
         verify(messageBrokerRegistry).setUserDestinationPrefix("/user");
     }
 
+    /**
+     * Tests that the registerStompEndpoints method registers the "/ws" endpoint twice:
+     * first without SockJS, then with SockJS enabled.
+     */
     @Test
     void registerStompEndpoints_shouldRegisterWsEndpoint_twice_andEnableSockJsOnSecond() {
         // Arrange
@@ -82,6 +89,9 @@ class WebSocketConfigTest {
         verify(wsRegistration2).withSockJS();
     }
 
+    /**
+     * Tests that the configureClientInboundChannel method attaches the StompAuthChannelInterceptor.
+     */
     @Test
     void configureClientInboundChannel_shouldAttachAuthInterceptor() {
         // Arrange

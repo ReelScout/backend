@@ -13,6 +13,9 @@ import static org.mockito.Mockito.mock;
 
 class ForumThreadBuilderImplementationTest {
 
+    /**
+     * Tests that the id() method sets the id field and returns the same builder instance.
+     */
     @Test
     void id_setsField_andReturnsSameBuilder() {
         // Arrange
@@ -27,6 +30,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the content() method sets the content field and returns the same builder instance.
+     */
     @Test
     void content_setsField_andReturnsSameBuilder() {
         ForumThreadBuilderImplementation builder = new ForumThreadBuilderImplementation();
@@ -40,6 +46,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the title() method sets the title field and returns the same builder instance.
+     */
     @Test
     void title_setsField_andReturnsSameBuilder() {
         ForumThreadBuilderImplementation builder = new ForumThreadBuilderImplementation();
@@ -51,6 +60,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the createdBy() method sets the createdBy field and returns the same builder instance.
+     */
     @Test
     void createdBy_setsField_andReturnsSameBuilder() {
         ForumThreadBuilderImplementation builder = new ForumThreadBuilderImplementation();
@@ -64,6 +76,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the createdAt() method sets the createdAt field and returns the same builder instance.
+     */
     @Test
     void createdAt_setsField_andReturnsSameBuilder() {
         ForumThreadBuilderImplementation builder = new ForumThreadBuilderImplementation();
@@ -76,6 +91,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the updatedAt() method sets the updatedAt field and returns the same builder instance.
+     */
     @Test
     void updatedAt_setsField_andReturnsSameBuilder() {
         ForumThreadBuilderImplementation builder = new ForumThreadBuilderImplementation();
@@ -88,6 +106,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests the build() method to ensure it creates a ForumThread object with all the values copied from the builder.
+     */
     @Test
     void build_returnsForumThread_withAllValuesCopied() {
         // Arrange: prepare sample data
@@ -121,6 +142,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(thread, "updatedAt")).isEqualTo(updatedAt);
     }
 
+    /**
+     * Tests that the builder allows null optional fields when building the ForumThread object.
+     */
     @Test
     void build_allowsNullOptionalFields() {
         // Arrange: leave timestamps as null
@@ -142,6 +166,9 @@ class ForumThreadBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(thread, "updatedAt")).isNull();
     }
 
+    /**
+     * Tests that the fluent API of the builder supports chaining of method calls.
+     */
     @Test
     void fluentApi_supportsChaining() {
         // Arrange

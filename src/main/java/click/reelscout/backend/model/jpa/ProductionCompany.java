@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Entity representing a Production Company, which is a type of User.
+ */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Entity

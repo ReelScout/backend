@@ -21,8 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for ChatController (no Spring context).
- * We verify delegation to ChatService and that SimpMessagingTemplate sends to both users.
+ * Unit tests for {@link ChatController}.
+ * <p>
+ *     These tests focus on the controller's behavior in isolation, mocking out dependencies.
+ *     They verify that the controller correctly delegates to the service layer and
+ *     sends messages to the appropriate destinations via the messaging template.
+ *     They also check that the correct annotations are present.
+ * </p>
  */
 @ExtendWith(MockitoExtension.class)
 class ChatControllerTest {
@@ -49,6 +54,7 @@ class ChatControllerTest {
         controller = new ChatController(messagingTemplate, chatService);
     }
 
+    /** Tests for sendDirect method */
     @Test
     void sendDirect_shouldDelegateToService_andSendToRecipientAndSender() {
         // Arrange
@@ -79,6 +85,10 @@ class ChatControllerTest {
         verifyNoMoreInteractions(messagingTemplate);
     }
 
+    /**
+     * Ensures that if the service layer throws an exception, the controller
+     * propagates it and does not attempt to send any messages.
+     */
     @Test
     void sendDirect_whenServiceThrows_shouldPropagate_andNotSendMessages() {
         // Arrange
@@ -97,6 +107,10 @@ class ChatControllerTest {
         verifyNoInteractions(messagingTemplate);
     }
 
+    /**
+     * Verifies that the sendDirect method is annotated with @MessageMapping("/dm").
+     * This ensures that the WebSocket endpoint is correctly mapped.
+     */
     @Test
     void messageMappingAnnotation_shouldBePresent_withDmDestination() throws NoSuchMethodException {
         // Arrange
@@ -115,6 +129,11 @@ class ChatControllerTest {
                 "MessageMapping should include \"/dm\" destination");
     }
 
+    /**
+     * Tests the edge case where the sender and recipient are the same user.
+     * The current implementation sends two messages even if they are the same.
+     * This test documents that behavior.
+     */
     @Test
     void sendDirect_whenSenderEqualsRecipient_shouldStillSendTwice() {
         // Arrange

@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for managing search operations.
+ * Provides endpoints to search for general content and members.
+ */
 @RequiredArgsConstructor
 @Cacheable
 @RequestMapping("${api.paths.search}")
@@ -20,11 +24,23 @@ import java.util.List;
 public class SearchController<S extends UserResponseDTO> {
     private final SearchService<S> searchService;
 
+    /**
+     * Searches for content based on the provided query.
+     *
+     * @param query the search term
+     * @return a ResponseEntity containing the search results wrapped in a SearchResponseDTO
+     */
     @GetMapping
     public ResponseEntity<SearchResponseDTO<S>> search(@RequestParam String query) {
         return ResponseEntity.ok(searchService.search(query));
     }
 
+    /**
+     * Searches for members based on the provided query.
+     *
+     * @param query the search term for member names or attributes
+     * @return a ResponseEntity containing a list of members matching the query
+     */
     @GetMapping("/members")
     public ResponseEntity<List<S>> searchMembers(@RequestParam String query) {
         return ResponseEntity.ok(searchService.searchMembers(query));

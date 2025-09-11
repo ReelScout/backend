@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Embeddable class representing a Location with address details.
+ */
 @Embeddable
 @Getter
 @NoArgsConstructor

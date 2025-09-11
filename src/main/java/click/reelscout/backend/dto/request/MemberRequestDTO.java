@@ -10,6 +10,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * DTO for member requests, extending UserRequestDTO.
+ * Includes additional fields specific to members.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class MemberRequestDTO extends UserRequestDTO {

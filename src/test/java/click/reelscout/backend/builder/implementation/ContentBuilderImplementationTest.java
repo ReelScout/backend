@@ -22,6 +22,9 @@ class ContentBuilderImplementationTest {
         builder = new ContentBuilderImplementation();
     }
 
+    /**
+     * Tests that each setter in the builder returns the same builder instance, enabling fluent API usage.
+     */
     @Test
     void fluentApi_returnsSameInstance() {
         // Each setter should return the same builder instance (fluent API)
@@ -37,6 +40,9 @@ class ContentBuilderImplementationTest {
         assertSame(builder, builder.productionCompany(new ProductionCompany()));
     }
 
+    /**
+     * Tests that all fields set in the builder are correctly transferred to the built Content object.
+     */
     @Test
     void build_transfersAllFieldsToContent() {
         // Arrange: prepare sample entities
@@ -73,6 +79,9 @@ class ContentBuilderImplementationTest {
         assertEquals(pc, content.getProductionCompany());
     }
 
+    /**
+     * Tests that optional fields not set in the builder remain null in the built Content object.
+     */
     @Test
     void build_withNoOptionalFields_setsNulls() {
         // Act: build a content object with only required fields
@@ -92,6 +101,9 @@ class ContentBuilderImplementationTest {
         assertNull(content.getProductionCompany());
     }
 
+    /**
+     * Tests that reusing the same builder instance does not leak state between builds.
+     */
     @Test
     void builderReuse_doesNotLeakState() {
         // First build

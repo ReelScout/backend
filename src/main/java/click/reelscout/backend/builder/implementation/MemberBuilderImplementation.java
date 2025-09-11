@@ -17,30 +17,35 @@ public class MemberBuilderImplementation extends AbstractUserBuilderImplementati
     private LocalDate birthDate;
     private List<Genre> favoriteGenres;
 
+    /** {@inheritDoc} */
     @Override
     public MemberBuilder firstName(String firstName) {
         this.firstName = firstName;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public MemberBuilder lastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public MemberBuilder birthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public MemberBuilder favoriteGenres(List<Genre> favoriteGenres) {
         this.favoriteGenres = favoriteGenres;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Member build() {
         return new Member(this);

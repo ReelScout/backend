@@ -17,11 +17,13 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
     private final ProductionCompanyBuilder productionCompanyBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyResponseDTO toDto(ProductionCompany productionCompany, String base64Image) {
         return new ProductionCompanyResponseDTO(productionCompany.getId(), productionCompany.getName(), productionCompany.getLocation(), productionCompany.getWebsite(), productionCompany.getOwners(), productionCompany.getUsername(), productionCompany.getEmail(), productionCompany.getRole(), base64Image);
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder toBuilder(ProductionCompany productionCompany) {
         return productionCompanyBuilder
@@ -40,6 +42,7 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .suspendedReason(productionCompany.getSuspendedReason());
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompany toEntity(ProductionCompanyRequestDTO productionCompanyRequestDTO, String s3ImageKey) {
         return productionCompanyBuilder
@@ -58,6 +61,7 @@ public class ProductionCompanyMapperImplementation implements ProductionCompanyM
                 .build();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyDoc toDoc(ProductionCompany productionCompany) {
         return new ProductionCompanyDoc(productionCompany);

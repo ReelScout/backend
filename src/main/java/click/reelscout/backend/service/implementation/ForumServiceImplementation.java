@@ -40,6 +40,7 @@ public class ForumServiceImplementation implements ForumService {
     private final ForumMapper forumMapper;
     private final ForumReportMapper forumReportMapper;
 
+    /** {@inheritDoc} */
     @Override
     public List<ForumThreadResponseDTO> getThreadsByContent(Long contentId) {
         Content content = contentRepository.findById(contentId)
@@ -52,6 +53,7 @@ public class ForumServiceImplementation implements ForumService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadResponseDTO createThread(User author, Long contentId, CreateThreadRequestDTO dto) {
         Content content = contentRepository.findById(contentId)
@@ -70,6 +72,7 @@ public class ForumServiceImplementation implements ForumService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<ForumPostResponseDTO> getPostsByThread(Long threadId) {
         ForumThread thread = threadRepository.findById(threadId)
@@ -81,6 +84,7 @@ public class ForumServiceImplementation implements ForumService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumPostResponseDTO createPost(User author, Long threadId, CreatePostRequestDTO dto) {
         ForumThread thread = threadRepository.findById(threadId)
@@ -104,6 +108,7 @@ public class ForumServiceImplementation implements ForumService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void reportPost(User reporter, Long postId, ReportPostRequestDTO dto) {
         ForumPost post = postRepository.findById(postId)
@@ -121,6 +126,7 @@ public class ForumServiceImplementation implements ForumService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO deleteThread(User moderator, Long threadId) {
         ForumThread thread = threadRepository.findById(threadId)
@@ -135,6 +141,7 @@ public class ForumServiceImplementation implements ForumService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO deletePost(User moderator, Long postId) {
         ForumPost post = postRepository.findById(postId)

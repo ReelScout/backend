@@ -19,42 +19,49 @@ public class ForumThreadBuilderImplementation implements ForumThreadBuilder {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder id(Long id) {
         this.id = id;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder content(Content content) {
         this.content = content;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder title(String title) {
         this.title = title;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder createdBy(User createdBy) {
         this.createdBy = createdBy;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder createdAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThreadBuilder updatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ForumThread build() {
         return new ForumThread(this);

@@ -5,13 +5,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+/**
+ * Unit tests for {@link ConversationMapperImplementation}.
+ */
 class ConversationMapperImplementationTest {
 
 
     // System Under Test
     private final ConversationMapperImplementation mapper = new ConversationMapperImplementation();
 
-
+    /**
+     * Tests that {@link ConversationMapperImplementation#toDmConversation} throws a NullPointerException
+     * when the lastMessage parameter is null.
+     */
     @Test
     @DisplayName("toDmConversation should fail fast when lastMessage is null")
     void toDmConversation_throwsOnNullMessage() {

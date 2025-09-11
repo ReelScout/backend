@@ -4,6 +4,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Data Transfer Object for Watchlist responses.
+ */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data

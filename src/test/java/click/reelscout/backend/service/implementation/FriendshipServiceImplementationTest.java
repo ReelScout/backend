@@ -47,6 +47,8 @@ class FriendshipServiceImplementationTest {
     @InjectMocks FriendshipServiceImplementation service;
 
     // ---------- helpers ----------
+
+    /** Create a mock Member with the given ID. */
     private static Member mkMember(Long id) {
         Member m = mock(Member.class);
         lenient().when(m.getId()).thenReturn(id);
@@ -55,6 +57,7 @@ class FriendshipServiceImplementationTest {
         return m;
     }
 
+    /** Create a mock Friendship with the given requester, addressee, and status. */
     private static Friendship mkFriendship(Member requester, Member addressee, FriendshipStatus status) {
         Friendship f = mock(Friendship.class);
         lenient().when(f.getRequester()).thenReturn(requester);
@@ -69,6 +72,13 @@ class FriendshipServiceImplementationTest {
     @Nested
     class SendRequest {
 
+        /**
+         * Tests for sendRequest():
+         * - throws if addressee not found
+         * - cannot send request to self
+         * - errors on existing ACCEPTED/PENDING/REJECTED relationships
+         * - saves PENDING friendship and returns success response
+         */
         @Test
         @DisplayName("sendRequest(): throws if addressee not found")
         void addresseeNotFound() {
@@ -84,6 +94,9 @@ class FriendshipServiceImplementationTest {
             verifyNoMoreInteractions(userRepository, friendshipRepository, friendshipMapper);
         }
 
+        /**
+         * Tests that a member cannot send a friend request to themselves.
+         */
         @Test
         @DisplayName("sendRequest(): cannot send request to self")
         void cannotRequestSelf() {
@@ -100,6 +113,10 @@ class FriendshipServiceImplementationTest {
             verifyNoMoreInteractions(userRepository, friendshipRepository, friendshipMapper);
         }
 
+        /**
+         * Tests that existing friendships with statuses ACCEPTED, PENDING, or REJECTED
+         * prevent sending a new friend request.
+         */
         @Test
         @DisplayName("sendRequest(): errors on existing ACCEPTED/PENDING/REJECTED relationships")
         void existingRelationshipBlocks() {
@@ -122,6 +139,9 @@ class FriendshipServiceImplementationTest {
             }
         }
 
+        /**
+         * Tests that a valid friend request is saved as PENDING and returns a success response.
+         */
         @Test
         @DisplayName("sendRequest(): saves PENDING friendship and returns success response")
         void savesPendingAndReturnsOk() {
@@ -154,6 +174,10 @@ class FriendshipServiceImplementationTest {
     @Nested
     class AcceptRequest {
 
+        /**
+         * Tests that acceptRequest throws an EntityNotFoundException
+         * if the requester member is not found.
+         */
         @Test
         @DisplayName("acceptRequest(): throws if requester not found")
         void requesterNotFound() {
@@ -169,6 +193,10 @@ class FriendshipServiceImplementationTest {
             verifyNoMoreInteractions(userRepository, friendshipRepository, friendshipMapper);
         }
 
+        /**
+         * Tests that acceptRequest throws an EntityNotFoundException
+         * if no friendship exists between the requester and addressee.
+         */
         @Test
         @DisplayName("acceptRequest(): throws if no friendship found between members")
         void friendshipNotFound() {
@@ -185,6 +213,10 @@ class FriendshipServiceImplementationTest {
             verify(friendshipRepository).findBetweenMembers(requester, addressee);
         }
 
+        /**
+         * Tests that acceptRequest throws an EntityUpdateException
+         * if the addressee is not the current user.
+         */
         @Test
         @DisplayName("acceptRequest(): throws if addressee is not the current user")
         void notAuthorizedAddressee() {
@@ -205,6 +237,10 @@ class FriendshipServiceImplementationTest {
             verify(friendshipRepository).findBetweenMembers(requester, addressee);
         }
 
+        /**
+         * Tests that acceptRequest throws an EntityUpdateException
+         * if the friendship status is not PENDING.
+         */
         @Test
         @DisplayName("acceptRequest(): throws if friendship is not PENDING")
         void notPending() {
@@ -224,6 +260,10 @@ class FriendshipServiceImplementationTest {
                     .hasMessageContaining("not pending");
         }
 
+        /**
+         * Tests that acceptRequest successfully updates a PENDING friendship to ACCEPTED
+         * and returns a success response.
+         */
         @Test
         @DisplayName("acceptRequest(): maps to builder -> status ACCEPTED -> save -> returns success")
         void acceptPendingOk() {
@@ -260,6 +300,10 @@ class FriendshipServiceImplementationTest {
     @Nested
     class RejectRequest {
 
+        /**
+         * Test that rejectRequest throws an EntityNotFoundException
+         * if the requester member is not found.
+         */
         @Test
         @DisplayName("rejectRequest(): throws if requester not found")
         void requesterNotFound() {
@@ -272,6 +316,10 @@ class FriendshipServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Tests that rejectRequest throws an EntityNotFoundException
+         * if no friendship exists between the requester and addressee.
+         */
         @Test
         @DisplayName("rejectRequest(): throws if friendship not found")
         void friendshipNotFound() {
@@ -286,6 +334,10 @@ class FriendshipServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Tests that rejectRequest throws an EntityUpdateException
+         * if the addressee is not the current user.
+         */
         @Test
         @DisplayName("rejectRequest(): throws if not authorized")
         void notAuthorizedAddressee() {
@@ -304,6 +356,10 @@ class FriendshipServiceImplementationTest {
                     .hasMessageContaining("not authorized");
         }
 
+        /**
+         * Tests that rejectRequest throws an EntityUpdateException
+         * if the friendship status is not PENDING.
+         */
         @Test
         @DisplayName("rejectRequest(): throws if request is not PENDING")
         void notPending() {
@@ -358,6 +414,10 @@ class FriendshipServiceImplementationTest {
     @Nested
     class RemoveFriend {
 
+        /**
+         * Tests that removeFriend throws an EntityNotFoundException
+         * if the other member is not found.
+         */
         @Test
         @DisplayName("removeFriend(): throws if other member not found")
         void otherNotFound() {
@@ -370,6 +430,10 @@ class FriendshipServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Tests that removeFriend throws an EntityNotFoundException
+         * if no friendship exists between the two members.
+         */
         @Test
         @DisplayName("removeFriend(): throws if friendship not found")
         void friendshipNotFound() {
@@ -384,6 +448,10 @@ class FriendshipServiceImplementationTest {
                     .isInstanceOf(EntityNotFoundException.class);
         }
 
+        /**
+         * Tests that removeFriend throws an EntityDeleteException
+         * if the friendship status is not ACCEPTED.
+         */
         @Test
         @DisplayName("removeFriend(): throws if status != ACCEPTED")
         void notFriends() {
@@ -400,6 +468,10 @@ class FriendshipServiceImplementationTest {
                     .hasMessageContaining("not friends");
         }
 
+        /**
+         * Tests that removeFriend successfully deletes an ACCEPTED friendship
+         * and returns a success response.
+         */
         @Test
         @DisplayName("removeFriend(): deletes friendship and returns success")
         void removeOk() {
@@ -425,6 +497,11 @@ class FriendshipServiceImplementationTest {
     @Nested
     class QueryLists {
 
+        /**
+         * Tests that getFriends concatenates friendships where the member is
+         * either the requester or addressee with status ACCEPTED,
+         * and maps them to DTOs correctly.
+         */
         @Test
         @DisplayName("getFriends(): concatenates ACCEPTED requester/addressee lists and maps to DTOs")
         void getFriends_concatenatesAndMaps() {
@@ -486,6 +563,11 @@ class FriendshipServiceImplementationTest {
             verifyNoMoreInteractions(friendshipRepository, s3Service, memberMapper, friendshipMapper);
         }
 
+        /**
+         * Tests that getIncomingRequests retrieves friendships where the member is
+         * the addressee with status PENDING,
+         * and maps them to DTOs correctly.
+         */
         @Test
         @DisplayName("getIncomingRequests(): maps PENDING addressee list to DTOs")
         void getIncomingRequests_maps() {
@@ -513,6 +595,11 @@ class FriendshipServiceImplementationTest {
             assertThat(result).hasSize(2);
         }
 
+        /**
+         * Tests that getOutgoingRequests retrieves friendships where the member is
+         * the requester with status PENDING,
+         * and maps them to DTOs correctly.
+         */
         @Test
         @DisplayName("getOutgoingRequests(): maps PENDING requester list to DTOs")
         void getOutgoingRequests_maps() {

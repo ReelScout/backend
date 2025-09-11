@@ -9,6 +9,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Entity representing content such as movies or TV shows.
+ */
 @NoArgsConstructor
 @Entity
 @Getter

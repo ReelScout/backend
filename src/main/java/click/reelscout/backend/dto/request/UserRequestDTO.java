@@ -8,6 +8,11 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import click.reelscout.backend.validation.Create;
 
+/**
+ * Abstract base class for user request DTOs.
+ * This class uses Jackson annotations to handle polymorphic deserialization
+ * based on the actual type of user (Member or ProductionCompany).
+ */
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MemberRequestDTO.class),

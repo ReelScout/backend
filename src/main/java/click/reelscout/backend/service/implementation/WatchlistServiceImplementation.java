@@ -37,6 +37,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
     private final S3Service s3Service;
     private final UserRepository<Member> userRepository;
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO create(Member member, WatchlistRequestDTO watchlistRequestDTO) {
         try {
@@ -50,6 +51,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO update(Member member, Long id, WatchlistRequestDTO watchlistRequestDTO) {
         Watchlist watchlistToUpdate = watchlistRepository.findById(id)
@@ -72,6 +74,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO delete(Member member, Long id) {
         Watchlist watchlist = watchlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Watchlist.class));
@@ -89,6 +92,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<WatchlistResponseDTO> getAllByMember(Member member) {
         return watchlistRepository.findAllByMember(member)
@@ -97,6 +101,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO addContentToWatchlist(Member member, Long watchlistId, Long contentId) {
         Watchlist watchlist = watchlistRepository.findById(watchlistId).orElseThrow(() -> new EntityNotFoundException(Watchlist.class));
@@ -119,6 +124,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO removeContentFromWatchlist(Member member, Long watchlistId, Long contentId) {
         Watchlist watchlist = watchlistRepository.findById(watchlistId).orElseThrow(() -> new EntityNotFoundException(Watchlist.class));
@@ -141,6 +147,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO getById(Member member, Long id) {
         Watchlist watchlist = watchlistRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Watchlist.class));
@@ -157,6 +164,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
         return watchlistMapper.toDto(watchlist, contents);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<WatchlistResponseDTO> getAllByMemberAndContent(Member member, Long contentId) {
         Content content = contentRepository.findById(contentId).orElseThrow(() -> new EntityNotFoundException(Content.class));
@@ -168,6 +176,7 @@ public class WatchlistServiceImplementation implements WatchlistService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<WatchlistResponseDTO> getAllPublicByMember(Long memberId) {
         Member member = userRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(Member.class));

@@ -7,8 +7,18 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Configuration class for setting up a ThreadPoolExecutor bean.
+ */
 @Configuration
 public class ThreadPoolConfig {
+    /**
+     * Creates and configures a ThreadPoolExecutor bean.
+     * Used for managing asynchronous tasks in the application.
+     * Example use case: handling search requests concurrently.
+     *
+     * @return a configured ThreadPoolExecutor instance
+     */
     @Bean
     public ThreadPoolExecutor threadPoolExecutor() {
         return new ThreadPoolExecutor(

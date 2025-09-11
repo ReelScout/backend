@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * DTO for watchlist response with contents.
+ */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data

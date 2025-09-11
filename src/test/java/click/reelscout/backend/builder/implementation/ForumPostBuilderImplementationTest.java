@@ -11,8 +11,14 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Unit tests for ForumPostBuilderImplementation.
+ * Tests each fluent setter and the build() method.
+ */
 class ForumPostBuilderImplementationTest {
-
+    /** Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void id_setsField_andReturnsSameBuilder() {
         // Arrange
@@ -26,6 +32,10 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void thread_setsField_andReturnsSameBuilder() {
         ForumPostBuilderImplementation builder = new ForumPostBuilderImplementation();
@@ -37,6 +47,9 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /** Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void author_setsField_andReturnsSameBuilder() {
         ForumPostBuilderImplementation builder = new ForumPostBuilderImplementation();
@@ -49,6 +62,9 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /** Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void parent_setsField_andReturnsSameBuilder() {
         ForumPostBuilderImplementation builder = new ForumPostBuilderImplementation();
@@ -60,6 +76,9 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /** Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void body_setsField_andReturnsSameBuilder() {
         ForumPostBuilderImplementation builder = new ForumPostBuilderImplementation();
@@ -70,6 +89,9 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /** Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void createdAt_setsField_andReturnsSameBuilder() {
         ForumPostBuilderImplementation builder = new ForumPostBuilderImplementation();
@@ -81,6 +103,9 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /** Test that each fluent setter sets the correct field and returns the same builder instance.
+     * Also test that build() creates a ForumPost with all fields copied over.
+     */
     @Test
     void updatedAt_setsField_andReturnsSameBuilder() {
         ForumPostBuilderImplementation builder = new ForumPostBuilderImplementation();
@@ -92,6 +117,7 @@ class ForumPostBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /** Test that build() creates a ForumPost with all fields copied over from the builder. */
     @Test
     void build_returnsForumPost_withAllValuesCopied() {
         // Arrange: prepare sample data
@@ -129,6 +155,7 @@ class ForumPostBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(post, "updatedAt")).isEqualTo(updatedAt);
     }
 
+    /** Test that build() works even if optional fields are left null in the builder. */
     @Test
     void build_allowsNullOptionalFields() {
         // Arrange: leave parent and timestamps as null
@@ -151,6 +178,7 @@ class ForumPostBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(post, "updatedAt")).isNull();
     }
 
+    /** Test that multiple fluent setters can be chained in a single expression. */
     @Test
     void fluentApi_supportsChaining() {
         // Arrange

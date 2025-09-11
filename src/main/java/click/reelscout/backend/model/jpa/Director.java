@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * Embeddable class representing a Director with first and last names.
+ */
 @Embeddable
 @NoArgsConstructor
 @Getter

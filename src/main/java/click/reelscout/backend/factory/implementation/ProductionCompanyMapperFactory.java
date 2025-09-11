@@ -21,21 +21,25 @@ public class ProductionCompanyMapperFactory implements UserMapperFactory {
     private final ProductionCompanyBuilder productionCompanyBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(UserRequestDTO userRequestDTO) {
         return userRequestDTO instanceof ProductionCompanyRequestDTO;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(UserResponseDTO userResponseDTO) {
         return userResponseDTO instanceof ProductionCompanyResponseDTO;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(User user) {
         return user instanceof ProductionCompany;
     }
 
+    /** {@inheritDoc} */
     @Override
     public UserMapper createMapper() {
         return new ProductionCompanyMapperImplementation(productionCompanyBuilder, passwordEncoder);

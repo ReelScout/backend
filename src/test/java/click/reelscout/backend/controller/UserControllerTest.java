@@ -21,13 +21,8 @@ import static org.mockito.Mockito.*;
 import java.util.List;
 
 /**
- * Pure unit tests for UserController.
- * <p>
- * Characteristics:
- * - No Spring context (no @SpringBootTest, no MockMvc).
- * - UserService is mocked and injected into the controller.
- * - Validation annotations (@Valid, @Validated) are NOT executed in unit tests.
- * - We directly call controller methods and verify service interactions.
+ * Unit tests for {@link UserController}.
+ * Uses Mockito to mock dependencies and verify interactions.
  */
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
@@ -44,6 +39,10 @@ class UserControllerTest {
     @InjectMocks
     private UserController<User, TestUserRequestDTO, UserResponseDTO> controller;
 
+    /**
+     * Test for getCurrentUser method.
+     * Verifies that the controller calls the service and returns the expected DTO.
+     */
     @Test
     void getCurrentUser_returnsDto() {
         // Arrange: mock authenticated user and expected DTO
@@ -61,6 +60,10 @@ class UserControllerTest {
         verifyNoMoreInteractions(userService);
     }
 
+    /**
+     * Test for getById method.
+     * Verifies that the controller calls the service with the correct ID and returns the expected DTO.
+     */
     @Test
     void getById_returnsDto() {
         // Arrange
@@ -78,6 +81,10 @@ class UserControllerTest {
         verifyNoMoreInteractions(userService);
     }
 
+    /**
+     * Test for getByUsernameOrEmail method.
+     * Verifies that the controller calls the service with the correct key and returns the expected DTO.
+     */
     @Test
     void getByUsernameOrEmail_returnsDto() {
         // Arrange
@@ -95,6 +102,11 @@ class UserControllerTest {
         verifyNoMoreInteractions(userService);
     }
 
+    /**
+     * Test for update method.
+     * Verifies that the controller calls the service with the authenticated user and request DTO,
+     * and returns the expected login response DTO.
+     */
     @Test
     void update_returnsLoginResponse() {
         // Arrange
@@ -113,6 +125,11 @@ class UserControllerTest {
         verifyNoMoreInteractions(userService);
     }
 
+    /**
+     * Test for changePassword method.
+     * Verifies that the controller calls the service with the authenticated user and password change request,
+     * and returns a confirmation message.
+     */
     @Test
     void changePassword_returnsOk() {
         // Arrange
@@ -132,6 +149,10 @@ class UserControllerTest {
         verifyNoMoreInteractions(userService);
     }
 
+    /**
+     * Test for getAll method.
+     * Verifies that the controller calls the service and returns the list of user DTOs.
+     */
     @Test
     void getAll_returnsListFromService() {
         // Arrange
@@ -150,6 +171,10 @@ class UserControllerTest {
         verifyNoMoreInteractions(userService);
     }
 
+    /**
+     * Test for getAll method when service returns an empty list.
+     * Verifies that the controller correctly handles and returns an empty list.
+     */
     @Test
     void getAll_returnsEmptyList() {
         // Arrange

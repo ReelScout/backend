@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ConversationMapperImplementation implements ConversationMapper {
+    /** {@inheritDoc} */
     @Override
     public ConversationResponseDTO toDmConversation(ChatMessage lastMessage, String counterpartUsername) {
         return new ConversationResponseDTO(

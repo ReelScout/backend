@@ -18,6 +18,9 @@ import java.time.LocalDateTime;
 import click.reelscout.backend.exception.custom.AccountSuspendedException;
 import click.reelscout.backend.model.jpa.User;
 
+/**
+ * Filter that intercepts incoming HTTP requests to validate JWT tokens and set the authentication context.
+ */
 @Component
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -25,6 +28,13 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
+    /**
+     * Filters incoming requests to validate JWT tokens and set the authentication context.
+     *
+     * @param request     the incoming HTTP request
+     * @param response    the outgoing HTTP response
+     * @param filterChain the filter chain to pass the request and response to the next filter
+     */
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) {
         try {

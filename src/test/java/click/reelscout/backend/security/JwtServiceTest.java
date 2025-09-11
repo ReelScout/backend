@@ -23,6 +23,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for JwtService.
+ * <p>
+ * Tests cover token generation, extraction of claims, and validation including
+ * expiration and signature checks.
+ */
 @ExtendWith(MockitoExtension.class)
 class JwtServiceTest {
 
@@ -65,6 +71,11 @@ class JwtServiceTest {
         f.set(target, value);
     }
 
+    /**
+     * Test that generateToken creates a valid JWT containing the expected subject
+     * and custom claims, and that these can be extracted correctly.
+     * The token should be signed with the correct key and have a future expiration.
+     */
     @Test
     @DisplayName("generateToken should create a signed token containing subject and custom claims")
     void testGenerateTokenAndExtract() {
@@ -86,6 +97,13 @@ class JwtServiceTest {
         assertTrue(claims.getExpiration().after(new Date()));
     }
 
+    /**
+     * Test isTokenValid for various scenarios:
+     * - Valid token and matching user returns true
+     * - Valid token but non-matching user returns false
+     * - Expired token throws ExpiredJwtException
+     * - Token signed with different key throws SignatureException
+     */
     @Test
     @DisplayName("isTokenValid should return true for a valid token and matching user")
     void testIsTokenValidTrue() {
@@ -93,6 +111,9 @@ class JwtServiceTest {
         assertTrue(jwtService.isTokenValid(token, testUser));
     }
 
+    /**
+     * Test isTokenValid returns false when the token is valid but the username does not match.
+     */
     @Test
     @DisplayName("isTokenValid should return false when username does not match")
     void testIsTokenValidWrongUser() {
@@ -114,6 +135,10 @@ class JwtServiceTest {
         assertFalse(jwtService.isTokenValid(token, otherUser));
     }
 
+    /**
+     * Test isTokenValid throws ExpiredJwtException for an expired token.
+     * We simulate this by generating a token with a very short expiration time.
+     */
     @Test
     @DisplayName("isTokenValid should return false for an expired token")
     void testIsTokenValidExpired() throws Exception {
@@ -127,6 +152,10 @@ class JwtServiceTest {
         setField(jwtService, "jwtExpiration", 60_000L);
     }
 
+    /**
+     * Test isTokenValid throws SignatureException when the token is signed with a different key.
+     * We simulate this by generating a token with a different secret key.
+     */
     @Test
     @DisplayName("isTokenValid should return false for token signed with a different key (invalid signature)")
     void testIsTokenValidInvalidSignature() {
@@ -152,7 +181,7 @@ class JwtServiceTest {
         assertThrows(SignatureException.class, () -> jwtService.isTokenValid(badToken, testUser));
     }
 
-    // Helper to parse claims without using JwtService internals for validation
+    /** Helper method to extract claims using the same key as JwtService to verify token contents. */
     private static Claims extractClaimsWithSameKey(String token, String base64Secret) {
         return Jwts.parserBuilder()
                 .setSigningKey(Keys.hmacShaKeyFor(Base64.getDecoder().decode(base64Secret)))

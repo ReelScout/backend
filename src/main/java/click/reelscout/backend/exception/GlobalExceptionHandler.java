@@ -14,6 +14,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global exception handler for the application.
+ * <p>
+ * This class uses {@link RestControllerAdvice} to handle various exceptions thrown by controllers
+ * and services throughout the application. It provides specific handlers for different exception types,
+ * returning appropriate HTTP status codes and response bodies.
+ * </p>
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     /**
@@ -187,10 +195,9 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles generic {@link JwtException} exceptions that occur during JWT token processing.
+     * Handles generic {@link JwtException} exceptions that occur during JWT processing.
      * <p>
-     * This method acts as a fallback for JWT exceptions not handled by more specific handlers.
-     * Returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing a generic error message.
+     * This method returns an HTTP 401 (Unauthorized) response with a {@link CustomResponseDTO} containing a generic authentication failure message.
      * </p>
      *
      * @param e the {@link JwtException} that triggered this handler
@@ -204,7 +211,13 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Handles account suspension errors.
+     * Handles {@link AccountSuspendedException} exceptions that occur when a user's account is suspended.
+     * <p>
+     * This method returns an HTTP 403 (Forbidden) response with a {@link CustomResponseDTO} containing the exception's message.
+     * </p>
+     *
+     * @param e the {@link AccountSuspendedException} that triggered this handler
+     * @return a {@link ResponseEntity} with a 403 status code and a {@link CustomResponseDTO} with the error message
      */
     @ExceptionHandler(AccountSuspendedException.class)
     public ResponseEntity<CustomResponseDTO> handleAccountSuspended(AccountSuspendedException e) {

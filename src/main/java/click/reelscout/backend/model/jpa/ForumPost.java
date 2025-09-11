@@ -13,6 +13,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Entity representing a post in a forum thread.
+ */
 @Entity
 @Getter
 @NoArgsConstructor

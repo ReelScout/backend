@@ -23,6 +23,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link ChatServiceImplementation}.
+ * Uses Mockito to mock dependencies and verify interactions.
+ */
 @ExtendWith(MockitoExtension.class)
 class ChatServiceImplementationTest {
 
@@ -38,6 +42,12 @@ class ChatServiceImplementationTest {
     @InjectMocks
     ChatServiceImplementation service;
 
+    /**
+     * Tests that saving a direct message involves mapping the request DTO to an entity,
+     * saving it via the repository, and then mapping the saved entity back to a response DTO.
+     * Verifies that each step is called with the correct parameters and that the final
+     * returned DTO is as expected.
+     */
     @Test
     @DisplayName("saveDirectMessage(): maps DTO->entity, saves, then maps entity->DTO")
     void saveDirectMessage_mapsAndSaves() {
@@ -70,6 +80,11 @@ class ChatServiceImplementationTest {
         verifyNoMoreInteractions(repository, chatMessageMapper, conversationMapper);
     }
 
+    /**
+     * Tests that retrieving direct message history between two users correctly fetches
+     * a paginated list of messages from the repository and maps each message entity
+     * to a response DTO. Verifies that pagination details are preserved in the result.
+     */
     @Test
     @DisplayName("getDirectHistory(): repository result is mapped page-wise to DTOs")
     void getDirectHistory_mapsPage() {
@@ -101,6 +116,12 @@ class ChatServiceImplementationTest {
         verifyNoMoreInteractions(repository, chatMessageMapper, conversationMapper);
     }
 
+    /**
+     * Tests that retrieving recent direct conversations correctly de-duplicates
+     * conversations by counterpart and limits the result size. Verifies that the
+     * repository is queried with appropriate pagination and that the mapping to
+     * conversation DTOs is performed correctly for unique counterparts only.
+     */
     @Test
     @DisplayName("getRecentDirectConversations(): de-duplicates by counterpart and limits size")
     void getRecentDirectConversations_dedupsAndLimits() {
@@ -144,6 +165,11 @@ class ChatServiceImplementationTest {
         verifyNoMoreInteractions(conversationMapper);
     }
 
+    /**
+     * Tests that retrieving recent direct conversations correctly identifies the counterpart
+     * username regardless of whether the message was sent or received by the user.
+     * Verifies that the mapping to conversation DTOs uses the correct counterpart.
+     */
     @Test
     @DisplayName("getRecentDirectConversations(): counterpart detection works for sent and received messages")
     void getRecentDirectConversations_counterpartDetection() {
@@ -175,6 +201,16 @@ class ChatServiceImplementationTest {
 
     // ---------- helpers ----------
 
+    /**
+     * Creates a ChatMessage instance representing a direct message between sender and recipient
+     * at the specified timestamp. Uses reflection to set fields directly, assuming no public
+     * setters are available. Adjust as necessary for your entity's construction pattern.
+     *
+     * @param sender    the username of the sender
+     * @param recipient the username of the recipient
+     * @param ts        the timestamp of the message
+     * @return a ChatMessage instance with the specified properties
+     */
     private static ChatMessage mkDm(String sender, String recipient, LocalDateTime ts) {
         ChatMessage m = new ChatMessage();
         try {

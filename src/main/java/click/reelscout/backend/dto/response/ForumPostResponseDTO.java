@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for forum post responses.
+ */
 @Getter
 @AllArgsConstructor
 public class ForumPostResponseDTO {

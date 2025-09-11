@@ -20,10 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for AuthController:
- * - No Spring context or MockMvc.
- * - Controller is instantiated directly with a mocked AuthService.
- * - Validation annotations (@Valid/@Validated) are not triggered here.
+ * Unit tests for {@link AuthController}.
+ * Uses Mockito to mock the {@link AuthService} dependency.
  */
 @ExtendWith(MockitoExtension.class)
 class AuthControllerTest {
@@ -38,6 +36,7 @@ class AuthControllerTest {
         controller = new AuthController<>(authService);
     }
 
+    /** Tests for login method */
     @Test
     void login_validRequest_returnsOkAndBodyFromService() {
         // Arrange
@@ -58,6 +57,7 @@ class AuthControllerTest {
         verifyNoMoreInteractions(authService);
     }
 
+    /** Tests for register method */
     @Test
     void register_validRequest_returnsOkAndBodyFromService() {
         // Arrange: anonymous subclass of UserRequestDTO with getters overridden
@@ -85,6 +85,7 @@ class AuthControllerTest {
         verifyNoMoreInteractions(authService);
     }
 
+    /** Tests for register method when service throws ConstraintViolationException */
     @Test
     void register_serviceThrowsConstraintViolation_controllerPropagates() {
         // Arrange: simulate a validation failure thrown by the service

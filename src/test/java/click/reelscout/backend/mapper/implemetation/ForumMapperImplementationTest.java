@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+/** Unit tests for {@link ForumMapperImplementation}, focusing on mapping logic and builder usage. */
 @ExtendWith(MockitoExtension.class)
 class ForumMapperImplementationTest {
 
@@ -35,6 +36,7 @@ class ForumMapperImplementationTest {
         mapper = new ForumMapperImplementation(threadBuilder, postBuilder);
     }
 
+    /** Test that toThreadDto correctly maps all fields from ForumThread to ForumThreadResponseDTO. */
     @Test
     void toThreadDto_mapsAllFields() {
         // Arrange: build a thread with nested content/user and timestamps
@@ -70,6 +72,7 @@ class ForumMapperImplementationTest {
         verifyNoInteractions(threadBuilder, postBuilder);
     }
 
+    /** Test that toPostDto correctly maps all fields from ForumPost to ForumPostResponseDTO, including null parent. */
     @Test
     void toPostDto_mapsAllFields_withNullParent() {
         // Arrange
@@ -105,6 +108,7 @@ class ForumMapperImplementationTest {
         verifyNoInteractions(threadBuilder, postBuilder);
     }
 
+    /** Test that toPostDto correctly maps all fields from ForumPost to ForumPostResponseDTO, including non-null parent. */
     @Test
     void toPostDto_mapsAllFields_withParentPresent() {
         // Arrange
@@ -137,6 +141,7 @@ class ForumMapperImplementationTest {
         assertThat(dto.getParentId()).isEqualTo(777L);
     }
 
+    /** Test that toBuilder for ForumThread chains all fields on the thread builder. */
     @Test
     void toBuilder_fromThread_chainsAllFieldsOnThreadBuilder() {
         // Arrange
@@ -169,6 +174,7 @@ class ForumMapperImplementationTest {
         verifyNoInteractions(postBuilder);
     }
 
+    /** Test that toBuilder for ForumPost chains all fields on the post builder. */
     @Test
     void toBuilder_fromPost_chainsAllFieldsOnPostBuilder() {
         // Arrange
@@ -204,6 +210,7 @@ class ForumMapperImplementationTest {
         verifyNoInteractions(threadBuilder);
     }
 
+    /** Test that toEntity for ForumThread uses the builder with null ID and timestamps, and returns the built entity. */
     @Test
     void toEntity_thread_usesBuilderWithNullIdAndTimestamps_andReturnsBuiltEntity() {
         // Arrange
@@ -231,6 +238,7 @@ class ForumMapperImplementationTest {
         verifyNoInteractions(postBuilder);
     }
 
+    /** Test that toEntity for ForumPost uses the builder with null ID and timestamps, and returns the built entity. */
     @Test
     void toEntity_post_usesBuilderWithNullIdAndTimestamps_andReturnsBuiltEntity() {
         // Arrange

@@ -5,6 +5,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DTO for search response containing lists of users and contents.
+ *
+ * @param <S> the type of UserResponseDTO
+ */
 @AllArgsConstructor
 @Data
 public class SearchResponseDTO<S extends  UserResponseDTO> {

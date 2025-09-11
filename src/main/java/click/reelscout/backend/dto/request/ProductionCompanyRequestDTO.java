@@ -8,6 +8,10 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+/**
+ * DTO for creating or updating a Production Company.
+ * Inherits common user fields from UserRequestDTO.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ProductionCompanyRequestDTO extends UserRequestDTO{

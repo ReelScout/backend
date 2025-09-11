@@ -17,12 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for ForumReportMapperImplementation.
- *
- * We isolate the mapper by mocking ForumPostReportBuilder:
- * - For toBuilder(report): we verify the fluent calls that copy all fields from the source report.
- * - For toEntity(post, reporter, reason): we verify that id and createdAt are set to null,
- *   and that build() returns the expected entity.
+ * Unit tests for {@link ForumReportMapperImplementation}.
+ * The builder is mocked to isolate the mapper logic.
  */
 @ExtendWith(MockitoExtension.class)
 class ForumReportMapperImplementationTest {
@@ -45,6 +41,7 @@ class ForumReportMapperImplementationTest {
         when(reportBuilder.createdAt(any())).thenReturn(reportBuilder);
     }
 
+    /** Tests for toBuilder method */
     @Test
     void toBuilder_copiesAllFieldsFromReport_andReturnsSameBuilder() {
         // Arrange
@@ -75,6 +72,7 @@ class ForumReportMapperImplementationTest {
         verify(reportBuilder, never()).build();
     }
 
+    /** Tests for toEntity method */
     @Test
     void toEntity_buildsReport_withGivenInputs_andNullIdAndCreatedAt() {
         // Arrange

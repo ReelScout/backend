@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for suspending a user.
+ */
 @Data
 public class SuspendUserRequestDTO {
     @NotNull(message = "Suspension end time is required")

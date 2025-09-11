@@ -44,11 +44,14 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
     private final S3Service s3Service;
     private final GenreRepository genreRepository;
 
+    /** {@inheritDoc} */
     @Override
     public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
         return login(userLoginRequestDTO.getUsername(), userLoginRequestDTO.getPassword());
     }
 
+    /** {@inheritDoc} */
+    @Override
     public UserLoginResponseDTO login(String username, String password) {
         U user = userRepository.findByUsernameOrEmail(username)
                 .orElseThrow(() -> new EntityNotFoundException(User.class));
@@ -74,6 +77,7 @@ public class AuthServiceImplementation <U extends User, B extends UserBuilder<U,
         return new UserLoginResponseDTO(jwtToken);
     }
 
+    /** {@inheritDoc} */
     @Override
     public UserLoginResponseDTO register(R userRequestDTO) {
         if (userRepository.existsByUsernameOrEmail(userRequestDTO.getUsername(), userRequestDTO.getEmail())) {

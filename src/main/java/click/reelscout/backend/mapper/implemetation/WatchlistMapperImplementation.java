@@ -18,6 +18,7 @@ import java.util.List;
 public class WatchlistMapperImplementation implements WatchlistMapper {
     private final WatchlistBuilder watchlistBuilder;
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO toDto(Watchlist watchlist) {
         return new WatchlistResponseDTO(
@@ -27,6 +28,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistResponseDTO toDto(Watchlist watchlist, List<ContentResponseDTO> contents) {
         return new WatchlistWithContentsResponseDTO(
@@ -37,6 +39,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public WatchlistBuilder toBuilder(Watchlist watchlist) {
         return watchlistBuilder
@@ -47,6 +50,7 @@ public class WatchlistMapperImplementation implements WatchlistMapper {
                 .member(watchlist.getMember());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Watchlist toEntity(WatchlistRequestDTO watchlistRequestDTO, Member member) {
         return watchlistBuilder

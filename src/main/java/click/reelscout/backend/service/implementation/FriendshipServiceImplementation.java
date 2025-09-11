@@ -33,6 +33,7 @@ public class FriendshipServiceImplementation implements FriendshipService {
 
     private final S3Service s3Service;
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO sendRequest(Member requester, Long addresseeId) {
         Member addressee = userRepository.findById(addresseeId)
@@ -64,6 +65,7 @@ public class FriendshipServiceImplementation implements FriendshipService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO acceptRequest(Member addressee, Long requesterId) {
         Member requester = userRepository.findById(requesterId)
@@ -96,6 +98,7 @@ public class FriendshipServiceImplementation implements FriendshipService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO rejectRequest(Member addressee, Long requesterId) {
         Member requester = userRepository.findById(requesterId)
@@ -124,6 +127,7 @@ public class FriendshipServiceImplementation implements FriendshipService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO removeFriend(Member member, Long friendId) {
         Member other = userRepository.findById(friendId)
@@ -144,6 +148,7 @@ public class FriendshipServiceImplementation implements FriendshipService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<FriendshipResponseDTO> getFriends(Member member) {
         // accepted friendships: build friendship DTOs with both users populated
@@ -152,12 +157,14 @@ public class FriendshipServiceImplementation implements FriendshipService {
         return java.util.stream.Stream.concat(acceptedAsRequester.stream(), acceptedAsAddressee.stream()).map(this::toFriendshipDto).toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<FriendshipResponseDTO> getIncomingRequests(Member member) {
         return friendshipRepository.findByAddresseeAndStatus(member, FriendshipStatus.PENDING)
                 .stream().map(this::toFriendshipDto).toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<FriendshipResponseDTO> getOutgoingRequests(Member member) {
         return friendshipRepository.findByRequesterAndStatus(member, FriendshipStatus.PENDING)

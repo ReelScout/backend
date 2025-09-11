@@ -20,12 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
- * Pure unit tests for MemberMapperFactory.
- * <p>
- * Notes:
- * - No Spring context is started.
- * - Dependencies (MemberBuilder, PasswordEncoder) are mocked.
- * - We verify the support predicates and the returned mapper type.
+ * Unit tests for {@link MemberMapperFactory}.
  */
 @ExtendWith(MockitoExtension.class)
 class MemberMapperFactoryTest {
@@ -43,6 +38,7 @@ class MemberMapperFactoryTest {
         factory = new MemberMapperFactory(memberBuilder, passwordEncoder);
     }
 
+    /** Tests for the supports() method */
     @Test
     void supports_UserRequestDTO_trueForMemberRequestDTO_falseForOthers() {
         // Positive: MemberRequestDTO
@@ -54,6 +50,7 @@ class MemberMapperFactoryTest {
         assertFalse(factory.supports(other), "Factory must not support non-member UserRequestDTO");
     }
 
+    /** Tests for the supports() method */
     @Test
     void supports_UserResponseDTO_trueForMemberResponseDTO_falseForOthers() {
         // Positive: MemberResponseDTO
@@ -65,6 +62,7 @@ class MemberMapperFactoryTest {
         assertFalse(factory.supports(other), "Factory must not support non-member UserResponseDTO");
     }
 
+    /** Tests for the supports() method */
     @Test
     void supports_User_trueForMember_falseForOthers() {
         // Positive: Member entity
@@ -76,6 +74,7 @@ class MemberMapperFactoryTest {
         assertFalse(factory.supports(other), "Factory must not support non-member User entities");
     }
 
+    /** Tests for the createMapper() method */
     @SuppressWarnings("rawtypes")
     @Test
     void createMapper_returnsMemberMapperImplementation() {

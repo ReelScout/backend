@@ -20,47 +20,57 @@ public abstract class AbstractUserBuilderImplementation<U extends User, B extend
     protected LocalDateTime suspendedUntil;
     protected String suspendedReason;
 
+    /** {@inheritDoc} */
     @Override
     public B id(Long id) {
         this.id = id;
         return (B) this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public B username(String username) {
         this.username = username;
         return (B) this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public B email(String email) {
         this.email = email;
         return (B) this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public B password(String password) {
         this.password = password;
         return (B) this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public B role(Role role) {
         this.role = role;
         return (B) this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public B s3ImageKey(String s3ImageKey) {
         this.s3ImageKey = s3ImageKey;
         return (B) this;
     }
 
-    public B suspendedUntil(LocalDateTime suspendedUntil) {
+    /** {@inheritDoc} */
+    @Override
+    public B suspendedUntil(java.time.LocalDateTime suspendedUntil) {
         this.suspendedUntil = suspendedUntil;
         return (B) this;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public B suspendedReason(String suspendedReason) {
         this.suspendedReason = suspendedReason;
         return (B) this;

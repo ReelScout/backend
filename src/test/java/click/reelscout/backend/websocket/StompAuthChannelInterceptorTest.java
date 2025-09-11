@@ -25,6 +25,9 @@ import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for StompAuthChannelInterceptor.
+ * Covers various scenarios for STOMP CONNECT messages with JWT authentication.
+ * Uses Mockito for mocking dependencies and AssertJ for assertions.
+ * @see StompAuthChannelInterceptor
  */
 @ExtendWith(MockitoExtension.class)
 class StompAuthChannelInterceptorTest {
@@ -65,6 +68,10 @@ class StompAuthChannelInterceptorTest {
 
     // ------------------------- tests -------------------------
 
+    /**
+     * If no STOMP accessor is present in the message, the interceptor should
+     * return the original message unchanged and not attempt any authentication.
+     */
     @Test
     @DisplayName("preSend(): if no STOMP accessor is present, returns the original message unchanged")
     void preSend_noAccessor_returnsOriginalMessage() {
@@ -76,6 +83,11 @@ class StompAuthChannelInterceptorTest {
         verifyNoInteractions(jwtService, userDetailsService);
     }
 
+    /**
+     * Test CONNECT message with missing Authorization header.
+     * Expect IllegalArgumentException to be thrown.
+     * Verify that no interactions with jwtService or userDetailsService occur.
+     */
     @Test
     @DisplayName("CONNECT: missing token -> throws IllegalArgumentException")
     void connect_missingToken_throwsIAE() {
@@ -88,6 +100,11 @@ class StompAuthChannelInterceptorTest {
         verifyNoInteractions(jwtService, userDetailsService);
     }
 
+    /**
+     * Test CONNECT message with lowercase 'authorization' header containing a Bearer token.
+     * Expect successful authentication and correct UserDetails set in the message.
+     * Verify interactions with jwtService and userDetailsService.
+     */
     @Test
     @DisplayName("CONNECT: lowercase 'authorization' header with Bearer token is accepted")
     void connect_lowercaseAuthorizationHeader_ok() {
@@ -111,6 +128,11 @@ class StompAuthChannelInterceptorTest {
                 .containsExactly("ROLE_MEMBER");
     }
 
+    /**
+     * Test CONNECT message with bare Authorization token (no 'Bearer' prefix).
+     * Expect successful authentication and correct UserDetails set in the message.
+     * Verify interactions with jwtService and userDetailsService.
+     */
     @Test
     @DisplayName("CONNECT: bare Authorization token (no 'Bearer') is accepted")
     void connect_bareAuthorizationToken_ok() {
@@ -133,6 +155,11 @@ class StompAuthChannelInterceptorTest {
                 .containsExactly("ROLE_VERIFIED_MEMBER");
     }
 
+    /**
+     * Test CONNECT message with token provided in 'token' header (fallback).
+     * Expect successful authentication and correct UserDetails set in the message.
+     * Verify interactions with jwtService and userDetailsService.
+     */
     @Test
     @DisplayName("CONNECT: token provided in 'token' header fallback is accepted")
     void connect_tokenHeader_ok() {
@@ -150,6 +177,11 @@ class StompAuthChannelInterceptorTest {
         assertThat(acc.getUser()).isInstanceOf(UsernamePasswordAuthenticationToken.class);
     }
 
+    /**
+     * Test CONNECT message with invalid token.
+     * Expect IllegalArgumentException to be thrown.
+     * Verify interactions with jwtService and userDetailsService.
+     */
     @Test
     @DisplayName("CONNECT: invalid token -> throws IllegalArgumentException")
     void connect_invalidToken_throws() {
@@ -171,6 +203,11 @@ class StompAuthChannelInterceptorTest {
         verify(jwtService).isTokenValid(token, ud);
     }
 
+    /**
+     * Test CONNECT message with valid token but user lacks required roles.
+     * Expect SecurityException to be thrown.
+     * Verify interactions with jwtService and userDetailsService.
+     */
     @Test
     @DisplayName("CONNECT: user without allowed roles -> throws SecurityException")
     void connect_forbiddenRole_throws() {
@@ -187,6 +224,11 @@ class StompAuthChannelInterceptorTest {
                 .hasMessageContaining("Only members can use chat");
     }
 
+    /**
+     * Test non-CONNECT STOMP command message.
+     * Expect the interceptor to be a no-op, returning the original message unchanged.
+     * Verify that no interactions with jwtService or userDetailsService occur.
+     */
     @Test
     @DisplayName("Non-CONNECT command: interceptor is a no-op (no validation, no auth set)")
     void nonConnect_isNoop() {

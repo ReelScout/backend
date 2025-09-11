@@ -8,8 +8,14 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for {@link MemberBuilderImplementation}.
+ * Ensures that all fields are correctly set in the built Member entity
+ * and that the fluent API returns the same builder instance.
+ */
 class MemberBuilderImplementationTest {
 
+    /** Test that all fields set in the builder are correctly transferred to the Member entity. */
     @Test
     void build_WithAllFields_PopulatesMember() {
         // Arrange & Act: build a Member using the builder and set all fields
@@ -38,6 +44,7 @@ class MemberBuilderImplementationTest {
         assertEquals(LocalDate.of(1990, 5, 20), member.getBirthDate());
     }
 
+    /** Test that the fluent API returns the same builder instance for method chaining. */
     @Test
     void fluentApi_ReturnsSameBuilder() {
         // Arrange: create a new builder

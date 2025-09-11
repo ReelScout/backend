@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Data Transfer Object for Forum Thread responses.
+ */
 @Getter
 @AllArgsConstructor
 public class ForumThreadResponseDTO {

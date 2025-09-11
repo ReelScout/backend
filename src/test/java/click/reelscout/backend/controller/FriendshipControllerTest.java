@@ -47,8 +47,10 @@ class FriendshipControllerTest {
         controller = new FriendshipController(friendshipService);
     }
 
-    // -------------------- Behavior tests: delegation + ResponseEntity --------------------
-
+    /**
+     * Tests that the sendFriendRequest method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void sendFriendRequest_shouldDelegateToService_andReturnOkBody() {
         // Arrange
@@ -64,6 +66,10 @@ class FriendshipControllerTest {
         assertSame(customResponse, response.getBody(), "Body should be the service result");
     }
 
+    /**
+     * Tests that the acceptFriendRequest method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void acceptFriendRequest_shouldDelegateToService_andReturnOkBody() {
         Long memberId = 11L;
@@ -76,6 +82,10 @@ class FriendshipControllerTest {
         assertSame(customResponse, response.getBody());
     }
 
+    /**
+     * Tests that the rejectFriendRequest method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void rejectFriendRequest_shouldDelegateToService_andReturnOkBody() {
         Long memberId = 12L;
@@ -88,6 +98,10 @@ class FriendshipControllerTest {
         assertSame(customResponse, response.getBody());
     }
 
+    /**
+     * Tests that the removeFriend method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void removeFriend_shouldDelegateToService_andReturnOkBody() {
         Long memberId = 13L;
@@ -100,6 +114,10 @@ class FriendshipControllerTest {
         assertSame(customResponse, response.getBody());
     }
 
+    /**
+     * Tests that the getFriends method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void getFriends_shouldDelegateToService_andReturnOkBody() {
         List<FriendshipResponseDTO> expected = List.of(friendshipResponse);
@@ -112,6 +130,10 @@ class FriendshipControllerTest {
         assertSame(expected, response.getBody());
     }
 
+    /**
+     * Tests that the getIncomingRequests method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void getIncomingRequests_shouldDelegateToService_andReturnOkBody() {
         List<FriendshipResponseDTO> expected = List.of(friendshipResponse);
@@ -124,6 +146,10 @@ class FriendshipControllerTest {
         assertSame(expected, response.getBody());
     }
 
+    /**
+     * Tests that the getOutgoingRequests method delegates to the friendshipService
+     * and returns an HTTP 200 OK response with the service result as the body.
+     */
     @Test
     void getOutgoingRequests_shouldDelegateToService_andReturnOkBody() {
         List<FriendshipResponseDTO> expected = List.of(friendshipResponse);
@@ -138,6 +164,9 @@ class FriendshipControllerTest {
 
     // -------------------- Annotation tests via reflection --------------------
 
+    /**
+     * Validates that the controller class has the correct class-level @RequestMapping annotation.
+     */
     @Test
     void controller_shouldHaveClassLevelRequestMapping_friendsPath() {
         RequestMapping mapping = FriendshipController.class.getAnnotation(RequestMapping.class);
@@ -148,6 +177,10 @@ class FriendshipControllerTest {
                 "Class-level mapping should be \"${api.paths.friends}\"");
     }
 
+    /**
+     * Validates that the sendFriendRequest method has the correct @PostMapping annotation
+     * and that its parameters have the correct annotations.
+     */
     @Test
     void sendFriendRequest_shouldHavePostMapping_andParamAnnotations() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod(
@@ -166,6 +199,10 @@ class FriendshipControllerTest {
                 "Second parameter should be annotated with @PathVariable");
     }
 
+    /**
+     * Validates that the acceptFriendRequest method has the correct @PatchMapping annotation
+     * and that its parameters have the correct annotations.
+     */
     @Test
     void acceptFriendRequest_shouldHavePatchMapping_andParamAnnotations() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod(
@@ -181,6 +218,10 @@ class FriendshipControllerTest {
         assertTrue(hasAnnotation(paramAnns[1], PathVariable.class));
     }
 
+    /**
+     * Validates that the rejectFriendRequest method has the correct @PatchMapping annotation
+     * and that its parameters have the correct annotations.
+     */
     @Test
     void rejectFriendRequest_shouldHavePatchMapping_andParamAnnotations() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod(
@@ -196,6 +237,10 @@ class FriendshipControllerTest {
         assertTrue(hasAnnotation(paramAnns[1], PathVariable.class));
     }
 
+    /**
+     * Validates that the removeFriend method has the correct @DeleteMapping annotation
+     * and that its parameters have the correct annotations.
+     */
     @Test
     void removeFriend_shouldHaveDeleteMapping_andParamAnnotations() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod(
@@ -211,6 +256,10 @@ class FriendshipControllerTest {
         assertTrue(hasAnnotation(paramAnns[1], PathVariable.class));
     }
 
+    /**
+     * Validates that the getFriends method has the correct @GetMapping annotation
+     * and that its parameter has the correct annotation.
+     */
     @Test
     void getFriends_shouldHaveGetMapping_rootPath_andParamAnnotation() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod("getFriends", Member.class);
@@ -225,6 +274,10 @@ class FriendshipControllerTest {
         assertTrue(hasAnnotation(paramAnns[0], AuthenticationPrincipal.class));
     }
 
+    /**
+     * Validates that the getIncomingRequests method has the correct @GetMapping annotation
+     * and that its parameter has the correct annotation.
+     */
     @Test
     void getIncomingRequests_shouldHaveGetMapping_andParamAnnotation() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod("getIncomingRequests", Member.class);
@@ -238,6 +291,10 @@ class FriendshipControllerTest {
         assertTrue(hasAnnotation(paramAnns[0], AuthenticationPrincipal.class));
     }
 
+    /**
+     * Validates that the getOutgoingRequests method has the correct @GetMapping annotation
+     * and that its parameter has the correct annotation.
+     */
     @Test
     void getOutgoingRequests_shouldHaveGetMapping_andParamAnnotation() throws NoSuchMethodException {
         Method m = FriendshipController.class.getMethod("getOutgoingRequests", Member.class);
@@ -253,10 +310,14 @@ class FriendshipControllerTest {
 
     // -------------------- Helpers --------------------
 
+    /** Helper to check if a specific path exists in the mapping annotation arrays.
+     * Handles null arrays gracefully.
+     */
     private static boolean pathHas(String[] arr, String expected) {
         return arr != null && Arrays.asList(arr).contains(expected);
     }
 
+    /** Helper to check if a specific annotation exists in a parameter's annotation array. */
     private static boolean hasAnnotation(Annotation[] anns, Class<? extends Annotation> target) {
         for (Annotation a : anns) {
             if (a.annotationType().equals(target)) return true;

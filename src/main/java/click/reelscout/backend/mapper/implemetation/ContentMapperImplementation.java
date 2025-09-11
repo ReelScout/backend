@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class ContentMapperImplementation implements ContentMapper {
     private final ContentBuilder contentBuilder;
 
+    /** {@inheritDoc} */
     @Override
     public ContentResponseDTO toDto(Content content, String base64Image) {
         return new ContentResponseDTO(
@@ -32,6 +33,7 @@ public class ContentMapperImplementation implements ContentMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public ContentBuilder toBuilder(Content content) {
         return contentBuilder
@@ -47,6 +49,7 @@ public class ContentMapperImplementation implements ContentMapper {
                 .productionCompany(content.getProductionCompany());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Content toEntity(ContentRequestDTO contentRequestDTO, ProductionCompany productionCompany, String s3ImageKey) {
         return contentBuilder
@@ -63,6 +66,7 @@ public class ContentMapperImplementation implements ContentMapper {
                 .build();
     }
 
+    /** {@inheritDoc} */
     @Override
     public ContentDoc toDoc(Content content) {
         return new ContentDoc(content);

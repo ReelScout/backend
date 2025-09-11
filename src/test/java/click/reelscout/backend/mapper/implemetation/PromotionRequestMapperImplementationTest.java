@@ -21,12 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for PromotionRequestMapperImplementation.
- *
- * We isolate the mapper by mocking PromotionRequestBuilder.
- * - toDto(): verifies that all fields are transferred into the DTO
- * - toBuilder(): verifies the fluent calls that copy fields from the source entity
- * - toEntity(): verifies builder is called with expected values and build() is returned
+ * Unit tests for {@link PromotionRequestMapperImplementation}.
+ * Uses Mockito to mock dependencies and verify interactions.
+ * Covers mapping between entity and DTO, and builder usage.
  */
 @ExtendWith(MockitoExtension.class)
 class PromotionRequestMapperImplementationTest {
@@ -41,6 +38,10 @@ class PromotionRequestMapperImplementationTest {
         mapper = new PromotionRequestMapperImplementation(builder);
     }
 
+    /**
+     * Tests that toDto correctly maps all fields from PromotionRequest entity
+     * to PromotionRequestResponseDTO.
+     */
     @Test
     void toDto_mapsAllFields() {
         // Arrange: a PromotionRequest with all fields populated
@@ -83,6 +84,10 @@ class PromotionRequestMapperImplementationTest {
         assertThat(dto.getUpdatedAt()).isEqualTo(updatedAt);
     }
 
+    /**
+     * Tests that toBuilder correctly forwards all fields from the PromotionRequest entity
+     * to the PromotionRequestBuilder for further building or modification.
+     */
     @Test
     void toBuilder_copiesAllFields_andReturnsSameBuilder() {
         // Arrange
@@ -129,6 +134,10 @@ class PromotionRequestMapperImplementationTest {
         verify(builder, never()).build();
     }
 
+    /**
+     * Tests that toEntity correctly uses the builder to create a new PromotionRequest entity
+     * with the provided inputs, setting ID, decisionReason, processedBy, createdAt, and updatedAt to null.
+     */
     @Test
     void toEntity_buildsWithInputs_andNullsForIdDecisionProcessedByAndTimestamps() {
         // Arrange: inputs for a new entity

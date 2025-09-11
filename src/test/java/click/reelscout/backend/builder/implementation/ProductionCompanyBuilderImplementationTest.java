@@ -20,6 +20,7 @@ class ProductionCompanyBuilderImplementationTest {
         return new ProductionCompanyBuilderImplementation();
     }
 
+    /** Test that build() never returns null, even with no fields set. */
     @Test
     void build_shouldNotBeNull() {
         // Act: build an empty ProductionCompany
@@ -29,6 +30,7 @@ class ProductionCompanyBuilderImplementationTest {
         assertNotNull(pc, "build() must never return null");
     }
 
+    /** Test that all fields set in the builder are correctly transferred to the ProductionCompany entity. */
     @Test
     void allFields_shouldBePropagated_includingContents() {
         // Arrange: prepare related entities
@@ -69,6 +71,7 @@ class ProductionCompanyBuilderImplementationTest {
         assertEquals(contents, pc.getContents());
     }
 
+    /** Test that all setter methods return the same builder instance for fluent chaining. */
     @Test
     void setters_shouldBeFluent() {
         // Arrange: create a new builder
@@ -88,6 +91,7 @@ class ProductionCompanyBuilderImplementationTest {
         assertSame(b, chained, "all setters should return this for chaining");
     }
 
+    /** Test that reusing the builder does not mutate previously built instances. */
     @Test
     void builderReuse_shouldNotMutatePreviouslyBuiltInstances() {
         // Arrange & Act: build two different instances with the same builder
@@ -102,6 +106,7 @@ class ProductionCompanyBuilderImplementationTest {
         assertEquals("SecondName", second.getName(), "the second built instance should reflect the new value");
     }
 
+    /** Test to cover Lombok-generated getters on the builder class for full code coverage. */
     @Test
     void builderLombokGetters_areCovered() {
         // This test only exists to cover Lombok-generated getters on the builder class.

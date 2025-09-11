@@ -35,14 +35,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.RETURNS_SELF;
 
 /**
- * Pure unit tests for {@link UserServiceImplementation}.
- * <p>
- * - No Spring context is started.
- * - All collaborators are mocked.
- * - We call service methods directly and verify interactions and returned values.
- * <p>
- * Type parameters are erased by using raw types for readability in tests.
- * This does not change the behavior under test.
+ * Unit tests for {@link UserServiceImplementation}.
+ * Uses Mockito to mock dependencies and verify interactions.
  */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -79,6 +73,10 @@ class UserServiceImplementationTest {
         lenient().when(registry.getMapperFor(any(UserRequestDTO.class))).thenReturn(mock(UserMapper.class));
     }
 
+    /**
+     * Tests that getAll retrieves all users, fetches their S3 images,
+     * maps them to DTOs, and returns the list of DTOs.
+     */
     @Test
     @DisplayName("getAll: maps every user to DTO with its S3 image")
     void getAll_mapsEveryUser() {
@@ -104,6 +102,10 @@ class UserServiceImplementationTest {
         verify(s3Service).getFile("k2");
     }
 
+    /**
+     * Tests that getById retrieves a user by ID, fetches their S3 image,
+     * maps them to a DTO, and returns the DTO.
+     */
     @Test
     @DisplayName("getById: finds, maps to DTO, includes S3 image")
     void getById_maps() {
@@ -118,6 +120,9 @@ class UserServiceImplementationTest {
         assertSame(dto, out);
     }
 
+    /**
+     * Tests that getById throws EntityNotFoundException when the user is not found.
+     */
     @Test
     @DisplayName("getById: throws EntityNotFoundException when not found")
     void getById_notFound() {
@@ -125,6 +130,10 @@ class UserServiceImplementationTest {
         assertThrows(EntityNotFoundException.class, () -> service.getById(99L));
     }
 
+    /**
+     * Tests that getByEmail retrieves a user by email, fetches their S3 image,
+     * maps them to a DTO, and returns the DTO.
+     */
     @Test
     @DisplayName("getByEmail: happy path")
     void getByEmail_maps() {
@@ -138,6 +147,10 @@ class UserServiceImplementationTest {
         assertSame(dto, out);
     }
 
+    /**
+     * Tests that getByUsername retrieves a user by username, fetches their S3 image,
+     * maps them to a DTO, and returns the DTO.
+     */
     @Test
     @DisplayName("getByUsername: happy path")
     void getByUsername_maps() {
@@ -151,6 +164,10 @@ class UserServiceImplementationTest {
         assertSame(dto, out);
     }
 
+    /**
+     * Tests that getByUsernameOrEmail retrieves a user by username or email, fetches their S3 image,
+     * maps them to a DTO, and returns the DTO.
+     */
     @Test
     @DisplayName("getByUsernameOrEmail: happy path")
     void getByUsernameOrEmail_maps() {
@@ -164,6 +181,9 @@ class UserServiceImplementationTest {
         assertSame(dto, out);
     }
 
+    /**
+     * Tests that getCurrentUserDto maps the current principal user to a DTO with their S3 image.
+     */
     @Test
     @DisplayName("getCurrentUserDto: maps current principal with its image")
     void getCurrentUserDto_maps() {
@@ -176,6 +196,9 @@ class UserServiceImplementationTest {
         assertSame(dto, out);
     }
 
+    /**
+     * Tests that update throws EntityUpdateException when the current password is incorrect.
+     */
     @Test
     @DisplayName("update: wrong current password -> EntityUpdateException")
     void update_wrongCurrentPassword_throws() {
@@ -188,6 +211,9 @@ class UserServiceImplementationTest {
         verifyNoInteractions(userRepository);
     }
 
+    /**
+     * Tests that update throws EntityUpdateException when the new email is already taken by another user.
+     */
     @Test
     @DisplayName("update: email conflict -> EntityUpdateException")
     void update_emailConflict_throws() {
@@ -201,6 +227,9 @@ class UserServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.update(auth, req));
     }
 
+    /**
+     * Tests that update throws EntityUpdateException when the new username is already taken by another user.
+     */
     @Test
     @DisplayName("update: username conflict -> EntityUpdateException")
     void update_usernameConflict_throws() {
@@ -216,6 +245,11 @@ class UserServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.update(auth, req));
     }
 
+    /**
+     * Tests that update successfully updates the user when changes are present,
+     * saves to the repository and ElasticSearch, uploads new S3 image if provided,
+     * and returns a new login token.
+     */
     @Test
     @DisplayName("update: success, changes present (superEquals false) -> returns login token")
     void update_success_changesPresent_returnsLoginToken() {
@@ -252,6 +286,10 @@ class UserServiceImplementationTest {
         verify(s3Service).uploadFile(anyString(), eq("base64"));
     }
 
+    /**
+     * Tests that update does not perform any save or return a token when no changes are made
+     * (i.e., the updated user is superEquals to the original).
+     */
     @Test
     @DisplayName("update: success, no changes (superEquals true) -> returns null")
     void update_success_noChanges_returnsNull() {
@@ -284,6 +322,9 @@ class UserServiceImplementationTest {
         verifyNoInteractions(authService);
     }
 
+    /**
+     * Tests that update wraps any repository or S3 error into an EntityUpdateException.
+     */
     @Test
     @DisplayName("update: any repository/S3 error -> wraps into EntityUpdateException")
     void update_wrapsIntoEntityUpdateException() {
@@ -311,6 +352,9 @@ class UserServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.update(auth, req));
     }
 
+    /**
+     * Tests that changePassword throws EntityUpdateException when the current password is incorrect.
+     */
     @Test
     @DisplayName("changePassword: wrong current password -> EntityUpdateException")
     void changePassword_wrongCurrent_throws() {
@@ -323,6 +367,10 @@ class UserServiceImplementationTest {
         verifyNoInteractions(userRepository);
     }
 
+    /**
+     * Tests that changePassword throws EntityUpdateException when the new password
+     * and confirm password do not match.
+     */
     @Test
     @DisplayName("changePassword: new/confirm mismatch -> EntityUpdateException")
     void changePassword_mismatch_throws() {
@@ -336,6 +384,10 @@ class UserServiceImplementationTest {
         assertThrows(EntityUpdateException.class, () -> service.changePassword(auth, req));
     }
 
+    /**
+     * Tests that changePassword successfully encodes the new password,
+     * saves the updated user, and returns a success message.
+     */
     @Test
     @DisplayName("changePassword: success -> encodes, saves and returns OK message")
     void changePassword_success() {
@@ -360,6 +412,9 @@ class UserServiceImplementationTest {
         verify(userRepository).save(updated);
     }
 
+    /**
+     * Tests that changePassword wraps any repository error into an EntityUpdateException.
+     */
     @Test
     @DisplayName("changePassword: repository throws -> wraps into EntityUpdateException")
     void changePassword_repoError_wraps() {

@@ -16,11 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for ContentController.
- * - No Spring context or MockMvc is used.
- * - We instantiate the controller directly and mock ContentService.
- * - @RequestMapping("${api.paths.content}") resolution is irrelevant here because
- *   we call controller methods directly.
+ * Unit tests for {@link ContentController}.
  */
 @ExtendWith(MockitoExtension.class)
 class ContentControllerTest {
@@ -35,6 +31,10 @@ class ContentControllerTest {
         controller = new ContentController(contentService);
     }
 
+    /**
+     * Tests that the all() method returns an HTTP 200 OK status and the body
+     * contains the list of ContentResponseDTO objects provided by the service.
+     */
     @Test
     void all_returnsOkWithBodyFromService() {
         // Arrange
@@ -53,6 +53,10 @@ class ContentControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /**
+     * Tests that the contentTypes() method returns an HTTP 200 OK status and the body
+     * contains the list of content types provided by the service.
+     */
     @Test
     void contentTypes_returnsOkWithBodyFromService() {
         // Arrange
@@ -69,6 +73,10 @@ class ContentControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /**
+     * Tests that the genres() method returns an HTTP 200 OK status and the body
+     * contains the list of genres provided by the service.
+     */
     @Test
     void genres_returnsOkWithBodyFromService() {
         // Arrange
@@ -85,6 +93,10 @@ class ContentControllerTest {
         verifyNoMoreInteractions(contentService);
     }
 
+    /**
+     * Tests that all endpoints return HTTP 200 OK even when the service returns empty lists.
+     * This ensures that the controller handles empty data gracefully.
+     */
     @Test
     void endpoints_returnOkEvenWhenServiceReturnsEmptyLists() {
         // Arrange

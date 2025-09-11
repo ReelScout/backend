@@ -31,12 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for AuthServiceImplementation.
+ * Test class for {@link AuthServiceImplementation}.
+ * This class contains unit tests for the authentication service implementation,
+ * focusing on functionality related to user login and registration processes.
  * <p>
- * Notes:
- * - No Spring context started.
- * - All collaborators are mocked.
- * - We verify returned values and key interactions/branches.
+ * Test cases utilize the Mockito framework for mocking dependencies and verifying interactions.
  */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -64,6 +63,11 @@ class AuthServiceImplementationTest {
         // nothing special; mocks are injected by @InjectMocks
     }
 
+    /**
+     * Tests the login functionality of the authentication service.
+     * Verifies that a valid JWT token is returned upon successful authentication.
+     * Also checks that appropriate exceptions are thrown for invalid credentials or missing users.
+     */
     @Test
     @DisplayName("login(username,password): returns JWT on successful authentication")
     void login_success_returnsToken() {
@@ -82,6 +86,11 @@ class AuthServiceImplementationTest {
         verify(jwtService).generateToken(user);
     }
 
+    /**
+     * Tests the login functionality when the user is not found in the repository.
+     * Verifies that an EntityNotFoundException is thrown in such cases.
+     * Also ensures that no JWT token generation is attempted.
+     */
     @Test
     @DisplayName("login(username,password): throws EntityNotFoundException when user is missing")
     void login_userNotFound_throws() {
@@ -90,6 +99,11 @@ class AuthServiceImplementationTest {
         verifyNoInteractions(jwtService);
     }
 
+    /**
+     * Tests the login functionality when the provided password does not match the stored password.
+     * Verifies that an InvalidCredentialsException is thrown in such cases.
+     * Also ensures that no JWT token generation is attempted.
+     */
     @Test
     @DisplayName("login(username,password): throws InvalidCredentialsException when password does not match")
     void login_badPassword_throws() {
@@ -102,6 +116,11 @@ class AuthServiceImplementationTest {
         verify(jwtService, never()).generateToken(any());
     }
 
+    /**
+     * Tests the login functionality using a UserLoginRequestDTO.
+     * Verifies that the method correctly delegates to the login(username, password) method.
+     * Also checks that a valid JWT token is returned upon successful authentication.
+     */
     @Test
     @DisplayName("login(UserLoginRequestDTO): delegates to login(username,password)")
     void login_withDto_delegates() {
@@ -123,6 +142,11 @@ class AuthServiceImplementationTest {
 
     // ---------- REGISTER ----------
 
+    /**
+     * Tests the register functionality when the username or email already exists in the repository.
+     * Verifies that an EntityCreateException is thrown in such cases.
+     * Also ensures that no user persistence, Elasticsearch indexing, or S3 upload is attempted.
+     */
     @Test
     @DisplayName("register(): throws EntityCreateException when username or email already exists")
     void register_existingUser_throws() {
@@ -138,6 +162,12 @@ class AuthServiceImplementationTest {
         verify(s3Service, never()).uploadFile(any(), any());
     }
 
+    /**
+     * Tests the successful registration flow with a base64 image provided.
+     * Verifies that the service generates an S3 key, persists the user, indexes in Elasticsearch,
+     * uploads the image to S3, and returns a JWT token.
+     * Also checks that the same S3 key is used for both entity creation and image upload.
+     */
     @Test
     @DisplayName("register(): success flow with base64 image -> generates S3 key, persists user, indexes in ES, uploads image, and returns JWT")
     void register_success_withImage() {
@@ -189,6 +219,12 @@ class AuthServiceImplementationTest {
         verify(userMapperContext, times(2)).setUserMapper(userMapper); // once for DTO path, once during login
     }
 
+    /**
+     * Tests the successful registration flow without a base64 image provided.
+     * Verifies that the service does not generate an S3 key, persists the user, indexes in Elasticsearch,
+     * attempts to upload a null image to S3, and returns a JWT token.
+     * Also checks that the S3 upload is called with null parameters.
+     */
     @Test
     @DisplayName("register(): success flow without image -> S3 key is null and upload called with nulls")
     void register_success_withoutImage() {
@@ -225,6 +261,20 @@ class AuthServiceImplementationTest {
         verify(userElasticRepository).save(doc);
     }
 
+    /**
+     * Tests the behavior of the `register` method when an unexpected exception occurs during
+     * the persistence, indexing, or file upload process.
+     * <p>
+     * This test ensures that any exception thrown during these operations is wrapped
+     * in an `EntityCreateException` and that no partial operations, such as saving
+     * the entity in the repository, indexing it in Elasticsearch, or generating a JWT token,
+     * are executed.
+     * <p>
+     * Scenarios validated by this test:
+     * - An exception during the `toEntity` mapping process raises an `EntityCreateException`.
+     * - Verifies that the user repository, Elasticsearch repository, and JWT service
+     *   methods are never called when an exception occurs.
+     */
     @Test
     @DisplayName("register(): wraps any exception during persistence/index/upload into EntityCreateException")
     void register_internalError_wrappedAsEntityCreateException() {

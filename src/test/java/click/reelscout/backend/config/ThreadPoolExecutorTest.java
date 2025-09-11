@@ -20,6 +20,7 @@ class ThreadPoolExecutorTest {
 
     private final ThreadPoolConfig config = new ThreadPoolConfig();
 
+    /** Test that the ThreadPoolExecutor bean is created with expected properties. */
     @Test
     void threadPoolExecutor_shouldNotBeNull() {
         // Act
@@ -30,6 +31,7 @@ class ThreadPoolExecutorTest {
         assertFalse(executor.isShutdown(), "Executor must be active initially");
     }
 
+    /** Test that the ThreadPoolExecutor has the expected configuration. */
     @Test
     void threadPoolExecutor_hasCorrectConfiguration() {
         ThreadPoolExecutor executor = config.threadPoolExecutor();
@@ -51,6 +53,7 @@ class ThreadPoolExecutorTest {
         assertInstanceOf(ThreadPoolExecutor.CallerRunsPolicy.class, executor.getRejectedExecutionHandler(), "Rejection policy must be CallerRunsPolicy");
     }
 
+    /** Test that the ThreadPoolExecutor can execute tasks. */
     @Test
     void threadPoolExecutor_shouldExecuteTasks() throws Exception {
         ThreadPoolExecutor executor = config.threadPoolExecutor();

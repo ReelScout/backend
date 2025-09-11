@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Embeddable class representing an Actor with first and last names.
+ */
 @NoArgsConstructor
 @Embeddable
 @Getter

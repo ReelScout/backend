@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO representing a friendship along with its associated users.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class FriendshipWithUsersResponseDTO extends FriendshipResponseDTO {

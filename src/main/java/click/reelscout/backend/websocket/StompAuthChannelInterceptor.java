@@ -21,6 +21,10 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Intercepts STOMP messages to authenticate users during the CONNECT phase using JWT tokens.
+ * Validates the token, checks user roles, and ensures the account is not suspended.
+ */
 @Component
 @RequiredArgsConstructor
 public class StompAuthChannelInterceptor implements ChannelInterceptor {
@@ -28,6 +32,16 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Intercepts the STOMP CONNECT message to authenticate the user.
+     *
+     * @param message the incoming STOMP message
+     * @param channel the message channel
+     * @return the original message if authentication is successful
+     * @throws IllegalArgumentException if the token is missing or invalid
+     * @throws SecurityException        if the user does not have the required roles
+     * @throws AccountSuspendedException if the user's account is suspended
+     */
     @Override
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
@@ -66,6 +80,12 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
         return message;
     }
 
+    /**
+     * Extracts the JWT token from the STOMP headers.
+     *
+     * @param accessor the STOMP header accessor
+     * @return the extracted JWT token, or null if not found
+     */
     private String extractToken(StompHeaderAccessor accessor) {
         // Accept: Authorization: "Bearer <jwt>" OR Authorization: "<jwt>"
         // Fallback: native header "token": "<jwt>"
@@ -82,6 +102,13 @@ public class StompAuthChannelInterceptor implements ChannelInterceptor {
         return token == null ? null : token.trim();
     }
 
+    /**
+     * Checks if the user has any of the specified roles.
+     *
+     * @param authorities the collection of granted authorities
+     * @param roles       the list of roles to check against
+     * @return true if the user has at least one of the specified roles, false otherwise
+     */
     private boolean hasAnyRole(Collection<? extends GrantedAuthority> authorities, List<String> roles) {
         for (GrantedAuthority a : authorities) {
             if (roles.contains(a.getAuthority())) return true;

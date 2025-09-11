@@ -32,8 +32,9 @@ class GlobalExceptionHandlerTest {
         handler = new GlobalExceptionHandler();
     }
 
-    // --------------------- 400 Bad Request custom exceptions ---------------------
-
+    /**
+     * Tests that the handleDataValidationException method returns a 400 status with the correct message.
+     */
     @Test
     void handleDataValidationException_shouldReturn400_withMessage() {
         DataValidationException ex = mock(DataValidationException.class);
@@ -45,6 +46,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Invalid data", resp.getBody().getMessage());
     }
 
+    /**
+     * Tests that the handleEntityCreateException method returns a 400 status with the correct message.
+     */
     @Test
     void handleEntityCreateException_shouldReturn400_withMessage() {
         EntityCreateException ex = mock(EntityCreateException.class);
@@ -56,6 +60,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Create failed", resp.getBody().getMessage());
     }
 
+    /**
+     * Tests that the handleEntityUpdateException method returns a 400 status with the correct message.
+     */
     @Test
     void handleEntityUpdateException_shouldReturn400_withMessage() {
         EntityUpdateException ex = mock(EntityUpdateException.class);
@@ -67,6 +74,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Update failed", resp.getBody().getMessage());
     }
 
+    /**
+     * Tests that the handleEntityDeleteException method returns a 400 status with the correct message.
+     */
     @Test
     void handleEntityDeleteException_shouldReturn400_withMessage() {
         EntityDeleteException ex = mock(EntityDeleteException.class);
@@ -78,8 +88,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Delete failed", resp.getBody().getMessage());
     }
 
-    // --------------------- 404 Not Found ---------------------
-
+    /**
+     * Tests that the handleNotFoundException method returns a 404 status with the correct message.
+     */
     @Test
     void handleNotFoundException_shouldReturn404_withMessage() {
         EntityNotFoundException ex = mock(EntityNotFoundException.class);
@@ -91,8 +102,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Not found", resp.getBody().getMessage());
     }
 
-    // --------------------- 401 Unauthorized (credentials/JWT) ---------------------
-
+    /**
+     * Tests that the handleInvalidCredentialsException method returns a 401 status with the correct message.
+     */
     @Test
     void handleInvalidCredentialsException_shouldReturn401_withMessage() {
         InvalidCredentialsException ex = mock(InvalidCredentialsException.class);
@@ -104,6 +116,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Bad credentials", resp.getBody().getMessage());
     }
 
+    /**
+     * Tests that the handleAccessDeniedException method returns a 403 status with the correct message.
+     */
     @Test
     void handleExpiredJwtException_shouldReturn401_withFixedMessage() {
         // ExpiredJwtException has complex constructors; use a mock
@@ -116,6 +131,10 @@ class GlobalExceptionHandlerTest {
                 "Handler should return a fixed, user-friendly message");
     }
 
+    /**
+     * Tests that the handleInvalidJwtException method returns a 401 status with a generic message.
+     * Note: The handler is mapped to MalformedJwtException and SignatureException, but takes JwtException.
+     */
     @Test
     void handleInvalidJwtException_shouldReturn401_withGenericInvalidTokenMessage() {
         // The handler is mapped to MalformedJwtException and SignatureException, but takes JwtException
@@ -127,6 +146,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Invalid access token", resp.getBody().getMessage());
     }
 
+    /**
+     * Tests that the handleJwtException method returns a 401 status with a generic authentication failed message.
+     */
     @Test
     void handleJwtException_shouldReturn401_withGenericAuthFailedMessage() {
         JwtException ex = mock(JwtException.class);
@@ -137,8 +159,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Authentication failed", resp.getBody().getMessage());
     }
 
-    // --------------------- 500 Internal Server Error ---------------------
-
+    /**
+     * Tests that the handleAccessDeniedException method returns a 403 status with the correct message.
+     */
     @Test
     void handleS3Exception_shouldReturn500_withPrefixedMessage() {
         S3Exception ex = mock(S3Exception.class);
@@ -150,6 +173,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("S3 error: bucket unreachable", resp.getBody().getMessage());
     }
 
+    /**
+     * Tests that the handleSearchException method returns a 500 status with the correct message.
+     */
     @Test
     void handleSearchException_shouldReturn500_withMessage() {
         SearchException ex = mock(SearchException.class);
@@ -161,8 +187,9 @@ class GlobalExceptionHandlerTest {
         assertEquals("Index failure", resp.getBody().getMessage());
     }
 
-    // --------------------- 400 Bad Request (validation errors aggregation) ---------------------
-
+    /**
+     * Tests that the handleGenericException method returns a 500 status with a generic message.
+     */
     @Test
     void handleMethodArgumentNotValidException_shouldAggregateMessages_andReturn400(){
         // Create a real BindingResult with two field errors

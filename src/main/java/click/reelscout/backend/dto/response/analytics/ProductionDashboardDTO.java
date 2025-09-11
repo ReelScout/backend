@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * DTO for the production dashboard analytics data.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

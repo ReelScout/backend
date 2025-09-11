@@ -21,12 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
- * Pure unit tests for ProductionCompanyMapperFactory.
- * <p>
- * Notes:
- * - No Spring context is started.
- * - Dependencies (ProductionCompanyBuilder, PasswordEncoder) are mocked.
- * - We verify support predicates and the type returned by createMapper().
+ * Unit tests for {@link ProductionCompanyMapperFactory}.
  */
 @ExtendWith(MockitoExtension.class)
 class ProductionCompanyMapperFactoryTest {
@@ -44,12 +39,14 @@ class ProductionCompanyMapperFactoryTest {
         factory = new ProductionCompanyMapperFactory(builder, passwordEncoder);
     }
 
+    /** Tests for the supports() method */
     @Test
     @DisplayName("supports(UserRequestDTO) -> true for ProductionCompanyRequestDTO")
     void supports_requestDto_true() {
         assertTrue(factory.supports(new ProductionCompanyRequestDTO()));
     }
 
+    /** Tests for the supports() method */
     @Test
     @DisplayName("supports(UserRequestDTO) -> false for non-ProductionCompany request DTO")
     void supports_requestDto_falseForOthers() {
@@ -58,12 +55,14 @@ class ProductionCompanyMapperFactoryTest {
         assertFalse(factory.supports(other));
     }
 
+    /** Tests for the supports() method */
     @Test
     @DisplayName("supports(UserResponseDTO) -> true for ProductionCompanyResponseDTO")
     void supports_responseDto_true() {
         assertTrue(factory.supports(new ProductionCompanyResponseDTO()));
     }
 
+    /** Tests for the supports() method */
     @Test
     @DisplayName("supports(UserResponseDTO) -> false for non-ProductionCompany response DTO")
     void supports_responseDto_falseForOthers() {
@@ -72,6 +71,7 @@ class ProductionCompanyMapperFactoryTest {
         assertFalse(factory.supports(other));
     }
 
+    /** Tests for the supports() method */
     @Test
     @DisplayName("supports(User) -> true for ProductionCompany")
     void supports_user_true() {
@@ -79,6 +79,7 @@ class ProductionCompanyMapperFactoryTest {
         assertTrue(factory.supports(new ProductionCompany()));
     }
 
+    /** Tests for the supports() method */
     @Test
     @DisplayName("supports(User) -> false for non-ProductionCompany User")
     void supports_user_falseForOthers() {
@@ -86,6 +87,7 @@ class ProductionCompanyMapperFactoryTest {
         assertFalse(factory.supports(someoneElse));
     }
 
+    /** Tests for the createMapper() method */
     @Test
     @DisplayName("createMapper() returns ProductionCompanyMapperImplementation")
     void createMapper_returnsCorrectType() {

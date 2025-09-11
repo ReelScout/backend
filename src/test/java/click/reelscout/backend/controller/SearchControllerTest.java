@@ -15,10 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for SearchController.
- * - No Spring context or MockMvc.
- * - We instantiate the controller directly with a mocked SearchService.
- * - The @RequestMapping("${api.paths.search}") placeholder is irrelevant here.
+ * Unit tests for {@link SearchController}.
+ * Tests the controller's interaction with the {@link SearchService} and its response handling.
+ * Uses Mockito for mocking dependencies.
  */
 @ExtendWith(MockitoExtension.class)
 class SearchControllerTest {
@@ -33,6 +32,7 @@ class SearchControllerTest {
         controller = new SearchController<>(searchService);
     }
 
+    /** Tests for the search method */
     @SuppressWarnings("unchecked")
     @Test
     void search_returnsOkAndBodyFromService() {
@@ -51,6 +51,7 @@ class SearchControllerTest {
         verifyNoMoreInteractions(searchService);
     }
 
+    /** Edge case: service returns null */
     @Test
     void search_returnsOkEvenWhenServiceReturnsNull() {
         // Arrange

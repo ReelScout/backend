@@ -7,6 +7,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
+/**
+ * Main application class for the Reelscout backend.
+ * Configures Spring Boot, enables Spring Data web support, and method-level security.
+ */
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 @EnableMethodSecurity
 @SpringBootApplication

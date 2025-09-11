@@ -28,6 +28,10 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings({"rawtypes", "unchecked"})
 class ApplicationConfigTest {
 
+    /**
+     * Tests that the userDetailsService method returns the correct UserDetails
+     * when the user is found in the repository.
+     */
     @Test
     void userDetailsService_returnsUser_whenFound() {
         // Arrange: repository returns a user for the given username/email
@@ -47,6 +51,10 @@ class ApplicationConfigTest {
         verifyNoMoreInteractions(repo);
     }
 
+    /**
+     * Tests that the userDetailsService method throws UsernameNotFoundException
+     * when the user is not found in the repository.
+     */
     @Test
     void userDetailsService_throws_whenMissing() {
         // Arrange: repository returns empty
@@ -63,6 +71,10 @@ class ApplicationConfigTest {
                 "Should throw UsernameNotFoundException when user is not found");
     }
 
+    /**
+     * Tests that the passwordEncoder method returns a PasswordEncoder
+     * that can encode and match passwords correctly.
+     */
     @Test
     void passwordEncoder_encodesAndMatches_roundtrip() {
         // Arrange
@@ -78,6 +90,10 @@ class ApplicationConfigTest {
         assertTrue(encoder.matches(raw, encoded), "Encoder must verify the raw password against the hash");
     }
 
+    /**
+     * Tests that the authenticationProvider method returns an AuthenticationProvider
+     * that supports UsernamePasswordAuthenticationToken.
+     */
     @Test
     void authenticationProvider_supports_usernamePasswordToken() {
         // Arrange
@@ -88,6 +104,10 @@ class ApplicationConfigTest {
         assertTrue(provider.supports(UsernamePasswordAuthenticationToken.class));
     }
 
+    /**
+     * Tests that the authenticationProvider can authenticate a user
+     * with valid credentials using a mocked UserRepository and UserDetails.
+     */
     @Test
     void authenticationProvider_authenticates_withValidCredentials() {
         // Arrange
@@ -126,6 +146,10 @@ class ApplicationConfigTest {
         verify(repo).findByUsernameOrEmail("studio");
     }
 
+    /**
+     * Tests that the authenticationProvider rejects authentication
+     * when the password is invalid.
+     */
     @Test
     void authenticationProvider_rejects_invalidPassword() {
         // Arrange

@@ -38,6 +38,7 @@ public class ContentServiceImplementation implements ContentService {
     private final ContentMapper contentMapper;
     private final ContentSubject contentSubject;
 
+    /** {@inheritDoc} */
     @Override
     public ContentResponseDTO create(ProductionCompany authenticatedProduction, ContentRequestDTO contentRequestDTO) {
         saveContentTypeIfNotExists(contentRequestDTO.getContentType());
@@ -66,6 +67,7 @@ public class ContentServiceImplementation implements ContentService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public ContentResponseDTO update(ProductionCompany authenticatedProduction, Long id, ContentRequestDTO contentRequestDTO) {
         Content existingContent = contentRepository.findById(id)
@@ -110,6 +112,7 @@ public class ContentServiceImplementation implements ContentService {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<ContentResponseDTO> getAll() {
         List<Content> contents = contentRepository.findAll();
@@ -119,6 +122,7 @@ public class ContentServiceImplementation implements ContentService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<String> getContentTypes() {
         return contentTypeRepository.findAll()
@@ -127,6 +131,7 @@ public class ContentServiceImplementation implements ContentService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<String> getGenres() {
         return genreRepository.findAll()
@@ -135,6 +140,7 @@ public class ContentServiceImplementation implements ContentService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<ContentResponseDTO> getByProductionCompany(ProductionCompany authenticatedProduction) {
         List<Content> contents = contentRepository.findAllByProductionCompany((authenticatedProduction));
@@ -144,6 +150,7 @@ public class ContentServiceImplementation implements ContentService {
                 .toList();
     }
 
+    /** {@inheritDoc} */
     @Override
     public CustomResponseDTO delete(ProductionCompany authenticatedProduction, Long id) {
         Content toDelete = contentRepository.findById(id)

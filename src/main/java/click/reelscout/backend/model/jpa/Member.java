@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Entity representing a Member, which is a type of User with additional attributes.
+ */
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity

@@ -14,8 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Pure unit tests for ChatMessageMapperImplementation.
- * No Spring context: we instantiate the mapper and use Mockito for its collaborators.
+ * Unit tests for {@link ChatMessageMapperImplementation}.
+ * Uses Mockito to mock dependencies and verify interactions.
  */
 class ChatMessageMapperImplementationTest {
 
@@ -28,6 +28,9 @@ class ChatMessageMapperImplementationTest {
         mapper = new ChatMessageMapperImplementation(builder);
     }
 
+    /**
+     * Test that toDto correctly maps all fields from ChatMessage to ChatMessageResponseDTO.
+     */
     @Test
     void toDto_shouldMapAllFields() {
         // Arrange
@@ -53,6 +56,10 @@ class ChatMessageMapperImplementationTest {
         assertEquals(ts, dto.getTimestamp(), "Timestamp should match");
     }
 
+    /**
+     * Test that toBuilder populates the builder with values from ChatMessage
+     * and returns the same builder instance.
+     */
     @Test
     void toBuilder_shouldPopulateBuilderWithMessageValues_andReturnSameInstance() {
         // Arrange
@@ -86,6 +93,10 @@ class ChatMessageMapperImplementationTest {
         verifyNoMoreInteractions(builder);
     }
 
+    /**
+     * Test that toEntity builds a ChatMessage from ChatMessageRequestDTO and sender,
+     * forcing id and timestamp to null.
+     */
     @Test
     void toEntity_shouldBuildEntityFromRequestAndSender_andForceNullIdAndTimestamp() {
         // Arrange

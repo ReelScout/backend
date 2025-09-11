@@ -16,6 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for the UserMapperContext class.
+ * This test class verifies the behavior of UserMapperContext methods,
+ * ensuring they correctly delegate to the UserMapper and handle various scenarios.
+ */
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings({"rawtypes", "unchecked"})
 class UserMapperContextTest {
@@ -45,6 +50,9 @@ class UserMapperContextTest {
         context = new UserMapperContext<>();
     }
 
+    /**
+     * Tests that the setUserMapper method correctly sets the mapper and verifies its usage.
+     */
     @Test
     @DisplayName("setUserMapper: should set the mapper correctly")
     void setUserMapper_shouldSetMapperCorrectly() {
@@ -60,6 +68,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDto(mockUser, "test-key");
     }
 
+    /**
+     * Tests that the toDto method delegates to the mapper with the correct parameters.
+     */
     @Test
     @DisplayName("toDto: should delegate to mapper with correct parameters")
     void toDto_shouldDelegateToMapper() {
@@ -76,6 +87,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDto(mockUser, s3ImageKey);
     }
 
+    /**
+     * Tests that the toDto method throws a NullPointerException when the mapper is null.
+     */
     @Test
     @DisplayName("toDto: should throw NullPointerException when mapper is null")
     void toDto_shouldThrowWhenMapperIsNull() {
@@ -85,6 +99,9 @@ class UserMapperContextTest {
         assertThrows(NullPointerException.class, () -> context.toDto(mockUser, "test-key"));
     }
 
+    /**
+     * Tests that the toBuilder method delegates to the mapper with the correct parameters.
+     */
     @Test
     @DisplayName("toBuilder: should delegate to mapper with correct parameters")
     void toBuilder_shouldDelegateToMapper() {
@@ -100,6 +117,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toBuilder(mockUser);
     }
 
+    /**
+     * Tests that the toBuilder method throws a NullPointerException when the mapper is null.
+     */
     @Test
     @DisplayName("toBuilder: should throw NullPointerException when mapper is null")
     void toBuilder_shouldThrowWhenMapperIsNull() {
@@ -109,6 +129,9 @@ class UserMapperContextTest {
         assertThrows(NullPointerException.class, () -> context.toBuilder(mockUser));
     }
 
+    /**
+     * Tests that the toEntity method delegates to the mapper with the correct parameters.
+     */
     @Test
     @DisplayName("toEntity: should delegate to mapper with correct parameters")
     void toEntity_shouldDelegateToMapper() {
@@ -125,6 +148,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toEntity(mockUserRequestDTO, s3ImageKey);
     }
 
+    /**
+     * Tests that the toEntity method throws a NullPointerException when the mapper is null.
+     */
     @Test
     @DisplayName("toEntity: should throw NullPointerException when mapper is null")
     void toEntity_shouldThrowWhenMapperIsNull() {
@@ -134,6 +160,9 @@ class UserMapperContextTest {
         assertThrows(NullPointerException.class, () -> context.toEntity(mockUserRequestDTO, "test-key"));
     }
 
+    /**
+     * Tests that the toUserDoc method delegates to the mapper with the correct parameters.
+     */
     @Test
     @DisplayName("toUserDoc: should delegate to mapper with correct parameters")
     void toUserDoc_shouldDelegateToMapper() {
@@ -149,6 +178,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDoc(mockUser);
     }
 
+    /**
+     * Tests that the toUserDoc method throws a NullPointerException when the mapper is null.
+     */
     @Test
     @DisplayName("toUserDoc: should throw NullPointerException when mapper is null")
     void toUserDoc_shouldThrowWhenMapperIsNull() {
@@ -158,6 +190,9 @@ class UserMapperContextTest {
         assertThrows(NullPointerException.class, () -> context.toUserDoc(mockUser));
     }
 
+    /**
+     * Tests that the toDto method handles null user parameter correctly.
+     */
     @Test
     @DisplayName("toDto: should handle null user parameter correctly")
     void toDto_shouldHandleNullUser() {
@@ -174,6 +209,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDto(null, s3ImageKey);
     }
 
+    /**
+     * Tests that the toDto method handles null s3ImageKey parameter correctly.
+     */
     @Test
     @DisplayName("toDto: should handle null s3ImageKey parameter correctly")
     void toDto_shouldHandleNullS3ImageKey() {
@@ -189,6 +227,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDto(mockUser, null);
     }
 
+    /**
+     * Tests that the toEntity method handles null userRequestDTO parameter correctly.
+     */
     @Test
     @DisplayName("toEntity: should handle null userRequestDTO parameter correctly")
     void toEntity_shouldHandleNullUserRequestDTO() {
@@ -205,6 +246,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toEntity(null, s3ImageKey);
     }
 
+    /**
+     * Tests that the toEntity method handles null s3ImageKey parameter correctly.
+     */
     @Test
     @DisplayName("toEntity: should handle null s3ImageKey parameter correctly")
     void toEntity_shouldHandleNullS3ImageKey() {
@@ -220,6 +264,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toEntity(mockUserRequestDTO, null);
     }
 
+    /**
+     * Tests that the toBuilder method handles null user parameter correctly.
+     */
     @Test
     @DisplayName("toBuilder: should handle null user parameter correctly")
     void toBuilder_shouldHandleNullUser() {
@@ -235,6 +282,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toBuilder(null);
     }
 
+    /**
+     * Tests that the toUserDoc method handles null user parameter correctly.
+     */
     @Test
     @DisplayName("toUserDoc: should handle null user parameter correctly")
     void toUserDoc_shouldHandleNullUser() {
@@ -250,6 +300,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDoc(null);
     }
 
+    /**
+     * Tests multiple operations using the same mapper instance to ensure consistent behavior.
+     */
     @Test
     @DisplayName("multiple operations: should work correctly with same mapper instance")
     void multipleOperations_shouldWorkWithSameMapper() {
@@ -280,6 +333,9 @@ class UserMapperContextTest {
         verify(mockUserMapper).toDoc(mockUser);
     }
 
+    /**
+     * Tests that changing the mapper at runtime works as expected.
+     */
     @Test
     @DisplayName("setUserMapper: should allow changing mapper during runtime")
     void setUserMapper_shouldAllowChangingMapper() {

@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -23,10 +22,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Pure unit tests for ForumController (no Spring context / no MockMvc).
- * We validate delegation to ForumService and that mappings/security annotations are present.
- */
+
 @ExtendWith(MockitoExtension.class)
 class ForumControllerTest {
 
@@ -55,7 +51,6 @@ class ForumControllerTest {
         controller = new ForumController(forumService);
     }
 
-    // ---------- Behavior tests (service delegation + ResponseEntity wrapping) ----------
 
     @Test
     void listThreads_shouldDelegateToService_andReturnOkWithBody() {
@@ -73,8 +68,11 @@ class ForumControllerTest {
         assertSame(expected, response.getBody(), "Body should be the same list returned by the service");
     }
 
+    /**
+     * Tests that the createThread method calls the forumService and returns the expected response.
+     */
     @Test
-    void createThread_shouldDelegateToService_andReturnOkWithBody() {
+    void createThread_callsService_andReturnsResponse() {
         // Arrange
         Long contentId = 7L;
         when(forumService.createThread(authenticatedUser, contentId, createThreadRequestDTO))
@@ -90,6 +88,9 @@ class ForumControllerTest {
         assertSame(threadResponse, response.getBody(), "Body should be the DTO returned by service");
     }
 
+    /**
+     * Tests that the listPosts method calls the forumService and returns the expected response.
+     */
     @Test
     void listPosts_shouldDelegateToService_andReturnOkWithBody() {
         // Arrange
@@ -106,8 +107,11 @@ class ForumControllerTest {
         assertSame(expected, response.getBody());
     }
 
+    /**
+     * Tests that the createPost method calls the forumService and returns the expected response.
+     */
     @Test
-    void createPost_shouldDelegateToService_andReturnOkWithBody() {
+    void createPost_callsService_andReturnsResponse() {
         // Arrange
         Long threadId = 123L;
         when(forumService.createPost(authenticatedUser, threadId, createPostRequestDTO))
@@ -125,6 +129,10 @@ class ForumControllerTest {
 
     // ---------- Annotation tests (via reflection) ----------
 
+    /**
+     * Tests that the ForumController class is annotated with @RestController and has the correct
+     * class-level @RequestMapping.
+     */
     @Test
     void controller_shouldHaveClassLevelRequestMapping() {
         RequestMapping mapping = ForumController.class.getAnnotation(RequestMapping.class);
@@ -137,6 +145,9 @@ class ForumControllerTest {
                 "Class-level mapping should be \"${api.paths.content}/forum\"");
     }
 
+    /**
+     * Tests that the ForumController class is annotated with @RestController.
+     */
     @Test
     void listThreads_shouldHaveGetMapping_withExpectedPath() throws Exception {
         Method m = ForumController.class.getMethod("listThreads", Long.class);
@@ -147,6 +158,9 @@ class ForumControllerTest {
                 "Path should be \"/{contentId}/threads\"");
     }
 
+    /**
+     * Tests that the createThread method is annotated with @PostMapping and @PreAuthorize("isAuthenticated()").
+     */
     @Test
     void createThread_shouldHavePostMapping_andPreAuthorizeIsAuthenticated() throws Exception {
         Method m = ForumController.class.getMethod(
@@ -168,6 +182,9 @@ class ForumControllerTest {
                 "@PreAuthorize should require isAuthenticated()");
     }
 
+    /**
+     * Tests that the listPosts method is annotated with @GetMapping and has the correct path.
+     */
     @Test
     void listPosts_shouldHaveGetMapping_withExpectedPath() throws Exception {
         Method m = ForumController.class.getMethod("listPosts", Long.class);
@@ -178,6 +195,9 @@ class ForumControllerTest {
                 "Path should be \"/threads/{threadId}/posts\"");
     }
 
+    /**
+     * Tests that the createPost method is annotated with @PostMapping and @PreAuthorize("isAuthenticated()").
+     */
     @Test
     void createPost_shouldHavePostMapping_andPreAuthorizeIsAuthenticated() throws Exception {
         Method m = ForumController.class.getMethod(
@@ -197,15 +217,5 @@ class ForumControllerTest {
         assertNotNull(pa, "createPost should be annotated with @PreAuthorize");
         assertEquals("isAuthenticated()", pa.value(),
                 "@PreAuthorize should require isAuthenticated()");
-    }
-
-    // --------- Small helper to print missing annotation info if a test fails (optional) ---------
-    @SuppressWarnings("unused")
-    private static String describeAnnotations(Annotation[] anns) {
-        StringBuilder sb = new StringBuilder();
-        for (Annotation a : anns) {
-            sb.append(a.annotationType().getSimpleName()).append(" ");
-        }
-        return sb.toString().trim();
     }
 }

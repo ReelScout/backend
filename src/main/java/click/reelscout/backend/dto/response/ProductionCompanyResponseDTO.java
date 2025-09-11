@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Data Transfer Object for Production Company responses.
+ * Extends UserResponseDTO to include user-related fields.
+ */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor

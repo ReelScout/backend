@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * DTO for Content response.
+ * Extends EntityResponseDTO to include common entity fields.
+ */
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @Data

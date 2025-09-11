@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * Embeddable class representing an Owner with first and last names.
+ */
 @Embeddable
 @Getter
 @NoArgsConstructor

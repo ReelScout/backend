@@ -19,42 +19,49 @@ public class ProductionCompanyBuilderImplementation extends AbstractUserBuilderI
     private List<Content> contents;
     private List<Owner> owners;
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder id(Long id) {
         this.id = id;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder name(String name) {
         this.name = name;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder location(Location location) {
         this.location = location;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder website(String website) {
         this.website = website;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder owners(List<Owner> owners) {
         this.owners = owners;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompanyBuilder contents(List<Content> contents) {
         this.contents = contents;
         return this;
     }
 
+    /** {@inheritDoc} */
     @Override
     public ProductionCompany build() {
         return new ProductionCompany(this);

@@ -20,6 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class FriendshipBuilderImplementationTest {
 
+    /**
+     * Tests that the fluent API returns the same builder instance for method chaining.
+     */
     @Test
     void fluentApi_shouldReturnSameBuilder_forMethodChaining() {
         // Arrange
@@ -38,6 +41,9 @@ class FriendshipBuilderImplementationTest {
         assertSame(builder, builder.updatedAt(now), "updatedAt() should return the same builder instance");
     }
 
+    /**
+     * Tests that each setter correctly stores the provided value inside the builder.
+     */
     @Test
     void setters_shouldStoreValuesInsideBuilder() {
         // Arrange
@@ -67,6 +73,9 @@ class FriendshipBuilderImplementationTest {
         assertEquals(updated, builder.getUpdatedAt(), "Builder should keep the provided updatedAt");
     }
 
+    /**
+     * Tests that build() produces a Friendship entity mirroring the builder's state.
+     */
     @Test
     void build_shouldProduceFriendshipWithSameValues() {
         // Arrange
@@ -99,6 +108,9 @@ class FriendshipBuilderImplementationTest {
         assertEquals(updated, friendship.getUpdatedAt(), "Built Friendship should copy updatedAt from builder");
     }
 
+    /**
+     * Tests that when a setter is called multiple times, the last provided value is retained.
+     */
     @Test
     void setters_calledMultipleTimes_shouldKeepLastValue() {
         // Arrange
@@ -124,6 +136,9 @@ class FriendshipBuilderImplementationTest {
         assertEquals(lastTime, friendship.getCreatedAt(), "Built Friendship should reflect last createdAt value");
     }
 
+    /**
+     * Tests that null values are accepted by the setters and propagated to the built entity.
+     */
     @Test
     void nullValues_shouldBeAcceptedAndPropagated() {
         // Arrange

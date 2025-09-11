@@ -11,6 +11,10 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DTO for handling requests to create or update content.
+ * Contains details about the content such as title, description, type, genres, actors, directors, and media links.
+ */
 @Data
 public class ContentRequestDTO {
     @NotBlank(message = "Title is mandatory")

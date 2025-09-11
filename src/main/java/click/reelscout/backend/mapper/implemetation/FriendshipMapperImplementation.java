@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class FriendshipMapperImplementation implements FriendshipMapper {
     private final FriendshipBuilder friendshipBuilder;
 
+    /** {@inheritDoc} */
     @Override
     public FriendshipResponseDTO toDto(Friendship friendship, UserResponseDTO requester, UserResponseDTO addressee) {
         return new FriendshipWithUsersResponseDTO(
@@ -28,6 +29,7 @@ public class FriendshipMapperImplementation implements FriendshipMapper {
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public FriendshipBuilder toBuilder(Friendship friendship) {
         return friendshipBuilder
@@ -39,6 +41,7 @@ public class FriendshipMapperImplementation implements FriendshipMapper {
                 .updatedAt(friendship.getUpdatedAt());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Friendship toEntity(Member requester, Member addressee, FriendshipStatus status) {
         return friendshipBuilder

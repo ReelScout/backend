@@ -20,16 +20,19 @@ public class WebSocketContentObserver implements ContentObserver {
     private final SimpMessagingTemplate messagingTemplate;
     private final ContentSubject contentSubject;
 
+    /** Register and unregister this observer with the subject */
     @PostConstruct
     public void register() {
         contentSubject.registerObserver(this);
     }
 
+    /** Unregister this observer when the bean is destroyed */
     @PreDestroy
     public void unregister() {
         contentSubject.removeObserver(this);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void onContentCreated(ContentResponseDTO content) {
         messagingTemplate.convertAndSend("/queue/content/new", content);

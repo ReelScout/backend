@@ -29,6 +29,12 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link ForumServiceImplementation}.
+ * Mocks repositories and mappers to test service logic in isolation.
+ * <p>
+ * Covers thread and post retrieval, creation, and validation logic.
+ */
 class ForumServiceImplementationTest {
     @Mock private ContentRepository contentRepository;
     @Mock private ForumThreadRepository threadRepository;
@@ -45,6 +51,10 @@ class ForumServiceImplementationTest {
         service = new ForumServiceImplementation(contentRepository, threadRepository, postRepository, reportRepository, mapper, reportMapper);
     }
 
+    /**
+     * Tests that threads are retrieved, sorted by updatedAt descending,
+     * and mapped to DTOs with correct post counts.
+     */
     @Test
     void getThreadsByContent_sortsAndMaps() {
         Content content = new Content();
@@ -83,6 +93,10 @@ class ForumServiceImplementationTest {
         assertEquals(2, result.get(1).getPostCount());
     }
 
+    /**
+     * Tests that creating a thread saves both the thread and its first post,
+     * and returns the correct mapped DTO.
+     */
     @Test
     void createThread_savesThreadAndFirstPost() {
         Content content = new Content();
@@ -121,6 +135,10 @@ class ForumServiceImplementationTest {
         verify(postRepository, times(1)).save(any(ForumPost.class));
     }
 
+    /**
+     * Tests that posts in a thread are retrieved in ascending order by creation time,
+     * and mapped correctly to DTOs including parent-child relationships.
+     */
     @Test
     void getPostsByThread_mapsPosts() {
         ForumThread thread = new ForumThread();
@@ -154,6 +172,10 @@ class ForumServiceImplementationTest {
         assertEquals(5L, result.get(0).getAuthorId());
     }
 
+    /**
+     * Tests that creating a post with a valid parent in the same thread succeeds,
+     * saving the post and returning the correct mapped DTO.
+     */
     @Test
     void createPost_throwsWhenParentFromDifferentThread() {
         ForumThread thread = new ForumThread();

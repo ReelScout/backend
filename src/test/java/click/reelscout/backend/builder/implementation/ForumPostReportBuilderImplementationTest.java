@@ -11,8 +11,20 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
+/**
+ * Unit tests for {@link ForumPostReportBuilderImplementation}.
+ * <p>
+ * These tests verify that each fluent setter correctly sets the corresponding field
+ * and returns the same builder instance for chaining. The build() method is also tested
+ * to ensure it creates a ForumPostReport with all fields copied from the builder.
+ * <p>
+ * Mockito is used to create mock instances of ForumPost and User to avoid dependencies
+ * on their implementations.
+ */
 class ForumPostReportBuilderImplementationTest {
-
+    /**
+     * Tests that the id() method sets the id field and returns the same builder instance.
+     */
     @Test
     void id_setsField_andReturnsSameBuilder() {
         // Arrange
@@ -27,6 +39,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the post() method sets the post field and returns the same builder instance.
+     */
     @Test
     void post_setsField_andReturnsSameBuilder() {
         ForumPostReportBuilderImplementation builder = new ForumPostReportBuilderImplementation();
@@ -40,6 +55,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the reporter() method sets the reporter field and returns the same builder instance.
+     */
     @Test
     void reporter_setsField_andReturnsSameBuilder() {
         ForumPostReportBuilderImplementation builder = new ForumPostReportBuilderImplementation();
@@ -53,6 +71,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the reason() method sets the reason field and returns the same builder instance.
+     */
     @Test
     void reason_setsField_andReturnsSameBuilder() {
         ForumPostReportBuilderImplementation builder = new ForumPostReportBuilderImplementation();
@@ -64,6 +85,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the createdAt() method sets the createdAt field and returns the same builder instance.
+     */
     @Test
     void createdAt_setsField_andReturnsSameBuilder() {
         ForumPostReportBuilderImplementation builder = new ForumPostReportBuilderImplementation();
@@ -76,6 +100,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(returned).isSameAs(builder);
     }
 
+    /**
+     * Tests that the build() method creates a ForumPostReport with all fields copied from the builder.
+     */
     @Test
     void build_returnsReport_withAllValuesCopied() {
         // Arrange: prepare sample data
@@ -106,6 +133,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(report, "createdAt")).isEqualTo(createdAt);
     }
 
+    /**
+     * Tests that the build() method can handle null optional fields without throwing exceptions.
+     */
     @Test
     void build_allowsNullOptionalFields() {
         // Arrange: leave reason/createdAt as null
@@ -126,6 +156,9 @@ class ForumPostReportBuilderImplementationTest {
         assertThat(ReflectionTestUtils.getField(report, "createdAt")).isNull();
     }
 
+    /**
+     * Tests that multiple fluent setter calls can be chained together in a single expression.
+     */
     @Test
     void fluentApi_supportsChaining() {
         // Arrange

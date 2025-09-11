@@ -20,6 +20,10 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.List;
 
+/**
+    Security configuration class for the application.
+    Configures CORS, CSRF, session management, role hierarchy, and JWT filter.
+*/
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -27,6 +31,10 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
+    /**
+        Defines the role hierarchy for the application.
+        Higher roles inherit the permissions of lower roles.
+    */
     @Bean
     protected static RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.fromHierarchy(
@@ -39,6 +47,10 @@ public class SecurityConfig {
         );
     }
 
+    /**
+        Configures CORS settings for the application.
+        Allows requests from specified origins with defined methods and headers.
+    */
     @Bean
     protected CorsConfigurationSource corsConfigurationSource(Environment environment) {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -54,6 +66,10 @@ public class SecurityConfig {
         return source;
     }
 
+    /**
+        Configures the security filter chain for the application.
+        Sets up CSRF, CORS, authorization rules, session management, exception handling, and JWT filter.
+    */
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http, Environment environment) throws Exception {
         http

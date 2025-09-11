@@ -62,6 +62,10 @@ class FriendshipMapperImplementationTest {
                 .build();
     }
 
+    /**
+     * Test that toDto() correctly maps all fields from the entity to the DTO,
+     * and uses the provided UserResponseDTOs for requester and addressee.
+     */
     @Test
     void toDto_mapsAllFields_andKeepsProvidedUserDTOs() {
         // Arrange: prepare requester/addressee DTOs (could be records or beans)
@@ -85,6 +89,9 @@ class FriendshipMapperImplementationTest {
         assertThat(readProp(dto, "addressee")).isSameAs(addresseeDto);
     }
 
+    /**
+     * Test that toBuilder() calls the builder with all fields from the entity,
+     */
     @Test
     void toBuilder_callsBuilderWithEntityFields_andReturnsSameBuilder() {
         // Act
@@ -105,6 +112,10 @@ class FriendshipMapperImplementationTest {
         verifyNoMoreInteractions(friendshipBuilder);
     }
 
+    /**
+     * Test that toEntity() calls the builder with the provided inputs,
+     * and sets id, createdAt, updatedAt to null.
+     */
     @Test
     void toEntity_buildsFriendshipWithGivenInputs_andNullsForIdAndTimestamps() {
         // Arrange: inputs for the entity creation
@@ -143,6 +154,13 @@ class FriendshipMapperImplementationTest {
         verifyNoMoreInteractions(friendshipBuilder);
     }
 
+    /**
+     * Helper to read a property value from either a JavaBean-style getter (getX())
+     * or a Java record-style accessor (x()).
+     * @param target the object to read from
+     * @param name the property name
+     * @return the property value
+     */
     // --------------------------------------------------------------------------------------------
     // Small helper that tries both JavaBean "getX()" and Java record-style "x()" accessors.
     // This makes the test robust regardless of how your DTO is implemented.
@@ -168,6 +186,11 @@ class FriendshipMapperImplementationTest {
         }
     }
 
+    /**
+     * Helper to capitalize the first letter of a string.
+     * @param s the input string
+     * @return the string with the first letter capitalized
+     */
     private static String capitalize(String s) {
         if (s == null || s.isEmpty()) return s;
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
