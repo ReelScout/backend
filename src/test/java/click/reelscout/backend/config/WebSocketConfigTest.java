@@ -1,29 +1,21 @@
 package click.reelscout.backend.config;
 
-import click.reelscout.backend.websocket.StompAuthChannelInterceptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.StompWebSocketEndpointRegistration;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.*;
 
 /**
  * Unit tests for WebSocketConfig.
- * These tests verify broker configuration, STOMP endpoint registration (with and without SockJS),
- * and that the custom ChannelInterceptor is attached to the inbound channel.
+ * These tests verify broker configuration and STOMP endpoint registration (with and without SockJS).
  */
 @ExtendWith(MockitoExtension.class)
 class WebSocketConfigTest {
-
-    @Mock
-    private StompAuthChannelInterceptor stompAuthChannelInterceptor;
 
     @Mock
     private MessageBrokerRegistry messageBrokerRegistry;
@@ -36,16 +28,13 @@ class WebSocketConfigTest {
     @Mock
     private StompWebSocketEndpointRegistration wsRegistration2; // second addEndpoint("/ws") -> withSockJS()
 
-    @Mock
-    private ChannelRegistration channelRegistration;
-
     /**
      * Tests that the configureMessageBroker method sets up the simple broker and destination prefixes correctly.
      */
     @Test
     void configureMessageBroker_shouldSetSimpleBrokerAndPrefixes() {
         // Arrange
-        WebSocketConfig config = new WebSocketConfig(stompAuthChannelInterceptor);
+        WebSocketConfig config = new WebSocketConfig();
 
         // Act
         config.configureMessageBroker(messageBrokerRegistry);
@@ -66,7 +55,7 @@ class WebSocketConfigTest {
     @Test
     void registerStompEndpoints_shouldRegisterWsEndpoint_twice_andEnableSockJsOnSecond() {
         // Arrange
-        WebSocketConfig config = new WebSocketConfig(stompAuthChannelInterceptor);
+        WebSocketConfig config = new WebSocketConfig();
 
         // Mock the fluent API: addEndpoint("/ws") returns a registration, and setAllowedOriginPatterns("*") returns same registration
         when(stompEndpointRegistry.addEndpoint("/ws")).thenReturn(wsRegistration1, wsRegistration2);
@@ -89,27 +78,4 @@ class WebSocketConfigTest {
         verify(wsRegistration2).withSockJS();
     }
 
-    /**
-     * Tests that the configureClientInboundChannel method attaches the StompAuthChannelInterceptor.
-     */
-    @Test
-    void configureClientInboundChannel_shouldAttachAuthInterceptor() {
-        // Arrange
-        WebSocketConfig config = new WebSocketConfig(stompAuthChannelInterceptor);
-
-        // Act
-        config.configureClientInboundChannel(channelRegistration);
-
-        // Assert
-        // The method uses varargs; verify it gets called with our interceptor.
-        verify(channelRegistration).interceptors(stompAuthChannelInterceptor);
-
-        // (Optional) Capture to assert exact content of varargs
-        ArgumentCaptor<org.springframework.messaging.support.ChannelInterceptor[]> captor =
-                ArgumentCaptor.forClass(org.springframework.messaging.support.ChannelInterceptor[].class);
-        verify(channelRegistration).interceptors(captor.capture());
-        org.springframework.messaging.support.ChannelInterceptor[] passed = captor.getValue();
-        assertArrayEquals(new org.springframework.messaging.support.ChannelInterceptor[]{stompAuthChannelInterceptor}, passed,
-                "Inbound channel should be configured with the StompAuthChannelInterceptor only");
-    }
 }

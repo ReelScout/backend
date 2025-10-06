@@ -21,7 +21,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
      * @param pageable pagination information
      * @return a page of chat messages between the two users
      */
-    @Query("SELECT m FROM ChatMessage m WHERE (LOWER(m.sender) = LOWER(:a) AND LOWER(m.recipient) = LOWER(:b)) OR (LOWER(m.sender) = LOWER(:b) AND LOWER(m.recipient) = LOWER(:a)) ORDER BY m.timestamp ASC")
+    @Query("SELECT m FROM ChatMessage m WHERE (LOWER(m.sender) = LOWER(:a) AND LOWER(m.recipient) = LOWER(:b)) OR (LOWER(m.sender) = LOWER(:b) AND LOWER(m.recipient) = LOWER(:a)) ORDER BY m.timestamp DESC")
     Page<ChatMessage> findDirectHistory(@Param("a") String a, @Param("b") String b, Pageable pageable);
 
     /**
